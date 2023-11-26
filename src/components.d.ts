@@ -6,56 +6,40 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
-    interface MyComponent {
+    interface FileDrop {
         /**
-          * The first name
+          * The id of the an input[type=file] to assign dropped files to
          */
-        "first": string;
-        /**
-          * The last name
-         */
-        "last": string;
-        /**
-          * The middle name
-         */
-        "middle": string;
+        "target": string;
     }
 }
 declare global {
-    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
+    interface HTMLFileDropElement extends Components.FileDrop, HTMLStencilElement {
     }
-    var HTMLMyComponentElement: {
-        prototype: HTMLMyComponentElement;
-        new (): HTMLMyComponentElement;
+    var HTMLFileDropElement: {
+        prototype: HTMLFileDropElement;
+        new (): HTMLFileDropElement;
     };
     interface HTMLElementTagNameMap {
-        "my-component": HTMLMyComponentElement;
+        "file-drop": HTMLFileDropElement;
     }
 }
 declare namespace LocalJSX {
-    interface MyComponent {
+    interface FileDrop {
         /**
-          * The first name
+          * The id of the an input[type=file] to assign dropped files to
          */
-        "first"?: string;
-        /**
-          * The last name
-         */
-        "last"?: string;
-        /**
-          * The middle name
-         */
-        "middle"?: string;
+        "target"?: string;
     }
     interface IntrinsicElements {
-        "my-component": MyComponent;
+        "file-drop": FileDrop;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "file-drop": LocalJSX.FileDrop & JSXBase.HTMLAttributes<HTMLFileDropElement>;
         }
     }
 }
