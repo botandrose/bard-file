@@ -12,6 +12,9 @@ export namespace Components {
          */
         "target": string;
     }
+    interface ProgressBar {
+        "percent": number;
+    }
 }
 declare global {
     interface HTMLFileDropElement extends Components.FileDrop, HTMLStencilElement {
@@ -20,8 +23,15 @@ declare global {
         prototype: HTMLFileDropElement;
         new (): HTMLFileDropElement;
     };
+    interface HTMLProgressBarElement extends Components.ProgressBar, HTMLStencilElement {
+    }
+    var HTMLProgressBarElement: {
+        prototype: HTMLProgressBarElement;
+        new (): HTMLProgressBarElement;
+    };
     interface HTMLElementTagNameMap {
         "file-drop": HTMLFileDropElement;
+        "progress-bar": HTMLProgressBarElement;
     }
 }
 declare namespace LocalJSX {
@@ -31,8 +41,12 @@ declare namespace LocalJSX {
          */
         "target"?: string;
     }
+    interface ProgressBar {
+        "percent"?: number;
+    }
     interface IntrinsicElements {
         "file-drop": FileDrop;
+        "progress-bar": ProgressBar;
     }
 }
 export { LocalJSX as JSX };
@@ -40,6 +54,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "file-drop": LocalJSX.FileDrop & JSXBase.HTMLAttributes<HTMLFileDropElement>;
+            "progress-bar": LocalJSX.ProgressBar & JSXBase.HTMLAttributes<HTMLProgressBarElement>;
         }
     }
 }
