@@ -3,20 +3,7 @@ import { Event, EventEmitter } from '@stencil/core';
 import Max from './max'
 import Accepts from './accepts'
 import Mime from 'mime-lite'
-
-//import { get } from "rails-request-json"
-import { FetchRequest } from '@rails/request.js'
-async function get(url, payload=null) {
-  const request = new FetchRequest("get", url, {
-    headers: { Accept: "application/json" },
-    body: payload,
-  })
-  const response = await request.perform()
-  // FIXME doesn't deal with 304s. push upstream?
-  if(response.response.ok) {
-    return response.json
-  }
-}
+import { get } from "rails-request-json"
 
 @Component({
   tag: 'uploaded-file',
