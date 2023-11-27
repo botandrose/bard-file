@@ -26,7 +26,10 @@
     "generate": "stencil generate"
   },
   "dependencies": {
-    "@stencil/core": "^4.7.0"
+    "@rails/activestorage": "^7.1.2",
+    "@rails/request.js": "^0.0.9",
+    "@stencil/core": "^4.7.0",
+    "mime-lite": "^1.0.3"
   },
   "devDependencies": {
     "@types/jest": "^29.5.6",
