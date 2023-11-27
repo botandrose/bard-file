@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Stencil Component Starter",
   "main": "dist/index.cjs.js",
+  "type": "module",
   "module": "dist/index.js",
   "es2015": "dist/esm/index.js",
   "es2017": "dist/esm/index.js",
@@ -21,16 +22,26 @@
   "scripts": {
     "build": "stencil build --docs",
     "start": "stencil build --dev --watch --serve",
-    "test": "stencil test --spec --e2e",
-    "test.watch": "stencil test --spec --e2e --watchAll",
+    "spec": "NODE_OPTIONS=--experimental-vm-modules stencil test --spec",
+    "test": "NODE_OPTIONS=--experimental-vm-modules stencil test --spec --e2e",
+    "test.watch": "NODE_OPTIONS=--experimental-vm-modules stencil test --spec --e2e --watchAll",
     "generate": "stencil generate"
+  },
+  "jest": {
+    "extensionsToTreatAsEsm": [".ts", ".tsx"],
+    "globals": {
+      "ts-jest": {
+        "useESM": true
+      }
+    }
   },
   "dependencies": {
     "@rails/activestorage": "^7.1.2",
     "@rails/request.js": "^0.0.9",
     "@stencil/core": "^4.7.0",
     "mime-lite": "^1.0.3",
-    "rails-request-json": "^0.1.1"
+    "rails-request-json": "^0.1.1",
+    "ts-jest": "^29.1.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.6",

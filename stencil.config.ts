@@ -20,5 +20,6 @@ export const config: Config = {
   ],
   testing: {
     browserHeadless: "new",
+    useESModules: true,
   },
 };

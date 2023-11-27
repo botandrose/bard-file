@@ -1,9 +1,9 @@
 import { Component, Prop, State, Element, Host, h } from '@stencil/core'
-import { Event, EventEmitter } from '@stencil/core';
+import { Event, EventEmitter } from '@stencil/core'
 import Max from './max'
 import Accepts from './accepts'
 import Mime from 'mime-lite'
-import { get } from "rails-request-json"
+import { get } from 'rails-request-json'
 
 @Component({
   tag: 'uploaded-file',

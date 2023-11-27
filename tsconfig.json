@@ -3,14 +3,14 @@
     "allowSyntheticDefaultImports": true,
     "allowUnreachableCode": false,
     "declaration": false,
+    "esModuleInterop": true,
     "experimentalDecorators": true,
     "lib": [
-      "dom",
-      "es2017"
+      "esnext"
     ],
-    "moduleResolution": "node",
     "module": "esnext",
-    "target": "es2017",
+    "moduleResolution": "node",
+    "target": "esnext",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "jsx": "react",
@@ -19,8 +19,5 @@
   },
   "include": [
     "src"
-  ],
-  "exclude": [
-    "node_modules"
   ]
 }
