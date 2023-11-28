@@ -18,7 +18,7 @@ export namespace Components {
         /**
           * The id of the an input[type=file] to assign dropped files to
          */
-        "target": string;
+        "for": string;
     }
     interface ProgressBar {
         "percent": number;
@@ -94,7 +94,7 @@ declare namespace LocalJSX {
         /**
           * The id of the an input[type=file] to assign dropped files to
          */
-        "target"?: string;
+        "for"?: string;
     }
     interface ProgressBar {
         "percent"?: number;

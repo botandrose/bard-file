@@ -1,6 +1,7 @@
 import { Component, Element, Prop, State, Listen, Host, h } from '@stencil/core';
 import FormController from "./form-controller"
 import { UploadedFile } from "../uploaded-file/uploaded-file"
+import { FileDrop as _ } from "../file-drop/file-drop"
 
 @Component({
   tag: 'bard-file',
@@ -25,8 +26,11 @@ export class BardFile {
   hiddenTarget: HTMLInputElement
   formController: FormController
 
-  connectedCallback() {
+  constructor() {
     this.originalId = this.el.id
+  }
+
+  connectedCallback() {
     this.el.removeAttribute("id")
     this.formController = FormController.forForm(this.el.closest("form"))
   }
@@ -127,7 +131,7 @@ export class BardFile {
 
     return (
       <Host>
-        <file-drop target={this.originalId}>
+        <file-drop for={this.originalId}>
           <i class="drag-icon"></i>
           <strong>Choose {this.multiple ? "files" : "file"} </strong>
           <span>or drag {this.multiple ? "them" : "it"} here.</span>

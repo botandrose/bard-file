@@ -1,9 +1,9 @@
-import { Component, Element, Prop, Listen, Host, h } from '@stencil/core'
+import { Component, Element, Prop, Listen } from '@stencil/core'
 
 @Component({
   tag: 'file-drop',
   styleUrl: 'file-drop.css',
-  shadow: true,
+  shadow: false,
 })
 export class FileDrop {
   @Element() el: HTMLElement
@@ -11,10 +11,10 @@ export class FileDrop {
   /**
    * The id of the an input[type=file] to assign dropped files to
    */
-  @Prop() target: string
+  @Prop({ attribute: "for" }) for: string
 
   private get fileTarget(): HTMLInputElement {
-    return document.querySelector<HTMLInputElement>(`#${this.target}`)
+    return document.querySelector<HTMLInputElement>(`#${this.for}`)
   }
 
   @Listen("click")
@@ -43,13 +43,5 @@ export class FileDrop {
     this.unhighlight(event)
     this.fileTarget.files = event.dataTransfer.files
     this.fileTarget.dispatchEvent(new Event("change"))
-  }
-
-  render() {
-    return (
-      <Host>
-        <slot></slot>
-      </Host>
-    )
   }
 }

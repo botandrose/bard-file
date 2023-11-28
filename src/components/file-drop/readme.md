@@ -9,7 +9,7 @@
 
 | Property | Attribute | Description                                                  | Type     | Default     |
 | -------- | --------- | ------------------------------------------------------------ | -------- | ----------- |
-| `target` | `target`  | The id of the an input[type=file] to assign dropped files to | `string` | `undefined` |
+| `for`    | `for`     | The id of the an input[type=file] to assign dropped files to | `string` | `undefined` |
 
 
 ## Dependencies
