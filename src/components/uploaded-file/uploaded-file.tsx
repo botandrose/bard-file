@@ -52,18 +52,18 @@ export class UploadedFile {
   @Prop() accepts: string
   @Prop() max: number
 
-  @State() state: string
-  @State() percent: number
+  @State() state: string = "complete"
+  @State() percent: number = 100
   @State() file: File
   @State() validationMessage: string
 
 
-  @Event() remove: EventEmitter
+  @Event() removeEvent: EventEmitter
 
-  removeSelf(event) {
+  private removeSelf = event => {
     event.stopPropagation()
     event.preventDefault()
-    this.remove.emit(this)
+    this.removeEvent.emit(this)
   }
 
   render() {
@@ -85,8 +85,8 @@ export class UploadedFile {
         <slot>
         </slot>
         <figure class={klass}>
-          <progress-bar percent={this.percent} class="separate-upload direct-upload--{this.state}">
-            ${this.filename}
+          <progress-bar percent={this.percent} class={`separate-upload direct-upload--${this.state}`}>
+            {this.filename}
           </progress-bar>
           <a class="remove-media" onClick={this.removeSelf} href="#">
             <span>Remove media</span>
@@ -98,7 +98,7 @@ export class UploadedFile {
   }
 
   componentDidRender() {
-    this.el.innerHTML = <input type="hidden" name={this.name} value={this.value} />
+    this.el.innerHTML = `<input type="hidden" name=${this.name} value=${this.value} />`
   }
 
   checkValidity() {

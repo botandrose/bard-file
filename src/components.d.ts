@@ -58,7 +58,7 @@ declare global {
         new (): HTMLProgressBarElement;
     };
     interface HTMLUploadedFileElementEventMap {
-        "remove": any;
+        "removeEvent": any;
     }
     interface HTMLUploadedFileElement extends Components.UploadedFile, HTMLStencilElement {
         addEventListener<K extends keyof HTMLUploadedFileElementEventMap>(type: K, listener: (this: HTMLUploadedFileElement, ev: UploadedFileCustomEvent<HTMLUploadedFileElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -105,7 +105,7 @@ declare namespace LocalJSX {
         "max"?: number;
         "mimetype"?: string;
         "name"?: string;
-        "onRemove"?: (event: UploadedFileCustomEvent<any>) => void;
+        "onRemoveEvent"?: (event: UploadedFileCustomEvent<any>) => void;
         "size"?: number;
         "src"?: string;
         "value"?: string;

@@ -6,7 +6,7 @@ import { Component, Prop, Host, h } from '@stencil/core';
   shadow: true,
 })
 export class ProgressBar {
-  @Prop() percent: number
+  @Prop() percent: number = 0
 
   render() {
     return (

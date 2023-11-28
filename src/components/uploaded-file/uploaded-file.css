@@ -1,3 +1,22 @@
 :host {
   display: block;
 }
+
+progress-bar.separate-upload{
+  padding: 0 10px;
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+progress-bar.direct-upload--pending{
+  opacity: 0.6;
+}
+
+progress-bar.direct-upload--complete {
+  opacity: 0.4;
+}
+
+progress-bar.direct-upload--error{
+  border-color: red;
+}
+

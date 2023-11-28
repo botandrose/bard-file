@@ -21,9 +21,9 @@
 
 ## Events
 
-| Event    | Description | Type               |
-| -------- | ----------- | ------------------ |
-| `remove` |             | `CustomEvent<any>` |
+| Event         | Description | Type               |
+| ------------- | ----------- | ------------------ |
+| `removeEvent` |             | `CustomEvent<any>` |
 
 
 ## Dependencies
