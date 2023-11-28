@@ -8,6 +8,10 @@ export const config: Config = {
       dir: 'dist/components',
       customElementsExportBehavior: 'bundle',
       isPrimaryPackageOutputTarget: true,
+      copy: [
+        { src: 'images', dest: 'dist/images/' },
+        { src: 'index.components.html', dest: 'dist/index.html' },
+      ]
     },
     {
       type: 'docs-readme',
@@ -15,7 +19,9 @@ export const config: Config = {
     {
       type: 'www',
       copy: [
-        { src: 'images' }
+        {
+          src: 'images',
+        }
       ]
       serviceWorker: null, // disable service workers
     },

@@ -7,16 +7,20 @@
 
 ## Properties
 
-| Property   | Attribute  | Description | Type     | Default     |
-| ---------- | ---------- | ----------- | -------- | ----------- |
-| `accepts`  | `accepts`  |             | `string` | `undefined` |
-| `filename` | `filename` |             | `string` | `undefined` |
-| `max`      | `max`      |             | `number` | `undefined` |
-| `mimetype` | `mimetype` |             | `string` | `undefined` |
-| `name`     | `name`     |             | `string` | `undefined` |
-| `size`     | `size`     |             | `number` | `undefined` |
-| `src`      | `src`      |             | `string` | `undefined` |
-| `value`    | `value`    |             | `string` | `undefined` |
+| Property            | Attribute            | Description | Type     | Default      |
+| ------------------- | -------------------- | ----------- | -------- | ------------ |
+| `accepts`           | `accepts`            |             | `string` | `undefined`  |
+| `file`              | --                   |             | `File`   | `undefined`  |
+| `filename`          | `filename`           |             | `string` | `undefined`  |
+| `max`               | `max`                |             | `number` | `undefined`  |
+| `mimetype`          | `mimetype`           |             | `string` | `undefined`  |
+| `name`              | `name`               |             | `string` | `undefined`  |
+| `percent`           | `percent`            |             | `number` | `100`        |
+| `size`              | `size`               |             | `number` | `undefined`  |
+| `src`               | `src`                |             | `string` | `undefined`  |
+| `state`             | `state`              |             | `string` | `"complete"` |
+| `validationMessage` | `validation-message` |             | `string` | `undefined`  |
+| `value`             | `value`              |             | `string` | `undefined`  |
 
 
 ## Events
@@ -28,14 +32,19 @@
 
 ## Dependencies
 
+### Used by
+
+ - [uploaded-file](.)
+
 ### Depends on
 
+- [uploaded-file](.)
 - [progress-bar](../progress-bar)
 
 ### Graph
 ```mermaid
 graph TD;
-  uploaded-file --> progress-bar
+  uploaded-file --> uploaded-file
   style uploaded-file fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

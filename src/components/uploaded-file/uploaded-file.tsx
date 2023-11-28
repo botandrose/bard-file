@@ -1,4 +1,4 @@
-import { Component, Prop, Element, Method, Host, h } from '@stencil/core'
+import { Component, Prop, Element, Host, h } from '@stencil/core'
 import { Event, EventEmitter } from '@stencil/core'
 import Max from './max'
 import Accepts from './accepts'
@@ -117,7 +117,7 @@ export class UploadedFile {
     )
   }
 
-  componentDidRender() {
+  componentDidLoad() {
     this.el.innerHTML = `<input type="hidden" name=${this.name} value=${this.value} />`
   }
 }
