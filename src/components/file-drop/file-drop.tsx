@@ -22,22 +22,24 @@ export class FileDrop {
     this.fileTarget.click()
   }
 
-  @Listen("dragover")
+  @Listen("dragover", { passive: false })
   highlight(event) {
     event.preventDefault()
     event.stopPropagation()
     this.el.classList.add("-dragover")
   }
 
-  @Listen("dragleave")
+  @Listen("dragleave", { passive: false })
   unhighlight(event) {
     event.preventDefault()
     event.stopPropagation()
     this.el.classList.remove("-dragover")
   }
 
-  @Listen("drop")
+  @Listen("drop", { passive: false })
   drop(event) {
+    event.preventDefault()
+    event.stopPropagation()
     this.unhighlight(event)
     this.fileTarget.files = event.dataTransfer.files
     this.fileTarget.dispatchEvent(new Event("change"))
