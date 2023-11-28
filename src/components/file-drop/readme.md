@@ -7,12 +7,23 @@
 
 ## Properties
 
-| Property | Attribute | Description     | Type     | Default     |
-| -------- | --------- | --------------- | -------- | ----------- |
-| `first`  | `first`   | The first name  | `string` | `undefined` |
-| `last`   | `last`    | The last name   | `string` | `undefined` |
-| `middle` | `middle`  | The middle name | `string` | `undefined` |
+| Property | Attribute | Description                                                  | Type     | Default     |
+| -------- | --------- | ------------------------------------------------------------ | -------- | ----------- |
+| `target` | `target`  | The id of the an input[type=file] to assign dropped files to | `string` | `undefined` |
 
+
+## Dependencies
+
+### Used by
+
+ - [bard-file](../bard-file)
+
+### Graph
+```mermaid
+graph TD;
+  bard-file --> file-drop
+  style file-drop fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 

@@ -4,7 +4,20 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
     <title>&lt;bard-file&gt; and friends</title>
-    <script type="module" src="/build/bard-file.esm.js"></script>
+    <script type="importmap">
+      { "imports": {
+        "@stencil/core": "https://ga.jspm.io/npm:@stencil/core@4.8.0/internal/stencil-core/index.js",
+        "@stencil/core/internal/app-data": "https://ga.jspm.io/npm:@stencil/core@4.8.0/internal/app-data/index.js",
+        "@stencil/core/internal/client": "https://ga.jspm.io/npm:@stencil/core@4.8.0/internal/client/index.js"
+      } }
+    </script>
+    <script type="module">
+      import { defineCustomElementBardFile, defineCustomElementFileDrop, defineCustomElementProgressBar, defineCustomElementUploadedFile } from "/dist/components/index.js"
+      defineCustomElementBardFile()
+      defineCustomElementFileDrop()
+      defineCustomElementProgressBar()
+      defineCustomElementUploadedFile()
+    </script>
   </head>
   <body>
     <fieldset>

@@ -2,12 +2,9 @@
   "name": "bard-file",
   "version": "0.0.1",
   "description": "Stencil Component Starter",
-  "main": "dist/index.cjs.js",
   "type": "module",
-  "module": "dist/index.js",
-  "es2015": "dist/esm/index.js",
-  "es2017": "dist/esm/index.js",
-  "types": "dist/types/index.d.ts",
+  "module": "dist/components/index.js",
+  "types": "dist/components/index.d.ts",
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
   "unpkg": "dist/bard-file/bard-file.esm.js",
@@ -38,7 +35,7 @@
   "dependencies": {
     "@rails/activestorage": "^7.1.2",
     "@rails/request.js": "^0.0.9",
-    "@stencil/core": "^4.7.0",
+    "@stencil/core": "^4.8.0",
     "mime-lite": "^1.0.3",
     "rails-request-json": "^0.1.1",
     "ts-jest": "^29.1.1"
