@@ -25,12 +25,16 @@ export namespace Components {
     }
     interface UploadedFile {
         "accepts": string;
+        "file": File;
         "filename": string;
         "max": number;
         "mimetype": string;
         "name": string;
+        "percent": number;
         "size": number;
         "src": string;
+        "state": string;
+        "validationMessage": string;
         "value": string;
     }
 }
@@ -101,13 +105,17 @@ declare namespace LocalJSX {
     }
     interface UploadedFile {
         "accepts"?: string;
+        "file"?: File;
         "filename"?: string;
         "max"?: number;
         "mimetype"?: string;
         "name"?: string;
         "onRemoveEvent"?: (event: UploadedFileCustomEvent<any>) => void;
+        "percent"?: number;
         "size"?: number;
         "src"?: string;
+        "state"?: string;
+        "validationMessage"?: string;
         "value"?: string;
     }
     interface IntrinsicElements {

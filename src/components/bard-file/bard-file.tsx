@@ -38,45 +38,40 @@ export class BardFile {
   @Listen("direct-upload:initialize")
   init(event) {
     const { file } = event.detail
-    const bardFile = this.files.find(bf => bf.file === file)
-    bardFile.state = "pending"
-    bardFile.percent = 0
-    // this.requestUpdate()
+    const uploadedFile = this.files.find(bf => bf.file === file)
+    uploadedFile.state = "pending"
+    uploadedFile.percent = 0
   }
 
   @Listen("direct-upload:start")
   start(event) {
     const { file } = event.detail
-    const bardFile = this.files.find(bf => bf.file === file)
-    bardFile.state = "pending"
-    // this.requestUpdate()
+    const uploadedFile = this.files.find(bf => bf.file === file)
+    uploadedFile.state = "pending"
   }
 
   @Listen("direct-upload:progress")
   progress(event) {
     const { file, progress } = event.detail
-    const bardFile = this.files.find(bf => bf.file === file)
-    bardFile.percent = progress
-    // this.requestUpdate()
+    const uploadedFile = this.files.find(bf => bf.file === file)
+    uploadedFile.percent = progress
   }
 
   @Listen("direct-upload:error")
   error(event) {
     event.preventDefault()
     const { file } = event.detail
-    const bardFile = this.files.find(bf => bf.file === file)
-    bardFile.state = "error"
-    // bardFile.error = error
-    // this.requestUpdate()
+    const uploadedFile = this.files.find(bf => bf.file === file)
+    uploadedFile.state = "error"
+    // uploadedFile.error = error
   }
 
   @Listen("direct-upload:end")
   end(event) {
     const { file } = event.detail
-    const bardFile = this.files.find(bf => bf.file === file)
-    bardFile.state = "complete"
-    bardFile.percent = 100
-    // this.requestUpdate()
+    const uploadedFile = this.files.find(bf => bf.file === file)
+    uploadedFile.state = "complete"
+    uploadedFile.percent = 100
   }
 
   fileTargetChanged(_event) {
@@ -92,20 +87,20 @@ export class BardFile {
     }
   }
 
-  assignFiles(bardFiles) {
+  assignFiles(uploadedFiles) {
     if(this.multiple) {
-      this.files.push(...bardFiles)
+      this.files.push(...uploadedFiles)
     } else {
-      this.files = bardFiles.slice(-1)
+      this.files = uploadedFiles.slice(-1)
     }
-    // this.requestUpdate()
+    this.renderFiles()
     this.el.dispatchEvent(new Event("change"))
   }
 
   removeFile(file) {
     const index = this.files.indexOf(file)
     this.files.splice(index, 1)
-    // this.requestUpdate()
+    this.renderFiles()
     this.el.dispatchEvent(new Event("change"))
   }
 
@@ -144,18 +139,34 @@ export class BardFile {
     )
   }
 
-  checkValidity() {
-    let errors = []
-
+  renderFiles() {
+    const existingUploadedFiles = Array.from(this.el.children).filter(e => e.tagName === "UPLOADED-FILE")
     this.files.forEach(uploadedFile => {
-      if(!uploadedFile.checkValidity()) {
-        errors.push(uploadedFile.validationMessage)
+      if(!existingUploadedFiles.includes(uploadedFile as any)) {
+        this.el.append(uploadedFile as any)
       }
     })
+    existingUploadedFiles.forEach(dom => {
+      if(!this.files.includes(dom as any)) {
+        this.el.removeChild(dom as any)
+      }
+    })
+  }
 
-    this.setCustomValidity(errors.join(" "))
-    this.reportValidity()
-    return errors.length === 0
+  checkValidity() {
+    return true // FIXME FIXME FIXME
+
+    // let errors = []
+
+    // this.files.forEach(uploadedFile => {
+    //   if(!uploadedFile.checkValidity()) {
+    //     errors.push(uploadedFile.validationMessage)
+    //   }
+    // })
+
+    // this.setCustomValidity(errors.join(" "))
+    // this.reportValidity()
+    // return errors.length === 0
   }
 
   setCustomValidity(msg) {

@@ -8,6 +8,15 @@
   </head>
   <body>
     <fieldset>
+      <legend>&lt;bard-file&gt;</legend>
+      <form>
+        <bard-file name="image" id="image" directupload="http://smh.localhost/rails/active_storage/direct_uploads">
+          <uploaded-file name="image" src="images/example.jpg" filename="example.jpg" size="36287" mimetype="image/jpeg" max="1000000" accepts="image"></uploaded-file>
+        </bard-file>
+      </form>
+    </fieldset>
+
+    <fieldset>
       <legend>&lt;file-drop&gt;</legend>
       <file-drop for="file-field" style="width: 200px; height: 200px; border: 1px solid black">
         <input type="file" id="file-field">
@@ -22,15 +31,6 @@
     <fieldset>
       <legend>&lt;uploaded-file&gt;</legend>
       <uploaded-file name="image" src="images/example.jpg" filename="example.jpg" size="36287" mimetype="image/jpeg" max="1000000" accepts="image"></uploaded-file>
-    </fieldset>
-
-    <fieldset>
-      <legend>&lt;bard-file&gt;</legend>
-      <form>
-        <bard-file name="image" id="image" directupload="http://smh.localhost/rails/active_storage/direct_uploads">
-          <uploaded-file name="image" src="images/example.jpg" filename="example.jpg" size="36287" mimetype="image/jpeg" max="1000000" accepts="image"></uploaded-file>
-        </bard-file>
-      </form>
     </fieldset>
   </body>
 </html>

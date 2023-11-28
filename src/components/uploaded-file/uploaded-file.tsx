@@ -1,4 +1,4 @@
-import { Component, Prop, State, Element, Host, h } from '@stencil/core'
+import { Component, Prop, Element, Method, Host, h } from '@stencil/core'
 import { Event, EventEmitter } from '@stencil/core'
 import Max from './max'
 import Accepts from './accepts'
@@ -13,7 +13,7 @@ import { get } from 'rails-request-json'
 export class UploadedFile {
   static fromFile(file, props={}) {
     const extension = file.name.split(".").at(-1)
-    return Object.assign(new UploadedFile(), {
+    const asdf = Object.assign(document.createElement("uploaded-file"), {
       ...props,
       src: URL.createObjectURL(file),
       filename: file.name,
@@ -23,6 +23,7 @@ export class UploadedFile {
       percent: 0,
       file: file,
     })
+    return asdf
   }
 
   static fromSignedId(signedId, props={}) {
@@ -40,7 +41,7 @@ export class UploadedFile {
     })
   }
 
-  @Element() el: HTMLElement
+  @Element() el
 
   @Prop() name: string
   @Prop() value: string
@@ -52,10 +53,10 @@ export class UploadedFile {
   @Prop() accepts: string
   @Prop() max: number
 
-  @State() state: string = "complete"
-  @State() percent: number = 100
-  @State() file: File
-  @State() validationMessage: string
+  @Prop() state: string = "complete"
+  @Prop() percent: number = 100
+  @Prop() file: File
+  @Prop() validationMessage: string
 
 
   @Event() removeEvent: EventEmitter
@@ -64,6 +65,25 @@ export class UploadedFile {
     event.stopPropagation()
     event.preventDefault()
     this.removeEvent.emit(this)
+  }
+
+
+  checkValidity = null
+  setCustomValidity = null
+
+  constructor() {
+    this.el.checkValidity = () => {
+      let errors = []
+      errors.push(...new Accepts(this).errors)
+      errors.push(...new Max(this).errors)
+      this.setCustomValidity(errors.join(" "))
+      // this.reportValidity() // fire invalid event?
+      return errors.length === 0
+    }
+
+    this.el.setCustomValidity = (msg) => {
+      this.validationMessage = msg
+    }
   }
 
   render() {
@@ -99,18 +119,5 @@ export class UploadedFile {
 
   componentDidRender() {
     this.el.innerHTML = `<input type="hidden" name=${this.name} value=${this.value} />`
-  }
-
-  checkValidity() {
-    let errors = []
-    errors.push(...new Accepts(this).errors)
-    errors.push(...new Max(this).errors)
-    this.setCustomValidity(errors.join(" "))
-    // this.reportValidity() // fire invalid event?
-    return errors.length === 0
-  }
-
-  setCustomValidity(msg) {
-    this.validationMessage = msg
   }
 }
