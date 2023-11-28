@@ -4,13 +4,9 @@ export const config: Config = {
   namespace: 'bard-file',
   outputTargets: [
     {
-      type: 'dist',
-      esmLoaderPath: '../loader',
-    },
-    {
       type: 'dist-custom-elements',
       dir: 'dist/components',
-      customElementsExportBehavior: 'single-export-module',
+      customElementsExportBehavior: 'bundle',
       isPrimaryPackageOutputTarget: true,
     },
     {

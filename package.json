@@ -1,20 +1,12 @@
 {
   "name": "bard-file",
   "version": "0.0.1",
-  "description": "Stencil Component Starter",
+  "description": "Next-gen file field",
   "type": "module",
   "module": "dist/components/index.js",
-  "types": "dist/components/index.d.ts",
-  "collection": "dist/collection/collection-manifest.json",
-  "collection:main": "dist/collection/index.js",
-  "unpkg": "dist/bard-file/bard-file.esm.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ionic-team/stencil-component-starter.git"
-  },
+  "types": "dist/types/components.d.ts",
   "files": [
-    "dist/",
-    "loader/"
+    "dist/"
   ],
   "scripts": {
     "build": "stencil build --docs",
