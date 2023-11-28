@@ -12,9 +12,9 @@
 | `accepts`      | `accepts`      |             | `string`  | `undefined` |
 | `directupload` | `directupload` |             | `string`  | `undefined` |
 | `max`          | `max`          |             | `number`  | `undefined` |
-| `multiple`     | `multiple`     |             | `boolean` | `undefined` |
+| `multiple`     | `multiple`     |             | `boolean` | `false`     |
 | `name`         | `name`         |             | `string`  | `undefined` |
-| `required`     | `required`     |             | `boolean` | `undefined` |
+| `required`     | `required`     |             | `boolean` | `false`     |
 
 
 ## Dependencies

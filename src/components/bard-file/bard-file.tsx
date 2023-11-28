@@ -12,22 +12,23 @@ export class BardFile {
 
   @Prop() name: string
   @Prop() directupload: string
-  @Prop() multiple: boolean
+  @Prop() multiple: boolean = false
 
-  @Prop() required: boolean
+  @Prop() required: boolean = false
   @Prop() accepts: string
   @Prop() max: number
 
-  @State() files: Array<UploadedFile>
+  @State() files: Array<UploadedFile> = []
 
   originalId: string
   fileTarget: HTMLInputElement
+  hiddenTarget: HTMLInputElement
   formController: FormController
 
-  constructor() {
-    this.files = []
+  connectedCallback() {
     this.originalId = this.el.id
     this.el.removeAttribute("id")
+    this.formController = FormController.forForm(this.el.closest("form"))
   }
 
   @Listen("direct-upload:initialize")
@@ -104,7 +105,26 @@ export class BardFile {
     this.el.dispatchEvent(new Event("change"))
   }
 
+  componentWillLoad() {
+    this.el.insertAdjacentHTML("afterbegin", `
+      <input type="file"
+        style="opacity: 0.01; position: absolute; z-index: -999"
+        id="${this.originalId}"
+        data-direct-upload-url="${this.directupload}"
+      />
+      <input type="hidden" name="${this.name}" />
+    `)
+    this.fileTarget = this.el.querySelector("input[type=file]")
+    this.fileTarget.multiple = this.multiple
+    this.fileTarget.addEventListener("change", event => this.fileTargetChanged(event))
+
+    this.hiddenTarget = this.el.querySelector("input[type=hidden]")
+  }
+
   render() {
+    this.fileTarget.required = this.files.length === 0 && this.required
+    this.hiddenTarget.disabled = this.files.length > 0
+
     return (
       <Host>
         <file-drop target={this.originalId}>
@@ -112,29 +132,12 @@ export class BardFile {
           <strong>Choose {this.multiple ? "files" : "file"} </strong>
           <span>or drag {this.multiple ? "them" : "it"} here.</span>
 
-          <div class="media-preview {this.multiple ? '-stacked' : ''}">
-            <slot>
-              <input type="file"
-                style={{ opacity: "0.01", position: "absolute", "z-index": "-999"}}
-                id={this.originalId}
-                multiple={this.multiple}
-                data-direct-upload-url={this.directupload}
-                onChange={this.fileTargetChanged}
-                required={this.files.length === 0 && this.required}
-              />
-              {this.files.length > 0
-                ? this.files
-                : <input type="hidden" name={this.name} />
-              }
-            </slot>
+          <div class={`media-preview ${this.multiple ? '-stacked' : ''}`}>
+            <slot></slot>
           </div>
         </file-drop>
       </Host>
     )
-  }
-
-  componentDidLoad() {
-    this.fileTarget = this.el.querySelector("input[type=file]")
   }
 
   checkValidity() {
