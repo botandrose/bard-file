@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "@rails/activestorage": "^7.1.2",
-    "@rails/request.js": "^0.0.9",
     "@stencil/core": "^4.8.0",
     "mime-lite": "^1.0.3",
     "rails-request-json": "^0.1.1",
