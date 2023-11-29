@@ -13,7 +13,7 @@ import { get } from 'rails-request-json'
 export class UploadedFile {
   static fromFile(file, props={}) {
     const extension = file.name.split(".").at(-1)
-    const asdf = Object.assign(document.createElement("uploaded-file"), {
+    return Object.assign(document.createElement("uploaded-file"), {
       ...props,
       src: URL.createObjectURL(file),
       filename: file.name,
@@ -23,14 +23,13 @@ export class UploadedFile {
       percent: 0,
       file: file,
     })
-    return asdf
   }
 
   static fromSignedId(signedId, props={}) {
     return get(`/rails/active_storage/blobs/info/${signedId}`).then(blob => {
-      return Object.assign(new UploadedFile(), {
+      return Object.assign(document.createElement("uploaded-file"), {
         ...props,
-        // src: FIXME
+        src: `/rails/active_storage/blobs/redirect/${signedId}/${blob.filename}`,
         filename: blob.filename,
         mimetype: blob.content_type,
         size: blob.byte_size,
