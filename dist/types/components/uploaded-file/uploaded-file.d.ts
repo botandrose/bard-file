@@ -29,7 +29,7 @@ export declare class UploadedFile {
     setCustomValidity: any;
     constructor();
     render(): any;
-    hiddenField: HTMLInputElement;
+    inputField: HTMLInputElement;
     componentWillLoad(): void;
     componentDidRender(): void;
 }
