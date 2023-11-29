@@ -853,10 +853,10 @@ class DirectUploadController {
     input;
     file;
     directUpload;
-    constructor(input, uploadedFile) {
+    constructor(input, uploadedFile, url) {
         this.input = input;
         this.file = uploadedFile.file;
-        this.directUpload = new DirectUpload(this.file, this.url, this);
+        this.directUpload = new DirectUpload(this.file, url, this);
         this.uploadedFile = uploadedFile;
     }
     start(callback) {
@@ -881,13 +881,10 @@ class DirectUploadController {
             });
         }
     }
-    get url() {
-        return this.input.getAttribute("data-direct-upload-url");
-    }
     dispatch(name, detail = {}) {
         detail.file = this.file;
         detail.id = this.directUpload.id;
-        return dispatchEvent(this.input, `direct-upload:${name}`, {
+        return dispatchEvent(this.uploadedFile, `direct-upload:${name}`, {
             detail: detail
         });
     }
@@ -1382,7 +1379,7 @@ const uploadedFileCss = ":host{display:block}progress-bar.separate-upload{paddin
 const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends HTMLElement {
     static fromFile(file, props = {}) {
         const extension = file.name.split(".").at(-1);
-        let uploadedFile = new UploadedFile();
+        let uploadedFile = document.createElement("uploaded-file");
         const url = props.url;
         delete props.url;
         uploadedFile = Object.assign(uploadedFile, {
@@ -1395,8 +1392,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
             percent: 0,
             file: file,
         });
-        uploadedFile.hiddenField.setAttribute("data-direct-upload-url", url);
-        uploadedFile.controller = new DirectUploadController(uploadedFile.hiddenField, uploadedFile);
+        uploadedFile.controller = new DirectUploadController(uploadedFile.hiddenField, uploadedFile, url);
         return uploadedFile;
     }
     static fromSignedId(signedId, props = {}) {
@@ -1494,8 +1490,6 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
     }
     componentWillLoad() {
         this.el.appendChild(this.hiddenField);
-        if (this.controller)
-            this.controller.dispatch("initialize");
     }
     componentDidRender() {
         this.hiddenField.name = this.name;
@@ -1511,8 +1505,8 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         "size": [514],
         "accepts": [513],
         "max": [514],
-        "state": [513],
-        "percent": [514],
+        "state": [1537],
+        "percent": [1538],
         "file": [16],
         "validationMessage": [1, "validation-message"]
     }, [[0, "direct-upload:initialize", "start"], [0, "direct-upload:start", "start"], [0, "direct-upload:progress", "progress"], [0, "direct-upload:error", "error"], [0, "direct-upload:end", "end"]]]);

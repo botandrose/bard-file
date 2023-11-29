@@ -7,10 +7,10 @@ export default class DirectUploadController {
   file: File
   directUpload: any
 
-  constructor(input, uploadedFile) {
+  constructor(input, uploadedFile, url) {
     this.input = input;
     this.file = uploadedFile.file;
-    this.directUpload = new DirectUpload(this.file, this.url, this);
+    this.directUpload = new DirectUpload(this.file, url, this);
     this.uploadedFile = uploadedFile
   }
 
@@ -36,13 +36,10 @@ export default class DirectUploadController {
       });
     }
   }
-  get url() {
-    return this.input.getAttribute("data-direct-upload-url");
-  }
   dispatch(name, detail = {} as any) {
     detail.file = this.file;
     detail.id = this.directUpload.id;
-    return dispatchEvent(this.input, `direct-upload:${name}`, {
+    return dispatchEvent(this.uploadedFile, `direct-upload:${name}`, {
       detail: detail
     });
   }

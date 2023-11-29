@@ -94,6 +94,7 @@ export class BardFile {
       this.files = uploadedFiles.slice(-1)
     }
     this.renderFiles()
+    this.files.forEach(uf => uf.controller?.dispatch("initialize"))
     this.el.dispatchEvent(new Event("change"))
   }
 

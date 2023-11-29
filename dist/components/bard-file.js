@@ -198,6 +198,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
             this.files = uploadedFiles.slice(-1);
         }
         this.renderFiles();
+        this.files.forEach(uf => uf.controller?.dispatch("initialize"));
         this.el.dispatchEvent(new Event("change"));
     }
     removeFile(file) {

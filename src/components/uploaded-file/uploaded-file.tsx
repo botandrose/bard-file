@@ -14,7 +14,7 @@ import { get } from 'rails-request-json'
 export class UploadedFile {
   static fromFile(file, props={} as any): UploadedFile {
     const extension = file.name.split(".").at(-1)
-    let uploadedFile = new UploadedFile()
+    let uploadedFile = document.createElement("uploaded-file") as any
     const url = props.url
     delete props.url
     uploadedFile = Object.assign(uploadedFile, {
@@ -27,8 +27,7 @@ export class UploadedFile {
       percent: 0,
       file: file,
     })
-    uploadedFile.hiddenField.setAttribute("data-direct-upload-url", url)
-    uploadedFile.controller = new DirectUploadController(uploadedFile.hiddenField, uploadedFile)
+    uploadedFile.controller = new DirectUploadController(uploadedFile.hiddenField, uploadedFile, url)
     return uploadedFile
   }
 
@@ -59,8 +58,8 @@ export class UploadedFile {
   @Prop({ reflect: true }) accepts: string
   @Prop({ reflect: true }) max: number
 
-  @Prop({ reflect: true }) state: string = "complete"
-  @Prop({ reflect: true }) percent: number = 100
+  @Prop({ reflect: true, mutable: true }) state: string = "complete"
+  @Prop({ reflect: true, mutable: true }) percent: number = 100
 
   @Prop() file: File
   @Prop() validationMessage: string
@@ -159,7 +158,6 @@ export class UploadedFile {
 
   componentWillLoad() {
     this.el.appendChild(this.hiddenField)
-    if(this.controller) this.controller.dispatch("initialize");
   }
 
   componentDidRender() {
