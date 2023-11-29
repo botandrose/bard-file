@@ -124,31 +124,18 @@ export class UploadedFile {
   }
 
   render() {
-    let klass, media
-    if(["image/jpeg", "image/png"].includes(this.mimetype)) {
-      klass = "image-preview"
-      media = <img src={this.src}/>
-    } else if(this.mimetype === "video/mp4") {
-      klass = "video-preview"
-      const toggle = function() { this.paused ? this.play() : this.pause(); return false }
-      media = <video src={this.src} onClick={toggle} />
-    } else {
-      klass = "missing-preview"
-      media = "This media does not offer a preview"
-    }
-
     return (
       <Host>
         <slot>
         </slot>
-        <figure class={klass}>
+        <figure>
           <progress-bar percent={this.percent} class={`separate-upload direct-upload--${this.state}`}>
             {this.filename}
           </progress-bar>
           <a class="remove-media" onClick={this.removeClicked} href="#">
             <span>Remove media</span>
           </a>
-          <p>{media}</p>
+          <file-preview src={this.src} mimetype={this.mimetype}></file-preview>
         </figure>
       </Host>
     )

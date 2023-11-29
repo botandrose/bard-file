@@ -40,6 +40,7 @@
 
 - [uploaded-file](.)
 - [progress-bar](../progress-bar)
+- [file-preview](../file-preview)
 
 ### Graph
 ```mermaid

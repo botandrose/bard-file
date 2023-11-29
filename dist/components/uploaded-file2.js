@@ -1,4 +1,5 @@
 import { proxyCustomElement, HTMLElement, createEvent, h, Host } from '@stencil/core/internal/client';
+import { d as defineCustomElement$2 } from './file-preview2.js';
 import { d as defineCustomElement$1 } from './progress-bar2.js';
 
 var sparkMd5 = {
@@ -1469,21 +1470,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         this.percent = 100;
     }
     render() {
-        let klass, media;
-        if (["image/jpeg", "image/png"].includes(this.mimetype)) {
-            klass = "image-preview";
-            media = h("img", { src: this.src });
-        }
-        else if (this.mimetype === "video/mp4") {
-            klass = "video-preview";
-            const toggle = function () { this.paused ? this.play() : this.pause(); return false; };
-            media = h("video", { src: this.src, onClick: toggle });
-        }
-        else {
-            klass = "missing-preview";
-            media = "This media does not offer a preview";
-        }
-        return (h(Host, null, h("slot", null), h("figure", { class: klass }, h("progress-bar", { percent: this.percent, class: `separate-upload direct-upload--${this.state}` }, this.filename), h("a", { class: "remove-media", onClick: this.removeClicked, href: "#" }, h("span", null, "Remove media")), h("p", null, media))));
+        return (h(Host, null, h("slot", null), h("figure", null, h("progress-bar", { percent: this.percent, class: `separate-upload direct-upload--${this.state}` }, this.filename), h("a", { class: "remove-media", onClick: this.removeClicked, href: "#" }, h("span", null, "Remove media")), h("file-preview", { src: this.src, mimetype: this.mimetype }))));
     }
     componentWillLoad() {
         this.el.appendChild(this.hiddenField);
@@ -1511,11 +1498,16 @@ function defineCustomElement() {
     if (typeof customElements === "undefined") {
         return;
     }
-    const components = ["uploaded-file", "progress-bar", "uploaded-file"];
+    const components = ["uploaded-file", "file-preview", "progress-bar", "uploaded-file"];
     components.forEach(tagName => { switch (tagName) {
         case "uploaded-file":
             if (!customElements.get(tagName)) {
                 customElements.define(tagName, UploadedFile);
+            }
+            break;
+        case "file-preview":
+            if (!customElements.get(tagName)) {
+                defineCustomElement$2();
             }
             break;
         case "progress-bar":

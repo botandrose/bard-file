@@ -20,6 +20,10 @@ export namespace Components {
          */
         "for": string;
     }
+    interface FilePreview {
+        "mimetype": string;
+        "src": string;
+    }
     interface ProgressBar {
         "percent": number;
     }
@@ -55,6 +59,12 @@ declare global {
         prototype: HTMLFileDropElement;
         new (): HTMLFileDropElement;
     };
+    interface HTMLFilePreviewElement extends Components.FilePreview, HTMLStencilElement {
+    }
+    var HTMLFilePreviewElement: {
+        prototype: HTMLFilePreviewElement;
+        new (): HTMLFilePreviewElement;
+    };
     interface HTMLProgressBarElement extends Components.ProgressBar, HTMLStencilElement {
     }
     var HTMLProgressBarElement: {
@@ -81,6 +91,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "bard-file": HTMLBardFileElement;
         "file-drop": HTMLFileDropElement;
+        "file-preview": HTMLFilePreviewElement;
         "progress-bar": HTMLProgressBarElement;
         "uploaded-file": HTMLUploadedFileElement;
     }
@@ -99,6 +110,10 @@ declare namespace LocalJSX {
           * The id of the an input[type=file] to assign dropped files to
          */
         "for"?: string;
+    }
+    interface FilePreview {
+        "mimetype"?: string;
+        "src"?: string;
     }
     interface ProgressBar {
         "percent"?: number;
@@ -121,6 +136,7 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "bard-file": BardFile;
         "file-drop": FileDrop;
+        "file-preview": FilePreview;
         "progress-bar": ProgressBar;
         "uploaded-file": UploadedFile;
     }
@@ -131,6 +147,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "bard-file": LocalJSX.BardFile & JSXBase.HTMLAttributes<HTMLBardFileElement>;
             "file-drop": LocalJSX.FileDrop & JSXBase.HTMLAttributes<HTMLFileDropElement>;
+            "file-preview": LocalJSX.FilePreview & JSXBase.HTMLAttributes<HTMLFilePreviewElement>;
             "progress-bar": LocalJSX.ProgressBar & JSXBase.HTMLAttributes<HTMLProgressBarElement>;
             "uploaded-file": LocalJSX.UploadedFile & JSXBase.HTMLAttributes<HTMLUploadedFileElement>;
         }
