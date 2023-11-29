@@ -60,9 +60,9 @@ export class UploadedFile {
   @Prop() validationMessage: string
 
 
-  @Event() removeEvent: EventEmitter
+  @Event({ eventName: "uploaded-file:remove" }) removeEvent: EventEmitter
 
-  private removeSelf = event => {
+  private removeClicked = event => {
     event.stopPropagation()
     event.preventDefault()
     this.removeEvent.emit(this)
@@ -109,7 +109,7 @@ export class UploadedFile {
           <progress-bar percent={this.percent} class={`separate-upload direct-upload--${this.state}`}>
             {this.filename}
           </progress-bar>
-          <a class="remove-media" onClick={this.removeSelf} href="#">
+          <a class="remove-media" onClick={this.removeClicked} href="#">
             <span>Remove media</span>
           </a>
           <p>{media}</p>

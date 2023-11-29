@@ -103,6 +103,11 @@ export class BardFile {
     uploadedFile.percent = 100
   }
 
+  @Listen("uploaded-file:remove")
+  removeUploadedFile(event) {
+    this.removeFile(event.detail)
+  }
+
   fileTargetChanged(_event) {
     const uploadedFiles = Array.from(this.fileTarget.files).map(file => {
       return UploadedFile.fromFile(file, { name: this.name, accepts: this.accepts, max: this.max })

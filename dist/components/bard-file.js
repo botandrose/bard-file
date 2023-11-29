@@ -1068,6 +1068,9 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         uploadedFile.state = "complete";
         uploadedFile.percent = 100;
     }
+    removeUploadedFile(event) {
+        this.removeFile(event.detail);
+    }
     fileTargetChanged(_event) {
         const uploadedFiles = Array.from(this.fileTarget.files).map(file => {
             return UploadedFile.fromFile(file, { name: this.name, accepts: this.accepts, max: this.max });
@@ -1158,7 +1161,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         "accepts": [1],
         "max": [2],
         "files": [32]
-    }, [[0, "direct-upload:initialize", "init"], [0, "direct-upload:start", "start"], [0, "direct-upload:progress", "progress"], [0, "direct-upload:error", "error"], [0, "direct-upload:end", "end"]]]);
+    }, [[0, "direct-upload:initialize", "init"], [0, "direct-upload:start", "start"], [0, "direct-upload:progress", "progress"], [0, "direct-upload:error", "error"], [0, "direct-upload:end", "end"], [0, "uploaded-file:remove", "removeUploadedFile"]]]);
 function defineCustomElement$1() {
     if (typeof customElements === "undefined") {
         return;

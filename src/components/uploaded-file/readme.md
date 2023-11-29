@@ -25,9 +25,9 @@
 
 ## Events
 
-| Event         | Description | Type               |
-| ------------- | ----------- | ------------------ |
-| `removeEvent` |             | `CustomEvent<any>` |
+| Event                  | Description | Type               |
+| ---------------------- | ----------- | ------------------ |
+| `uploaded-file:remove` |             | `CustomEvent<any>` |
 
 
 ## Dependencies

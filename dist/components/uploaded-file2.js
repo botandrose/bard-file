@@ -484,7 +484,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
     }
     get el() { return this; }
     removeEvent;
-    removeSelf = event => {
+    removeClicked = event => {
         event.stopPropagation();
         event.preventDefault();
         this.removeEvent.emit(this);
@@ -495,7 +495,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         super();
         this.__registerHost();
         this.__attachShadow();
-        this.removeEvent = createEvent(this, "removeEvent", 7);
+        this.removeEvent = createEvent(this, "uploaded-file:remove", 7);
         this.name = undefined;
         this.value = undefined;
         this.filename = undefined;
@@ -535,7 +535,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
             klass = "missing-preview";
             media = "This media does not offer a preview";
         }
-        return (h(Host, null, h("slot", null), h("figure", { class: klass }, h("progress-bar", { percent: this.percent, class: `separate-upload direct-upload--${this.state}` }, this.filename), h("a", { class: "remove-media", onClick: this.removeSelf, href: "#" }, h("span", null, "Remove media")), h("p", null, media))));
+        return (h(Host, null, h("slot", null), h("figure", { class: klass }, h("progress-bar", { percent: this.percent, class: `separate-upload direct-upload--${this.state}` }, this.filename), h("a", { class: "remove-media", onClick: this.removeClicked, href: "#" }, h("span", null, "Remove media")), h("p", null, media))));
     }
     hiddenField;
     componentWillLoad() {

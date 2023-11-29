@@ -24,7 +24,7 @@ export declare class UploadedFile {
     file: File;
     validationMessage: string;
     removeEvent: EventEmitter;
-    private removeSelf;
+    private removeClicked;
     checkValidity: any;
     setCustomValidity: any;
     constructor();
