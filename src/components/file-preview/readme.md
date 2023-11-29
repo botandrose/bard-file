@@ -7,10 +7,9 @@
 
 ## Properties
 
-| Property   | Attribute  | Description | Type     | Default     |
-| ---------- | ---------- | ----------- | -------- | ----------- |
-| `mimetype` | `mimetype` |             | `string` | `undefined` |
-| `src`      | `src`      |             | `string` | `undefined` |
+| Property | Attribute | Description | Type     | Default     |
+| -------- | --------- | ----------- | -------- | ----------- |
+| `src`    | `src`     |             | `string` | `undefined` |
 
 
 ## Dependencies

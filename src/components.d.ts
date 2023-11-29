@@ -21,7 +21,6 @@ export namespace Components {
         "for": string;
     }
     interface FilePreview {
-        "mimetype": string;
         "src": string;
     }
     interface ProgressBar {
@@ -112,7 +111,6 @@ declare namespace LocalJSX {
         "for"?: string;
     }
     interface FilePreview {
-        "mimetype"?: string;
         "src"?: string;
     }
     interface ProgressBar {

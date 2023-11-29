@@ -1,6 +1,6 @@
 export declare class FilePreview {
     src: string;
-    mimetype: string;
+    get mimetype(): string;
     render(): any;
     private computeClass;
     private isImage;

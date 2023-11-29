@@ -1,4 +1,5 @@
 import { Component, Prop, Host, h } from '@stencil/core';
+import Mime from 'mime-lite'
 
 @Component({
   tag: 'file-preview',
@@ -7,23 +8,27 @@ import { Component, Prop, Host, h } from '@stencil/core';
 })
 export class FilePreview {
   @Prop() src: string
-  @Prop() mimetype: string
+
+  get mimetype(): string {
+    const extension = (this.src || "").split(".").at(-1)
+    return Mime.getType(extension)
+  }
 
   render() {
     return (
       <Host class={this.computeClass()}>
         {this.isImage() && <img src={this.src} />}
         {this.isVideo() && <video src={this.src} onClick={toggle} />}
-        {this.isOther() && "This media does not offer a preview"}
+        {this.isOther() && "This file does not offer a preview"}
         <slot></slot>
       </Host>
     );
   }
 
   private computeClass() {
-    if(this.isImage()) return "image-preview"
-    if(this.isVideo()) return "video-preview"
-    return "missing-preview"
+    if(this.isImage()) return "image"
+    if(this.isVideo()) return "video"
+    return "other"
   }
 
   private isImage() {

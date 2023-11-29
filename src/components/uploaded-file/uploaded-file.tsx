@@ -135,7 +135,7 @@ export class UploadedFile {
           <a class="remove-media" onClick={this.removeClicked} href="#">
             <span>Remove media</span>
           </a>
-          <file-preview src={this.src} mimetype={this.mimetype}></file-preview>
+          <file-preview src={this.src}></file-preview>
         </figure>
       </Host>
     )
