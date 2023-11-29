@@ -43,18 +43,19 @@ export class UploadedFile {
 
   @Element() el
 
-  @Prop() name: string
-  @Prop() value: string
-  @Prop() filename: string
-  @Prop() src: string
-  @Prop() mimetype: string
-  @Prop() size: number
+  @Prop({ reflect: true }) name: string
+  @Prop({ reflect: true }) value: string
+  @Prop({ reflect: true }) filename: string
+  @Prop({ reflect: true }) src: string
+  @Prop({ reflect: true }) mimetype: string
+  @Prop({ reflect: true }) size: number
 
-  @Prop() accepts: string
-  @Prop() max: number
+  @Prop({ reflect: true }) accepts: string
+  @Prop({ reflect: true }) max: number
 
-  @Prop() state: string = "complete"
-  @Prop() percent: number = 100
+  @Prop({ reflect: true }) state: string = "complete"
+  @Prop({ reflect: true }) percent: number = 100
+
   @Prop() file: File
   @Prop() validationMessage: string
 
@@ -117,7 +118,14 @@ export class UploadedFile {
     )
   }
 
-  componentDidLoad() {
+  hiddenField: HTMLInputElement
+
+  componentWillLoad() {
     this.el.innerHTML = `<input type="hidden" name=${this.name} value=${this.value} />`
+    this.hiddenField = this.el.querySelector("input[type=hidden]")
+  }
+
+  componentDidRender() {
+    this.hiddenField.value = this.value
   }
 }

@@ -154,17 +154,18 @@ export class BardFile {
   }
 
   checkValidity() {
-    let errors = []
+    return true
+    // let errors = []
 
-    this.files.forEach(uploadedFile => {
-      if(!uploadedFile.checkValidity()) {
-        errors.push(uploadedFile.validationMessage)
-      }
-    })
+    // this.files.forEach(uploadedFile => {
+    //   if(!uploadedFile.checkValidity()) {
+    //     errors.push(uploadedFile.validationMessage)
+    //   }
+    // })
 
-    this.setCustomValidity(errors.join(" "))
-    this.reportValidity()
-    return errors.length === 0
+    // this.setCustomValidity(errors.join(" "))
+    // this.reportValidity()
+    // return errors.length === 0
   }
 
   setCustomValidity(msg) {

@@ -850,11 +850,11 @@ function autostart() {
 setTimeout(autostart, 1);
 
 class MyDirectUploadController extends DirectUploadController {
-    bardFileInput;
     bardFile;
-    constructor(input, bardFile) {
-        super(input, bardFile.file);
-        this.bardFile = bardFile;
+    uploadedFile;
+    constructor(input, uploadedFile) {
+        super(input, uploadedFile.file);
+        this.uploadedFile = uploadedFile;
     }
     start(callback) {
         this.dispatch("start");
@@ -863,7 +863,7 @@ class MyDirectUploadController extends DirectUploadController {
                 this.dispatchError(error);
             }
             else {
-                this.bardFile.value = attributes.signed_id;
+                this.uploadedFile.value = attributes.signed_id;
             }
             this.dispatch("end");
             callback(error);
@@ -913,11 +913,11 @@ class FormController {
             return (event.returnValue = "");
         }
     }
-    uploadFiles(bardFileInput) {
-        Array.from(bardFileInput.files).forEach(bardFile => {
-            if (bardFile.state === "pending") {
-                const controller = new MyDirectUploadController(bardFileInput.fileTarget, bardFile);
-                controller.bardFileInput = bardFileInput;
+    uploadFiles(bardFile) {
+        Array.from(bardFile.files).forEach(uploadedFile => {
+            if (uploadedFile.state === "pending") {
+                const controller = new MyDirectUploadController(bardFile.fileTarget, uploadedFile);
+                controller.bardFile = bardFile;
                 this.controllers.push(controller);
                 this.startNextController();
             }
@@ -1103,15 +1103,16 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         });
     }
     checkValidity() {
-        let errors = [];
-        this.files.forEach(uploadedFile => {
-            if (!uploadedFile.checkValidity()) {
-                errors.push(uploadedFile.validationMessage);
-            }
-        });
-        this.setCustomValidity(errors.join(" "));
-        this.reportValidity();
-        return errors.length === 0;
+        return true;
+        // let errors = []
+        // this.files.forEach(uploadedFile => {
+        //   if(!uploadedFile.checkValidity()) {
+        //     errors.push(uploadedFile.validationMessage)
+        //   }
+        // })
+        // this.setCustomValidity(errors.join(" "))
+        // this.reportValidity()
+        // return errors.length === 0
     }
     setCustomValidity(msg) {
         this.fileTarget.setCustomValidity(msg);

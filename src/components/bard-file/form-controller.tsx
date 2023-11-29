@@ -3,12 +3,12 @@ import { BardFile } from "./bard-file"
 import { UploadedFile } from "../uploaded-file/uploaded-file"
 
 class MyDirectUploadController extends DirectUploadController {
-  bardFileInput: BardFile
-  bardFile: UploadedFile
+  bardFile: BardFile
+  uploadedFile: UploadedFile
 
-  constructor(input, bardFile) {
-    super(input, bardFile.file)
-    this.bardFile = bardFile
+  constructor(input, uploadedFile) {
+    super(input, uploadedFile.file)
+    this.uploadedFile = uploadedFile
   }
 
   start(callback) {
@@ -17,7 +17,7 @@ class MyDirectUploadController extends DirectUploadController {
       if (error) {
         this.dispatchError(error)
       } else {
-        this.bardFile.value = attributes.signed_id
+        this.uploadedFile.value = attributes.signed_id
       }
       this.dispatch("end")
       callback(error)
@@ -78,11 +78,11 @@ export default class FormController {
     }
   }
 
-  uploadFiles(bardFileInput: BardFile) {
-    Array.from(bardFileInput.files).forEach(bardFile => {
-      if(bardFile.state === "pending") {
-        const controller = new MyDirectUploadController(bardFileInput.fileTarget, bardFile)
-        controller.bardFileInput = bardFileInput
+  uploadFiles(bardFile: BardFile) {
+    Array.from(bardFile.files).forEach(uploadedFile => {
+      if(uploadedFile.state === "pending") {
+        const controller = new MyDirectUploadController(bardFile.fileTarget, uploadedFile)
+        controller.bardFile = bardFile
         this.controllers.push(controller)
         this.startNextController()
       }

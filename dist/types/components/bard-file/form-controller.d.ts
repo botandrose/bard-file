@@ -2,9 +2,9 @@ import { DirectUploadController } from "@rails/activestorage";
 import { BardFile } from "./bard-file";
 import { UploadedFile } from "../uploaded-file/uploaded-file";
 declare class MyDirectUploadController extends DirectUploadController {
-    bardFileInput: BardFile;
-    bardFile: UploadedFile;
-    constructor(input: any, bardFile: any);
+    bardFile: BardFile;
+    uploadedFile: UploadedFile;
+    constructor(input: any, uploadedFile: any);
     start(callback: any): void;
 }
 export default class FormController {
@@ -19,7 +19,7 @@ export default class FormController {
     errors: boolean;
     constructor(form: any);
     beforeUnload(event: any): string;
-    uploadFiles(bardFileInput: BardFile): void;
+    uploadFiles(bardFile: BardFile): void;
     submit(event: any): void;
     startNextController(): void;
     submitForm(): void;

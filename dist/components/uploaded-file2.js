@@ -537,21 +537,26 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         }
         return (h(Host, null, h("slot", null), h("figure", { class: klass }, h("progress-bar", { percent: this.percent, class: `separate-upload direct-upload--${this.state}` }, this.filename), h("a", { class: "remove-media", onClick: this.removeSelf, href: "#" }, h("span", null, "Remove media")), h("p", null, media))));
     }
-    componentDidLoad() {
+    hiddenField;
+    componentWillLoad() {
         this.el.innerHTML = `<input type="hidden" name=${this.name} value=${this.value} />`;
+        this.hiddenField = this.el.querySelector("input[type=hidden]");
+    }
+    componentDidRender() {
+        this.hiddenField.value = this.value;
     }
     static get style() { return uploadedFileCss; }
 }, [1, "uploaded-file", {
-        "name": [1],
-        "value": [1],
-        "filename": [1],
-        "src": [1],
-        "mimetype": [1],
-        "size": [2],
-        "accepts": [1],
-        "max": [2],
-        "state": [1],
-        "percent": [2],
+        "name": [513],
+        "value": [513],
+        "filename": [513],
+        "src": [513],
+        "mimetype": [513],
+        "size": [514],
+        "accepts": [513],
+        "max": [514],
+        "state": [513],
+        "percent": [514],
         "file": [16],
         "validationMessage": [1, "validation-message"]
     }]);
