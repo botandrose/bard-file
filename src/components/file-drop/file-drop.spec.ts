@@ -8,26 +8,19 @@ describe('file-drop', () => {
       html: '<file-drop></file-drop>',
     });
     expect(root).toEqualHtml(`
-      <file-drop>
-        <mock:shadow-root>
-          <slot></slot>
-        </mock:shadow-root>
-      </file-drop>
+      <file-drop></file-drop>
     `);
   });
 
   it('renders with values', async () => {
     const { root } = await newSpecPage({
       components: [FileDrop],
-      html: `<file-drop target="input">
+      html: `<file-drop for="input">
         <input type="file" id="input">
       </file-drop>`,
     });
     expect(root).toEqualHtml(`
-      <file-drop target="input">
-        <mock:shadow-root>
-          <slot></slot>
-        </mock:shadow-root>
+      <file-drop for="input">
         <input type="file" id="input">
       </file-drop>
     `);
