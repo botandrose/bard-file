@@ -93,7 +93,7 @@ class FormController {
     init(event) {
         const { id, file } = event.detail;
         this.progressContainerTarget.insertAdjacentHTML("beforebegin", `
-      <progress-bar title=${file.name} id="direct-upload-${id}" class="direct-upload--pending"></progress-bar>
+      <progress-bar id="direct-upload-${id}" class="direct-upload--pending">${file.name}</progress-bar>
     `);
         const progressTarget = document.getElementById(`direct-upload-${id}`);
         this.progressTargetMap[id] = progressTarget;
@@ -103,7 +103,7 @@ class FormController {
     }
     progress(event) {
         const { id, progress } = event.detail;
-        this.progressTargetMap[id].progress = progress;
+        this.progressTargetMap[id].percent = progress;
     }
     error(event) {
         event.preventDefault();

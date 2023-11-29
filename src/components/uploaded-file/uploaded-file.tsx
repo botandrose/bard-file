@@ -132,7 +132,7 @@ export class UploadedFile {
 
   componentWillLoad() {
     this.el.appendChild(this.hiddenField)
-    this.controller.dispatch("initialize");
+    if(this.controller) this.controller.dispatch("initialize");
   }
 
   componentDidRender() {

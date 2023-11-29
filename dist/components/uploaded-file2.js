@@ -866,6 +866,7 @@ class DirectUploadController {
                 this.dispatchError(error);
             }
             else {
+                this.uploadedFile.hiddenField.value = attributes.signed_id;
                 this.uploadedFile.value = attributes.signed_id;
             }
             this.dispatch("end");
@@ -1475,7 +1476,8 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
     }
     componentWillLoad() {
         this.el.appendChild(this.hiddenField);
-        this.controller.dispatch("initialize");
+        if (this.controller)
+            this.controller.dispatch("initialize");
     }
     componentDidRender() {
         this.hiddenField.name = this.name;
