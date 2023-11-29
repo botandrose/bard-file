@@ -20,6 +20,7 @@ export declare class UploadedFile {
     private removeClicked;
     hiddenField: HTMLInputElement;
     controller: DirectUploadController;
+    url: string;
     checkValidity: any;
     setCustomValidity: any;
     constructor();

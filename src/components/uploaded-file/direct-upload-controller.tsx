@@ -3,15 +3,13 @@ import { UploadedFile } from "./uploaded-file"
 
 export default class DirectUploadController {
   uploadedFile: UploadedFile
-  input: HTMLInputElement
   file: File
   directUpload: any
 
-  constructor(input, uploadedFile, url) {
-    this.input = input;
-    this.file = uploadedFile.file;
-    this.directUpload = new DirectUpload(this.file, url, this);
+  constructor(uploadedFile) {
     this.uploadedFile = uploadedFile
+    this.file = this.uploadedFile.file
+    this.directUpload = new DirectUpload(this.file, this.uploadedFile.url, this)
   }
 
   start(callback) {

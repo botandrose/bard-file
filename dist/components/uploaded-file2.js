@@ -850,14 +850,12 @@ setTimeout(autostart, 1);
 
 class DirectUploadController {
     uploadedFile;
-    input;
     file;
     directUpload;
-    constructor(input, uploadedFile, url) {
-        this.input = input;
-        this.file = uploadedFile.file;
-        this.directUpload = new DirectUpload(this.file, url, this);
+    constructor(uploadedFile) {
         this.uploadedFile = uploadedFile;
+        this.file = this.uploadedFile.file;
+        this.directUpload = new DirectUpload(this.file, this.uploadedFile.url, this);
     }
     start(callback) {
         this.dispatch("start");
@@ -1380,8 +1378,6 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
     static fromFile(file, props = {}) {
         const extension = file.name.split(".").at(-1);
         let uploadedFile = document.createElement("uploaded-file");
-        const url = props.url;
-        delete props.url;
         uploadedFile = Object.assign(uploadedFile, {
             ...props,
             src: URL.createObjectURL(file),
@@ -1392,7 +1388,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
             percent: 0,
             file: file,
         });
-        uploadedFile.controller = new DirectUploadController(uploadedFile.hiddenField, uploadedFile, url);
+        uploadedFile.controller = new DirectUploadController(uploadedFile);
         return uploadedFile;
     }
     static fromSignedId(signedId, props = {}) {
@@ -1418,6 +1414,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
     };
     hiddenField;
     controller;
+    url;
     checkValidity = null;
     setCustomValidity = null;
     constructor() {

@@ -15,8 +15,6 @@ export class UploadedFile {
   static fromFile(file, props={} as any): UploadedFile {
     const extension = file.name.split(".").at(-1)
     let uploadedFile = document.createElement("uploaded-file") as any
-    const url = props.url
-    delete props.url
     uploadedFile = Object.assign(uploadedFile, {
       ...props,
       src: URL.createObjectURL(file),
@@ -27,7 +25,7 @@ export class UploadedFile {
       percent: 0,
       file: file,
     })
-    uploadedFile.controller = new DirectUploadController(uploadedFile.hiddenField, uploadedFile, url)
+    uploadedFile.controller = new DirectUploadController(uploadedFile)
     return uploadedFile
   }
 
@@ -64,7 +62,6 @@ export class UploadedFile {
   @Prop() file: File
   @Prop() validationMessage: string
 
-
   @Event({ eventName: "uploaded-file:remove" }) removeEvent: EventEmitter
 
   private removeClicked = event => {
@@ -75,6 +72,7 @@ export class UploadedFile {
 
   hiddenField: HTMLInputElement
   controller: DirectUploadController
+  url: string
   checkValidity = null
   setCustomValidity = null
 
