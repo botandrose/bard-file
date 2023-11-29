@@ -537,19 +537,13 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         }
         return (h(Host, null, h("slot", null), h("figure", { class: klass }, h("progress-bar", { percent: this.percent, class: `separate-upload direct-upload--${this.state}` }, this.filename), h("a", { class: "remove-media", onClick: this.removeSelf, href: "#" }, h("span", null, "Remove media")), h("p", null, media))));
     }
-    inputField;
+    hiddenField;
     componentWillLoad() {
-        this.el.innerHTML = `
-      <input
-        type="text"
-        style="opacity: 0.01; position: absolute; z-index: -999"
-        name=${this.name}
-        value=${this.value}
-      />`;
-        this.inputField = this.el.querySelector("input[type=text]");
+        this.el.innerHTML = `<input type="hidden" name=${this.name} value=${this.value} />`;
+        this.hiddenField = this.el.querySelector("input[type=hidden]");
     }
     componentDidRender() {
-        this.inputField.value = this.value;
+        this.hiddenField.value = this.value;
     }
     static get style() { return uploadedFileCss; }
 }, [1, "uploaded-file", {

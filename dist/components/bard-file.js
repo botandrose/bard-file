@@ -1103,16 +1103,15 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         });
     }
     checkValidity() {
-        return true;
-        // let errors = []
-        // this.files.forEach(uploadedFile => {
-        //   if(!uploadedFile.checkValidity()) {
-        //     errors.push(uploadedFile.validationMessage)
-        //   }
-        // })
-        // this.setCustomValidity(errors.join(" "))
-        // this.reportValidity()
-        // return errors.length === 0
+        let errors = [];
+        this.files.forEach(uploadedFile => {
+            if (!uploadedFile.checkValidity()) {
+                errors.push(uploadedFile.validationMessage);
+            }
+        });
+        this.setCustomValidity(errors.join(" "));
+        this.reportValidity();
+        return errors.length === 0;
     }
     setCustomValidity(msg) {
         this.fileTarget.setCustomValidity(msg);

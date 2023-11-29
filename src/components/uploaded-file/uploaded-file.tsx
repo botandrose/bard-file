@@ -118,20 +118,14 @@ export class UploadedFile {
     )
   }
 
-  inputField: HTMLInputElement
+  hiddenField: HTMLInputElement
 
   componentWillLoad() {
-    this.el.innerHTML = `
-      <input
-        type="text"
-        style="opacity: 0.01; position: absolute; z-index: -999"
-        name=${this.name}
-        value=${this.value}
-      />`
-    this.inputField = this.el.querySelector("input[type=text]")
+    this.el.innerHTML = `<input type="hidden" name=${this.name} value=${this.value} />`
+    this.hiddenField = this.el.querySelector("input[type=hidden]")
   }
 
   componentDidRender() {
-    this.inputField.value = this.value
+    this.hiddenField.value = this.value
   }
 }
