@@ -1,4 +1,4 @@
-import { Component, Element, Prop, State, Listen, Host, h } from '@stencil/core';
+import { Build, Component, Element, Prop, State, Listen, Host, h } from '@stencil/core';
 import FormController from "./form-controller"
 import { UploadedFile } from "../uploaded-file/uploaded-file"
 import { FileDrop as _ } from "../file-drop/file-drop"
@@ -19,7 +19,7 @@ export class BardFile {
   @Prop() accepts: string
   @Prop() max: number
 
-  @State() files: Array<UploadedFile> = []
+  @State() files: Array<any> = []
 
   originalId: string
   fileTarget: HTMLInputElement
@@ -110,12 +110,17 @@ export class BardFile {
 
   fileTargetChanged(_event) {
     const uploadedFiles = Array.from(this.fileTarget.files).map(file => {
-      return UploadedFile.fromFile(file, { name: this.name, accepts: this.accepts, max: this.max })
+      return UploadedFile.fromFile(file, {
+        name: this.name,
+        accepts: this.accepts,
+        max: this.max,
+        url: this.directupload,
+      })
     })
     this.fileTarget.value = null
     this.assignFiles(uploadedFiles)
     if(this.checkValidity()) {
-      this.formController.uploadFiles(this)
+      this.formController.uploadFiles(uploadedFiles)
     } else {
       this.files = []
     }
@@ -143,7 +148,6 @@ export class BardFile {
       <input type="file"
         style="opacity: 0.01; position: absolute; z-index: -999"
         id="${this.originalId}"
-        data-direct-upload-url="${this.directupload}"
       />
       <input type="hidden" name="${this.name}" />
     `)
@@ -188,6 +192,9 @@ export class BardFile {
   }
 
   checkValidity() {
+    // FIXME work around UploadedFile constructor not running in dev
+    if(Build.isDev) return true
+
     let errors = []
 
     this.files.forEach(uploadedFile => {

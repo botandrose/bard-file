@@ -1,5 +1,6 @@
 import { Component, Prop, Element, Host, h } from '@stencil/core'
 import { Event, EventEmitter } from '@stencil/core'
+import DirectUploadController from './direct-upload-controller'
 import Max from './max'
 import Accepts from './accepts'
 import Mime from 'mime-lite'
@@ -11,9 +12,12 @@ import { get } from 'rails-request-json'
   shadow: true,
 })
 export class UploadedFile {
-  static fromFile(file, props={}) {
+  static fromFile(file, props={} as any): UploadedFile {
     const extension = file.name.split(".").at(-1)
-    return Object.assign(document.createElement("uploaded-file"), {
+    let uploadedFile = new UploadedFile()
+    const url = props.url
+    delete props.url
+    uploadedFile = Object.assign(uploadedFile, {
       ...props,
       src: URL.createObjectURL(file),
       filename: file.name,
@@ -23,6 +27,9 @@ export class UploadedFile {
       percent: 0,
       file: file,
     })
+    uploadedFile.hiddenField.setAttribute("data-direct-upload-url", url)
+    uploadedFile.controller = new DirectUploadController(uploadedFile.hiddenField, uploadedFile)
+    return uploadedFile
   }
 
   static fromSignedId(signedId, props={}) {
@@ -67,11 +74,17 @@ export class UploadedFile {
     this.removeEvent.emit(this)
   }
 
-
+  hiddenField: HTMLInputElement
+  controller: DirectUploadController
   checkValidity = null
   setCustomValidity = null
 
   constructor() {
+    this.hiddenField = document.createElement("input")
+    this.hiddenField.type = "hidden"
+    this.hiddenField.name = this.name
+    this.hiddenField.value = this.value
+
     this.el.checkValidity = () => {
       let errors = []
       errors.push(...new Accepts(this).errors)
@@ -117,14 +130,13 @@ export class UploadedFile {
     )
   }
 
-  hiddenField: HTMLInputElement
-
   componentWillLoad() {
-    this.el.innerHTML = `<input type="hidden" name=${this.name} value=${this.value} />`
-    this.hiddenField = this.el.querySelector("input[type=hidden]")
+    this.el.appendChild(this.hiddenField)
+    this.controller.dispatch("initialize");
   }
 
   componentDidRender() {
+    this.hiddenField.name = this.name
     this.hiddenField.value = this.value
   }
 }

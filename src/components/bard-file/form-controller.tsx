@@ -1,29 +1,4 @@
-import { DirectUploadController } from "@rails/activestorage"
-import { BardFile } from "./bard-file"
-import { UploadedFile } from "../uploaded-file/uploaded-file"
-
-class MyDirectUploadController extends DirectUploadController {
-  bardFile: BardFile
-  uploadedFile: UploadedFile
-
-  constructor(input, uploadedFile) {
-    super(input, uploadedFile.file)
-    this.uploadedFile = uploadedFile
-  }
-
-  start(callback) {
-    this.dispatch("start")
-    this.directUpload.create(((error, attributes) => {
-      if (error) {
-        this.dispatchError(error)
-      } else {
-        this.uploadedFile.value = attributes.signed_id
-      }
-      this.dispatch("end")
-      callback(error)
-    }))
-  }
-}
+import DirectUploadController from "../uploaded-file/direct-upload-controller"
 
 export default class FormController {
   static forForm(form) {
@@ -35,7 +10,7 @@ export default class FormController {
 
   element: HTMLFormElement
   progressTargetMap: {}
-  controllers: Array<MyDirectUploadController>
+  controllers: Array<DirectUploadController>
   submitted: boolean
   processing: boolean
   errors: boolean
@@ -78,12 +53,10 @@ export default class FormController {
     }
   }
 
-  uploadFiles(bardFile: BardFile) {
-    Array.from(bardFile.files).forEach(uploadedFile => {
+  uploadFiles(uploadedFiles: Array<any>) {
+    uploadedFiles.forEach(uploadedFile => {
       if(uploadedFile.state === "pending") {
-        const controller = new MyDirectUploadController(bardFile.fileTarget, uploadedFile)
-        controller.bardFile = bardFile
-        this.controllers.push(controller)
+        this.controllers.push(uploadedFile.controller)
         this.startNextController()
       }
     })

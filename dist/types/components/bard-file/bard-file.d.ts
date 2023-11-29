@@ -1,5 +1,4 @@
 import FormController from "./form-controller";
-import { UploadedFile } from "../uploaded-file/uploaded-file";
 export declare class BardFile {
     el: HTMLElement;
     name: string;
@@ -8,7 +7,7 @@ export declare class BardFile {
     required: boolean;
     accepts: string;
     max: number;
-    files: Array<UploadedFile>;
+    files: Array<any>;
     originalId: string;
     fileTarget: HTMLInputElement;
     hiddenTarget: HTMLInputElement;

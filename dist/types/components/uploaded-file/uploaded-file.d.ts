@@ -1,14 +1,7 @@
 import { EventEmitter } from '../../stencil-public-runtime';
+import DirectUploadController from './direct-upload-controller';
 export declare class UploadedFile {
-    static fromFile(file: any, props?: {}): HTMLUploadedFileElement & {
-        src: string;
-        filename: any;
-        mimetype: string;
-        size: any;
-        state: string;
-        percent: number;
-        file: any;
-    };
+    static fromFile(file: any, props?: any): UploadedFile;
     static fromSignedId(signedId: any, props?: {}): any;
     el: any;
     name: string;
@@ -25,11 +18,12 @@ export declare class UploadedFile {
     validationMessage: string;
     removeEvent: EventEmitter;
     private removeClicked;
+    hiddenField: HTMLInputElement;
+    controller: DirectUploadController;
     checkValidity: any;
     setCustomValidity: any;
     constructor();
     render(): any;
-    hiddenField: HTMLInputElement;
     componentWillLoad(): void;
     componentDidRender(): void;
 }
