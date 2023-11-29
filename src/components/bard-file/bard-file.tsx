@@ -64,45 +64,6 @@ export class BardFile {
     this.formController = FormController.forForm(this.el.closest("form"))
   }
 
-  @Listen("direct-upload:initialize")
-  init(event) {
-    const { file } = event.detail
-    const uploadedFile = this.files.find(bf => bf.file === file)
-    uploadedFile.state = "pending"
-    uploadedFile.percent = 0
-  }
-
-  @Listen("direct-upload:start")
-  start(event) {
-    const { file } = event.detail
-    const uploadedFile = this.files.find(bf => bf.file === file)
-    uploadedFile.state = "pending"
-  }
-
-  @Listen("direct-upload:progress")
-  progress(event) {
-    const { file, progress } = event.detail
-    const uploadedFile = this.files.find(bf => bf.file === file)
-    uploadedFile.percent = progress
-  }
-
-  @Listen("direct-upload:error")
-  error(event) {
-    event.preventDefault()
-    const { file } = event.detail
-    const uploadedFile = this.files.find(bf => bf.file === file)
-    uploadedFile.state = "error"
-    // uploadedFile.error = error
-  }
-
-  @Listen("direct-upload:end")
-  end(event) {
-    const { file } = event.detail
-    const uploadedFile = this.files.find(bf => bf.file === file)
-    uploadedFile.state = "complete"
-    uploadedFile.percent = 100
-  }
-
   @Listen("uploaded-file:remove")
   removeUploadedFile(event) {
     this.removeFile(event.detail)

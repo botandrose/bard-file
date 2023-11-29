@@ -23,6 +23,10 @@ export declare class UploadedFile {
     checkValidity: any;
     setCustomValidity: any;
     constructor();
+    start(_event: any): void;
+    progress(event: any): void;
+    error(event: any): void;
+    end(_event: any): void;
     render(): any;
     componentWillLoad(): void;
     componentDidRender(): void;

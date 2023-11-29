@@ -1457,6 +1457,24 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
             this.validationMessage = msg;
         };
     }
+    start(_event) {
+        this.state = "pending";
+        this.percent = 0;
+    }
+    progress(event) {
+        const { progress } = event.detail;
+        this.percent = progress;
+    }
+    error(event) {
+        event.preventDefault();
+        const { error } = event.detail;
+        this.state = "error";
+        this.validationMessage = error;
+    }
+    end(_event) {
+        this.state = "complete";
+        this.percent = 100;
+    }
     render() {
         let klass, media;
         if (["image/jpeg", "image/png"].includes(this.mimetype)) {
@@ -1497,7 +1515,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         "percent": [514],
         "file": [16],
         "validationMessage": [1, "validation-message"]
-    }]);
+    }, [[0, "direct-upload:initialize", "start"], [0, "direct-upload:start", "start"], [0, "direct-upload:progress", "progress"], [0, "direct-upload:error", "error"], [0, "direct-upload:end", "end"]]]);
 function defineCustomElement() {
     if (typeof customElements === "undefined") {
         return;

@@ -169,35 +169,6 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         this.el.removeAttribute("id");
         this.formController = FormController.forForm(this.el.closest("form"));
     }
-    init(event) {
-        const { file } = event.detail;
-        const uploadedFile = this.files.find(bf => bf.file === file);
-        uploadedFile.state = "pending";
-        uploadedFile.percent = 0;
-    }
-    start(event) {
-        const { file } = event.detail;
-        const uploadedFile = this.files.find(bf => bf.file === file);
-        uploadedFile.state = "pending";
-    }
-    progress(event) {
-        const { file, progress } = event.detail;
-        const uploadedFile = this.files.find(bf => bf.file === file);
-        uploadedFile.percent = progress;
-    }
-    error(event) {
-        event.preventDefault();
-        const { file } = event.detail;
-        const uploadedFile = this.files.find(bf => bf.file === file);
-        uploadedFile.state = "error";
-        // uploadedFile.error = error
-    }
-    end(event) {
-        const { file } = event.detail;
-        const uploadedFile = this.files.find(bf => bf.file === file);
-        uploadedFile.state = "complete";
-        uploadedFile.percent = 100;
-    }
     removeUploadedFile(event) {
         this.removeFile(event.detail);
     }
@@ -298,7 +269,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         "accepts": [1],
         "max": [2],
         "files": [32]
-    }, [[0, "direct-upload:initialize", "init"], [0, "direct-upload:start", "start"], [0, "direct-upload:progress", "progress"], [0, "direct-upload:error", "error"], [0, "direct-upload:end", "end"], [0, "uploaded-file:remove", "removeUploadedFile"]]]);
+    }, [[0, "uploaded-file:remove", "removeUploadedFile"]]]);
 function defineCustomElement$1() {
     if (typeof customElements === "undefined") {
         return;

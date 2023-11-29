@@ -1,5 +1,5 @@
 import { Component, Prop, Element, Host, h } from '@stencil/core'
-import { Event, EventEmitter } from '@stencil/core'
+import { Listen, Event, EventEmitter } from '@stencil/core'
 import DirectUploadController from './direct-upload-controller'
 import Max from './max'
 import Accepts from './accepts'
@@ -97,6 +97,33 @@ export class UploadedFile {
     this.el.setCustomValidity = (msg) => {
       this.validationMessage = msg
     }
+  }
+
+  @Listen("direct-upload:initialize")
+  @Listen("direct-upload:start")
+  start(_event) {
+    this.state = "pending"
+    this.percent = 0
+  }
+
+  @Listen("direct-upload:progress")
+  progress(event) {
+    const { progress } = event.detail
+    this.percent = progress
+  }
+
+  @Listen("direct-upload:error")
+  error(event) {
+    event.preventDefault()
+    const { error } = event.detail
+    this.state = "error"
+    this.validationMessage = error
+  }
+
+  @Listen("direct-upload:end")
+  end(_event) {
+    this.state = "complete"
+    this.percent = 100
   }
 
   render() {

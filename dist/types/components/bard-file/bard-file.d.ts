@@ -15,11 +15,6 @@ export declare class BardFile {
     constructor();
     signedIdsFromValue(value: any): any[];
     connectedCallback(): void;
-    init(event: any): void;
-    start(event: any): void;
-    progress(event: any): void;
-    error(event: any): void;
-    end(event: any): void;
     removeUploadedFile(event: any): void;
     fileTargetChanged(_event: any): void;
     assignFiles(uploadedFiles: any): void;
