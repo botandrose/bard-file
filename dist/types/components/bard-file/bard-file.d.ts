@@ -14,6 +14,7 @@ export declare class BardFile {
     hiddenTarget: HTMLInputElement;
     formController: FormController;
     constructor();
+    signedIdsFromValue(value: any): any[];
     connectedCallback(): void;
     init(event: any): void;
     start(event: any): void;

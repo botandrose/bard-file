@@ -28,6 +28,35 @@ export class BardFile {
 
   constructor() {
     this.originalId = this.el.id
+
+    Object.defineProperty(this.el, "value", {
+      get () {
+        return this.files.map(uploadedFile => uploadedFile.value)
+      },
+      set (val) {
+        this.files = []
+        const signedIds = this.signedIdsFromValue(val)
+        const promises = signedIds.map(signedId => {
+          return UploadedFile.fromSignedId(signedId, { name: this.name })
+        })
+        Promise.all(promises).then(uploadedFiles => {
+          this.assignFiles(uploadedFiles)
+        })
+      },
+    })
+  }
+
+  signedIdsFromValue(value) {
+    let signedIds = []
+    if(typeof value == "string" && value.length > 0) {
+      signedIds = value.split(",")
+    }
+    if(Array.isArray(value)) {
+      signedIds = value
+    }
+    return signedIds.filter(signedId => {
+      return signedId.toString().length > 0
+    })
   }
 
   connectedCallback() {
