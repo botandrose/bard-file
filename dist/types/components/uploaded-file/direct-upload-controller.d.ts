@@ -6,7 +6,7 @@ export default class DirectUploadController {
     constructor(uploadedFile: any);
     start(callback: any): void;
     uploadRequestDidProgress(event: any): void;
-    dispatch(name: any, detail?: any): any;
+    dispatch(name: any, detail?: {}): any;
     dispatchError(error: any): void;
     directUploadWillCreateBlobWithXHR(xhr: any): void;
     directUploadWillStoreFileWithXHR(xhr: any): void;

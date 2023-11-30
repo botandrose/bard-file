@@ -11,7 +11,7 @@ export class FilePreview {
 
   get mimetype(): string {
     const extension = (this.src || "").split(".").at(-1)
-    return Mime.getType(extension)
+    return Mime.getType(extension) || ""
   }
 
   render() {

@@ -34,11 +34,13 @@ export default class DirectUploadController {
       });
     }
   }
-  dispatch(name, detail = {} as any) {
-    detail.file = this.file;
-    detail.id = this.directUpload.id;
+  dispatch(name, detail = {}) {
     return dispatchEvent(this.uploadedFile, `direct-upload:${name}`, {
-      detail: detail
+      detail: {
+        ...detail,
+        file: this.file,
+        id: this.directUpload.id,
+      }
     });
   }
   dispatchError(error) {

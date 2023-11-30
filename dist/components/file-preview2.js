@@ -84,7 +84,7 @@ const FilePreview = /*@__PURE__*/ proxyCustomElement(class FilePreview extends H
     }
     get mimetype() {
         const extension = (this.src || "").split(".").at(-1);
-        return src.getType(extension);
+        return src.getType(extension) || "";
     }
     render() {
         return (h(Host, { class: this.computeClass() }, this.isImage() && h("img", { src: this.src }), this.isVideo() && h("video", { src: this.src, onClick: toggle }), this.isOther() && "This file does not offer a preview", h("slot", null)));

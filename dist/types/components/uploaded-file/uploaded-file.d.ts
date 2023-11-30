@@ -1,7 +1,7 @@
 import { EventEmitter } from '../../stencil-public-runtime';
 import DirectUploadController from './direct-upload-controller';
 export declare class UploadedFile {
-    static fromFile(file: any, props?: any): UploadedFile;
+    static fromFile(file: any, props?: {}): UploadedFile;
     static fromSignedId(signedId: any, props?: {}): any;
     el: any;
     name: string;

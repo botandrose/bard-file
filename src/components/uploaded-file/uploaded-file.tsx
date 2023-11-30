@@ -12,7 +12,7 @@ import { get } from 'rails-request-json'
   shadow: true,
 })
 export class UploadedFile {
-  static fromFile(file, props={} as any): UploadedFile {
+  static fromFile(file, props={}): UploadedFile {
     const extension = file.name.split(".").at(-1)
     let uploadedFile = document.createElement("uploaded-file") as any
     uploadedFile = Object.assign(uploadedFile, {
