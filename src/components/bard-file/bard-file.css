@@ -40,6 +40,9 @@ drag-and-drop.-full{
   height: 60px;
   display: inline-block;
 }
+.drag-icon + p{
+  margin: 0;
+}
 .media-preview {
   display: flex;
   flex-wrap: wrap;

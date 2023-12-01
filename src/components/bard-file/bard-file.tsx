@@ -128,8 +128,10 @@ export class BardFile {
       <Host>
         <file-drop for={this.originalId}>
           <i class="drag-icon"></i>
-          <strong>Choose {this.multiple ? "files" : "file"} </strong>
-          <span>or drag {this.multiple ? "them" : "it"} here.</span>
+          <p>
+            <strong>Choose {this.multiple ? "files" : "file"} </strong>
+            <span>or drag {this.multiple ? "them" : "it"} here.</span>
+          </p>
 
           <div class={`media-preview ${this.multiple ? '-stacked' : ''}`}>
             <slot></slot>
@@ -182,4 +184,3 @@ export class BardFile {
     return this.fileTarget.validationMessage
   }
 }
-

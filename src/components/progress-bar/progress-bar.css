@@ -5,9 +5,9 @@
   margin: 0 0px 10px 0;
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 3px;
-  font-size: 18px;
   line-height: 2;
-  flex: 0 0 calc(100% - 30px);
+  flex: 1 0;
+  box-sizing: border-box;
   text-align: left;
 }
 

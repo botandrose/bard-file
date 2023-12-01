@@ -1,6 +1,6 @@
 import { proxyCustomElement, HTMLElement } from '@stencil/core/internal/client';
 
-const fileDropCss = "file-drop{display:block !important}";
+const fileDropCss = "file-drop{display:flex;flex-direction:column;justify-content:center;align-items:center;box-sizing:border-box;padding:40px;min-height:160px;outline-offset:-10px;background:rgba(255, 255, 255, 0.25);text-align:center;transition:all 0.15s ease 0s;outline:rgba(0, 0, 0, 0.25) dashed 2px}";
 
 const FileDrop = /*@__PURE__*/ proxyCustomElement(class FileDrop extends HTMLElement {
     constructor() {
