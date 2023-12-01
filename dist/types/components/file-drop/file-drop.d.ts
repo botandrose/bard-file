@@ -7,6 +7,6 @@ export declare class FileDrop {
     private get fileTarget();
     openFilePicker(_event: any): void;
     highlight(event: any): void;
-    unhighlight(event: any): void;
+    unhighlight(_event: any): void;
     drop(event: any): void;
 }
