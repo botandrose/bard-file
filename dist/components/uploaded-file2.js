@@ -1433,6 +1433,8 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         this.percent = 100;
         this.file = undefined;
         this.validationMessage = undefined;
+        this.uid = undefined;
+        this.uid = uid++ + '';
         this.inputField = document.createElement("input");
         this.inputField.style.cssText = "opacity: 0.01; width: 1px; height: 1px; z-index: -999";
         this.inputField.name = this.name;
@@ -1493,8 +1495,10 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         "state": [1537],
         "percent": [1538],
         "file": [16],
-        "validationMessage": [1, "validation-message"]
+        "validationMessage": [1, "validation-message"],
+        "uid": [1]
     }, [[0, "direct-upload:initialize", "start"], [0, "direct-upload:start", "start"], [0, "direct-upload:progress", "progress"], [0, "direct-upload:error", "error"], [0, "direct-upload:end", "end"]]]);
+let uid = 0;
 function defineCustomElement() {
     if (typeof customElements === "undefined") {
         return;

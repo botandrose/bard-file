@@ -64,11 +64,6 @@ export class BardFile {
     this.formController = FormController.forForm(this.el.closest("form"))
   }
 
-  @Listen("uploaded-file:remove")
-  removeUploadedFile(event) {
-    this.removeFile(event.detail)
-  }
-
   fileTargetChanged(_event) {
     const uploadedFiles = Array.from(this.fileTarget.files).map(file => {
       return UploadedFile.fromFile(file, {
@@ -92,9 +87,14 @@ export class BardFile {
     this.el.dispatchEvent(new Event("change"))
   }
 
-  removeFile(file) {
-    const index = this.files.indexOf(file)
-    this.files.splice(index, 1)
+  @Listen("uploaded-file:remove")
+  removeUploadedFile(event) {
+    this.removeFile(event.detail)
+  }
+
+  removeFile(uploadedFile) {
+    const index = this.files.findIndex(uf => uf.uid === uploadedFile.uid)
+    if(index !== -1) this.files.splice(index, 1)
     this.renderFiles()
     this.el.dispatchEvent(new Event("change"))
   }

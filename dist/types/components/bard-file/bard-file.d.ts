@@ -15,10 +15,10 @@ export declare class BardFile {
     constructor();
     signedIdsFromValue(value: any): any[];
     connectedCallback(): void;
-    removeUploadedFile(event: any): void;
     fileTargetChanged(_event: any): void;
     assignFiles(uploadedFiles: any): void;
-    removeFile(file: any): void;
+    removeUploadedFile(event: any): void;
+    removeFile(uploadedFile: any): void;
     componentWillLoad(): void;
     render(): any;
     renderFiles(): void;

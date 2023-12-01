@@ -163,9 +163,6 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         this.el.removeAttribute("id");
         this.formController = FormController.forForm(this.el.closest("form"));
     }
-    removeUploadedFile(event) {
-        this.removeFile(event.detail);
-    }
     fileTargetChanged(_event) {
         const uploadedFiles = Array.from(this.fileTarget.files).map(file => {
             return UploadedFile.fromFile(file, {
@@ -188,9 +185,13 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         this.renderFiles();
         this.el.dispatchEvent(new Event("change"));
     }
-    removeFile(file) {
-        const index = this.files.indexOf(file);
-        this.files.splice(index, 1);
+    removeUploadedFile(event) {
+        this.removeFile(event.detail);
+    }
+    removeFile(uploadedFile) {
+        const index = this.files.findIndex(uf => uf.uid === uploadedFile.uid);
+        if (index !== -1)
+            this.files.splice(index, 1);
         this.renderFiles();
         this.el.dispatchEvent(new Event("change"));
     }

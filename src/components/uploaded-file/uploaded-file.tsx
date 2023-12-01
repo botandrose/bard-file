@@ -60,6 +60,7 @@ export class UploadedFile {
 
   @Prop() file: File
   @Prop() validationMessage: string
+  @Prop() uid: string
 
   @Event({ eventName: "uploaded-file:remove" }) removeEvent: EventEmitter
 
@@ -74,6 +75,7 @@ export class UploadedFile {
   url: string
 
   constructor() {
+    this.uid = uid++ + ''
     this.inputField = document.createElement("input")
     this.inputField.style.cssText = "opacity: 0.01; width: 1px; height: 1px; z-index: -999"
     this.inputField.name = this.name
@@ -152,3 +154,5 @@ export class UploadedFile {
     }
   }
 }
+
+let uid = 0
