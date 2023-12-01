@@ -22,18 +22,18 @@ export class FileDrop {
     this.fileTarget.click()
   }
 
-  @Listen("dragover")
+  @Listen("dragover", { passive: false })
   highlight(event) {
     event.preventDefault()
     this.el.classList.add("-dragover")
   }
 
-  @Listen("dragleave")
+  @Listen("dragleave", { passive: false })
   unhighlight(_event) {
     this.el.classList.remove("-dragover")
   }
 
-  @Listen("drop")
+  @Listen("drop", { passive: false })
   drop(event) {
     event.preventDefault()
     this.el.classList.remove("-dragover")
