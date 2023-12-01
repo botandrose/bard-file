@@ -1,4 +1,4 @@
-import { proxyCustomElement, HTMLElement, h, Host, Build } from '@stencil/core/internal/client';
+import { proxyCustomElement, HTMLElement, h, Host } from '@stencil/core/internal/client';
 import { U as UploadedFile } from './uploaded-file2.js';
 import { d as defineCustomElement$2 } from './file-drop2.js';
 
@@ -45,14 +45,6 @@ class FormController {
             return (event.returnValue = "");
         }
     }
-    uploadFiles(uploadedFiles) {
-        uploadedFiles.forEach(uploadedFile => {
-            if (uploadedFile.state === "pending") {
-                this.controllers.push(uploadedFile.controller);
-                this.startNextController();
-            }
-        });
-    }
     submit(event) {
         event.preventDefault();
         this.submitted = true;
@@ -91,12 +83,14 @@ class FormController {
         }
     }
     init(event) {
-        const { id, file } = event.detail;
+        const { id, file, controller } = event.detail;
         this.progressContainerTarget.insertAdjacentHTML("beforebegin", `
       <progress-bar id="direct-upload-${id}" class="direct-upload--pending">${file.name}</progress-bar>
     `);
         const progressTarget = document.getElementById(`direct-upload-${id}`);
         this.progressTargetMap[id] = progressTarget;
+        this.controllers.push(controller);
+        this.startNextController();
     }
     start(event) {
         this.progressTargetMap[event.detail.id].classList.remove("direct-upload--pending");
@@ -183,12 +177,6 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         });
         this.fileTarget.value = null;
         this.assignFiles(uploadedFiles);
-        if (this.checkValidity()) {
-            this.formController.uploadFiles(uploadedFiles);
-        }
-        else {
-            this.files = [];
-        }
     }
     assignFiles(uploadedFiles) {
         if (this.multiple) {
@@ -198,7 +186,6 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
             this.files = uploadedFiles.slice(-1);
         }
         this.renderFiles();
-        this.files.forEach(uf => uf.controller?.dispatch("initialize"));
         this.el.dispatchEvent(new Event("change"));
     }
     removeFile(file) {
@@ -210,7 +197,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
     componentWillLoad() {
         this.el.insertAdjacentHTML("afterbegin", `
       <input type="file"
-        style="opacity: 0.01; position: absolute; z-index: -999"
+        style="opacity: 0.01; width: 1px; height: 1px; z-index: -999"
         id="${this.originalId}"
       />
       <input type="hidden" name="${this.name}" />
@@ -239,18 +226,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         });
     }
     checkValidity() {
-        // FIXME work around UploadedFile constructor not running in dev
-        if (Build.isDev)
-            return true;
-        let errors = [];
-        this.files.forEach(uploadedFile => {
-            if (!uploadedFile.checkValidity()) {
-                errors.push(uploadedFile.validationMessage);
-            }
-        });
-        this.setCustomValidity(errors.join(" "));
-        this.reportValidity();
-        return errors.length === 0;
+        return this.fileTarget.checkValidity();
     }
     setCustomValidity(msg) {
         this.fileTarget.setCustomValidity(msg);

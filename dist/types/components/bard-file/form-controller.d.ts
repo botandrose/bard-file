@@ -11,7 +11,6 @@ export default class FormController {
     errors: boolean;
     constructor(form: any);
     beforeUnload(event: any): string;
-    uploadFiles(uploadedFiles: Array<any>): void;
     submit(event: any): void;
     startNextController(): void;
     submitForm(): void;

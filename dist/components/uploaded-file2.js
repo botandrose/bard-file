@@ -865,7 +865,6 @@ class DirectUploadController {
                 this.dispatchError(error);
             }
             else {
-                // this.uploadedFile.hiddenField.value = attributes.signed_id
                 this.uploadedFile.value = attributes.signed_id;
             }
             this.dispatch("end");
@@ -1391,7 +1390,6 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
             percent: 0,
             file: file,
         });
-        uploadedFile.controller = new DirectUploadController(uploadedFile);
         return uploadedFile;
     }
     static fromSignedId(signedId, props = {}) {
@@ -1415,11 +1413,9 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         event.preventDefault();
         this.removeEvent.emit(this);
     };
-    hiddenField;
+    inputField;
     controller;
     url;
-    checkValidity = null;
-    setCustomValidity = null;
     constructor() {
         super();
         this.__registerHost();
@@ -1437,20 +1433,17 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         this.percent = 100;
         this.file = undefined;
         this.validationMessage = undefined;
-        this.hiddenField = document.createElement("input");
-        this.hiddenField.type = "hidden";
-        this.hiddenField.name = this.name;
-        this.hiddenField.value = this.value;
+        this.inputField = document.createElement("input");
+        this.inputField.style.cssText = "opacity: 0.01; width: 1px; height: 1px; z-index: -999";
+        this.inputField.name = this.name;
+        this.inputField.value = this.value;
         this.el.checkValidity = () => {
             let errors = [];
             errors.push(...new Accepts(this).errors);
             errors.push(...new Max(this).errors);
-            this.setCustomValidity(errors.join(" "));
-            // this.reportValidity() // fire invalid event?
+            this.inputField.setCustomValidity(errors.join(" "));
+            this.inputField.reportValidity();
             return errors.length === 0;
-        };
-        this.el.setCustomValidity = (msg) => {
-            this.validationMessage = msg;
         };
     }
     start(_event) {
@@ -1465,7 +1458,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         event.preventDefault();
         const { error } = event.detail;
         this.state = "error";
-        this.validationMessage = error;
+        this.inputField.setCustomValidity(error);
     }
     end(_event) {
         this.state = "complete";
@@ -1475,11 +1468,17 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         return (h(Host, null, h("slot", null), h("figure", null, h("div", { class: "progress-details" }, h("progress-bar", { percent: this.percent, class: this.state }, this.filename), h("a", { class: "remove-media", onClick: this.removeClicked, href: "#" }, h("span", null, "Remove media"))), h("file-preview", { src: this.src, mimetype: this.mimetype }))));
     }
     componentWillLoad() {
-        this.el.appendChild(this.hiddenField);
+        this.el.appendChild(this.inputField);
     }
     componentDidRender() {
-        this.hiddenField.name = this.name;
-        this.hiddenField.value = this.value;
+        this.inputField.name = this.name;
+        this.inputField.value = this.value;
+    }
+    componentDidLoad() {
+        if (this.el.checkValidity() && this.state == "pending") {
+            this.controller = new DirectUploadController(this.el);
+            this.controller.dispatch("initialize", { controller: this.controller });
+        }
     }
     static get style() { return uploadedFileCss; }
 }, [1, "uploaded-file", {

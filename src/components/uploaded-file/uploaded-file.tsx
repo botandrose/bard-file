@@ -25,7 +25,6 @@ export class UploadedFile {
       percent: 0,
       file: file,
     })
-    uploadedFile.controller = new DirectUploadController(uploadedFile)
     return uploadedFile
   }
 
@@ -70,29 +69,23 @@ export class UploadedFile {
     this.removeEvent.emit(this)
   }
 
-  hiddenField: HTMLInputElement
+  inputField: HTMLInputElement
   controller: DirectUploadController
   url: string
-  checkValidity = null
-  setCustomValidity = null
 
   constructor() {
-    this.hiddenField = document.createElement("input")
-    this.hiddenField.type = "hidden"
-    this.hiddenField.name = this.name
-    this.hiddenField.value = this.value
+    this.inputField = document.createElement("input")
+    this.inputField.style.cssText = "opacity: 0.01; width: 1px; height: 1px; z-index: -999"
+    this.inputField.name = this.name
+    this.inputField.value = this.value
 
     this.el.checkValidity = () => {
       let errors = []
       errors.push(...new Accepts(this).errors)
       errors.push(...new Max(this).errors)
-      this.setCustomValidity(errors.join(" "))
-      // this.reportValidity() // fire invalid event?
+      this.inputField.setCustomValidity(errors.join(" "))
+      this.inputField.reportValidity()
       return errors.length === 0
-    }
-
-    this.el.setCustomValidity = (msg) => {
-      this.validationMessage = msg
     }
   }
 
@@ -114,7 +107,7 @@ export class UploadedFile {
     event.preventDefault()
     const { error } = event.detail
     this.state = "error"
-    this.validationMessage = error
+    this.inputField.setCustomValidity(error)
   }
 
   @Listen("direct-upload:end")
@@ -144,11 +137,18 @@ export class UploadedFile {
   }
 
   componentWillLoad() {
-    this.el.appendChild(this.hiddenField)
+    this.el.appendChild(this.inputField)
   }
 
   componentDidRender() {
-    this.hiddenField.name = this.name
-    this.hiddenField.value = this.value
+    this.inputField.name = this.name
+    this.inputField.value = this.value
+  }
+
+  componentDidLoad() {
+    if(this.el.checkValidity() && this.state == "pending") {
+      this.controller = new DirectUploadController(this.el)
+      this.controller.dispatch("initialize", { controller: this.controller })
+    }
   }
 }

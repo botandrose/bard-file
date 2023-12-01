@@ -18,7 +18,6 @@ export default class DirectUploadController {
       if (error) {
         this.dispatchError(error)
       } else {
-        // this.uploadedFile.hiddenField.value = attributes.signed_id
         this.uploadedFile.value = attributes.signed_id
       }
       this.dispatch("end")

@@ -1,4 +1,4 @@
-import { Build, Component, Element, Prop, State, Listen, Host, h } from '@stencil/core';
+import { Component, Element, Prop, State, Listen, Host, h } from '@stencil/core';
 import FormController from "./form-controller"
 import { UploadedFile } from "../uploaded-file/uploaded-file"
 import { FileDrop as _ } from "../file-drop/file-drop"
@@ -80,11 +80,6 @@ export class BardFile {
     })
     this.fileTarget.value = null
     this.assignFiles(uploadedFiles)
-    if(this.checkValidity()) {
-      this.formController.uploadFiles(uploadedFiles)
-    } else {
-      this.files = []
-    }
   }
 
   assignFiles(uploadedFiles) {
@@ -94,7 +89,6 @@ export class BardFile {
       this.files = uploadedFiles.slice(-1)
     }
     this.renderFiles()
-    this.files.forEach(uf => uf.controller?.dispatch("initialize"))
     this.el.dispatchEvent(new Event("change"))
   }
 
@@ -108,7 +102,7 @@ export class BardFile {
   componentWillLoad() {
     this.el.insertAdjacentHTML("afterbegin", `
       <input type="file"
-        style="opacity: 0.01; position: absolute; z-index: -999"
+        style="opacity: 0.01; width: 1px; height: 1px; z-index: -999"
         id="${this.originalId}"
       />
       <input type="hidden" name="${this.name}" />
@@ -156,20 +150,7 @@ export class BardFile {
   }
 
   checkValidity() {
-    // FIXME work around UploadedFile constructor not running in dev
-    if(Build.isDev) return true
-
-    let errors = []
-
-    this.files.forEach(uploadedFile => {
-      if(!uploadedFile.checkValidity()) {
-        errors.push(uploadedFile.validationMessage)
-      }
-    })
-
-    this.setCustomValidity(errors.join(" "))
-    this.reportValidity()
-    return errors.length === 0
+    return this.fileTarget.checkValidity()
   }
 
   setCustomValidity(msg) {

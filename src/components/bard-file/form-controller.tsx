@@ -53,15 +53,6 @@ export default class FormController {
     }
   }
 
-  uploadFiles(uploadedFiles: Array<any>) {
-    uploadedFiles.forEach(uploadedFile => {
-      if(uploadedFile.state === "pending") {
-        this.controllers.push(uploadedFile.controller)
-        this.startNextController()
-      }
-    })
-  }
-
   submit(event) {
     event.preventDefault()
     this.submitted = true
@@ -101,13 +92,16 @@ export default class FormController {
   }
 
   init(event) {
-    const { id, file } = event.detail
+    const { id, file, controller } = event.detail
 
     this.progressContainerTarget.insertAdjacentHTML("beforebegin", `
       <progress-bar id="direct-upload-${id}" class="direct-upload--pending">${file.name}</progress-bar>
     `)
     const progressTarget = document.getElementById(`direct-upload-${id}`)
     this.progressTargetMap[id] = progressTarget
+
+    this.controllers.push(controller)
+    this.startNextController()
   }
 
   start(event) {

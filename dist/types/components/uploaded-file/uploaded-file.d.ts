@@ -18,11 +18,9 @@ export declare class UploadedFile {
     validationMessage: string;
     removeEvent: EventEmitter;
     private removeClicked;
-    hiddenField: HTMLInputElement;
+    inputField: HTMLInputElement;
     controller: DirectUploadController;
     url: string;
-    checkValidity: any;
-    setCustomValidity: any;
     constructor();
     start(_event: any): void;
     progress(event: any): void;
@@ -31,4 +29,5 @@ export declare class UploadedFile {
     render(): any;
     componentWillLoad(): void;
     componentDidRender(): void;
+    componentDidLoad(): void;
 }
