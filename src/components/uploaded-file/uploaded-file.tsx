@@ -3,7 +3,7 @@ import { Listen, Event, EventEmitter } from '@stencil/core'
 import DirectUploadController from './direct-upload-controller'
 import Max from './max'
 import Accepts from './accepts'
-import Mime from 'mime-lite'
+import Mime from 'mime'
 import { get } from 'rails-request-json'
 
 @Component({
