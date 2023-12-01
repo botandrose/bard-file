@@ -19,7 +19,7 @@
 | `size`              | `size`               |             | `number` | `undefined`  |
 | `src`               | `src`                |             | `string` | `undefined`  |
 | `state`             | `state`              |             | `string` | `"complete"` |
-| `uid`               | `uid`                |             | `string` | `undefined`  |
+| `uid`               | `uid`                |             | `number` | `undefined`  |
 | `validationMessage` | `validation-message` |             | `string` | `undefined`  |
 | `value`             | `value`              |             | `string` | `undefined`  |
 

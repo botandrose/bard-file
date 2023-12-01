@@ -89,11 +89,7 @@ export class BardFile {
 
   @Listen("uploaded-file:remove")
   removeUploadedFile(event) {
-    this.removeFile(event.detail)
-  }
-
-  removeFile(uploadedFile) {
-    const index = this.files.findIndex(uf => uf.uid === uploadedFile.uid)
+    const index = this.files.findIndex(uf => uf.uid === event.detail.uid)
     if(index !== -1) this.files.splice(index, 1)
     this.renderFiles()
     this.el.dispatchEvent(new Event("change"))

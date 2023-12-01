@@ -19,4 +19,5 @@ export default class FormController {
     progress(event: any): void;
     error(event: any): void;
     end(event: any): void;
+    removeUploadedFile(event: any): void;
 }

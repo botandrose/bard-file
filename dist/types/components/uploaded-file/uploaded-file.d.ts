@@ -16,7 +16,7 @@ export declare class UploadedFile {
     percent: number;
     file: File;
     validationMessage: string;
-    uid: string;
+    uid: number;
     removeEvent: EventEmitter;
     private removeClicked;
     inputField: HTMLInputElement;

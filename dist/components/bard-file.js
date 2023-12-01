@@ -38,6 +38,7 @@ class FormController {
         this.element.addEventListener("direct-upload:progress", event => this.progress(event));
         this.element.addEventListener("direct-upload:error", event => this.error(event));
         this.element.addEventListener("direct-upload:end", event => this.end(event));
+        this.element.addEventListener("uploaded-file:remove", event => this.removeUploadedFile(event));
     }
     beforeUnload(event) {
         if (this.processing) {
@@ -63,12 +64,9 @@ class FormController {
                 if (error) {
                     Array.from(this.element.querySelectorAll("input[type=file]"))
                         .forEach((e) => e.disabled = false);
-                    this.errors = true;
                 }
-                else {
-                    this.processing = false;
-                    this.startNextController();
-                }
+                this.processing = false;
+                this.startNextController();
             });
         }
         else {
@@ -76,7 +74,7 @@ class FormController {
         }
     }
     submitForm() {
-        if (this.submitted && !this.errors) {
+        if (this.submitted) {
             Array.from(this.element.querySelectorAll("input[type=file]"))
                 .forEach((e) => e.disabled = true);
             this.element.submit();
@@ -108,6 +106,14 @@ class FormController {
     }
     end(event) {
         this.progressTargetMap[event.detail.id].classList.add("direct-upload--complete");
+    }
+    removeUploadedFile(event) {
+        const uploadedFile = event.detail;
+        const id = uploadedFile.controller?.directUpload?.id;
+        if (id) {
+            document.getElementById(`direct-upload-${id}`).remove();
+            delete this.progressTargetMap[id];
+        }
     }
 }
 
@@ -186,10 +192,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         this.el.dispatchEvent(new Event("change"));
     }
     removeUploadedFile(event) {
-        this.removeFile(event.detail);
-    }
-    removeFile(uploadedFile) {
-        const index = this.files.findIndex(uf => uf.uid === uploadedFile.uid);
+        const index = this.files.findIndex(uf => uf.uid === event.detail.uid);
         if (index !== -1)
             this.files.splice(index, 1);
         this.renderFiles();

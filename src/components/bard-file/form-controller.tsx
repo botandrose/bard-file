@@ -44,6 +44,8 @@ export default class FormController {
     this.element.addEventListener("direct-upload:progress", event => this.progress(event))
     this.element.addEventListener("direct-upload:error", event => this.error(event))
     this.element.addEventListener("direct-upload:end", event => this.end(event))
+
+    this.element.addEventListener("uploaded-file:remove", event => this.removeUploadedFile(event))
   }
 
   beforeUnload(event) {
@@ -72,11 +74,9 @@ export default class FormController {
         if(error) {
           Array.from(this.element.querySelectorAll("input[type=file]"))
             .forEach((e: HTMLInputElement) => e.disabled = false)
-          this.errors = true
-        } else {
-          this.processing = false
-          this.startNextController()
         }
+        this.processing = false
+        this.startNextController()
       })
     } else {
       this.submitForm()
@@ -84,7 +84,7 @@ export default class FormController {
   }
 
   submitForm() {
-    if(this.submitted && !this.errors) {
+    if(this.submitted) {
       Array.from(this.element.querySelectorAll("input[type=file]"))
         .forEach((e: HTMLInputElement) => e.disabled = true)
       this.element.submit()
@@ -123,6 +123,15 @@ export default class FormController {
 
   end(event) {
     this.progressTargetMap[event.detail.id].classList.add("direct-upload--complete")
+  }
+
+  removeUploadedFile(event) {
+    const uploadedFile = event.detail
+    const id = uploadedFile.controller?.directUpload?.id
+    if(id) {
+      document.getElementById(`direct-upload-${id}`).remove()
+      delete this.progressTargetMap[id]
+    }
   }
 }
 

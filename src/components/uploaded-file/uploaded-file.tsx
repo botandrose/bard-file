@@ -60,13 +60,14 @@ export class UploadedFile {
 
   @Prop() file: File
   @Prop() validationMessage: string
-  @Prop() uid: string
+  @Prop() uid: number
 
   @Event({ eventName: "uploaded-file:remove" }) removeEvent: EventEmitter
 
   private removeClicked = event => {
     event.stopPropagation()
     event.preventDefault()
+    this.controller?.cancel()
     this.removeEvent.emit(this)
   }
 
@@ -75,7 +76,7 @@ export class UploadedFile {
   url: string
 
   constructor() {
-    this.uid = uid++ + ''
+    this.uid = uid++
     this.inputField = document.createElement("input")
     this.inputField.style.cssText = "opacity: 0.01; width: 1px; height: 1px; z-index: -999"
     this.inputField.name = this.name
@@ -114,8 +115,10 @@ export class UploadedFile {
 
   @Listen("direct-upload:end")
   end(_event) {
-    this.state = "complete"
-    this.percent = 100
+    if(this.state !== "error") {
+      this.state = "complete"
+      this.percent = 100
+    }
   }
 
   render() {

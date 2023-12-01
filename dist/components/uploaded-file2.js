@@ -853,23 +853,43 @@ class DirectUploadController {
     uploadedFile;
     file;
     directUpload;
+    recordXHR;
+    uploadXHR;
+    callback = null;
     constructor(uploadedFile) {
         this.uploadedFile = uploadedFile;
         this.file = this.uploadedFile.file;
         this.directUpload = new DirectUpload(this.file, this.uploadedFile.url, this);
     }
+    cancel() {
+        this.directUpload.url = null;
+        this.abortXHR(this.recordXHR);
+        this.abortXHR(this.uploadXHR);
+    }
+    abortXHR(xhr) {
+        if (!xhr)
+            return;
+        xhr.addEventListener("abort", () => {
+            this.complete("aborted", {});
+        });
+        xhr.abort();
+    }
     start(callback) {
+        this.callback = callback;
         this.dispatch("start");
-        this.directUpload.create(((error, attributes) => {
-            if (error) {
-                this.dispatchError(error);
-            }
-            else {
-                this.uploadedFile.value = attributes.signed_id;
-            }
-            this.dispatch("end");
-            callback(error);
-        }));
+        this.directUpload.create((error, attributes) => {
+            this.complete(error, attributes);
+        });
+    }
+    complete(error, attributes) {
+        if (error) {
+            this.dispatchError(error);
+        }
+        else {
+            this.uploadedFile.value = attributes.signed_id;
+        }
+        this.dispatch("end");
+        this.callback(error);
     }
     uploadRequestDidProgress(event) {
         const progress = event.loaded / event.total * 100;
@@ -889,19 +909,18 @@ class DirectUploadController {
         });
     }
     dispatchError(error) {
-        const event = this.dispatch("error", {
+        this.dispatch("error", {
             error: error
         });
-        if (!event.defaultPrevented) {
-            alert(error);
-        }
     }
     directUploadWillCreateBlobWithXHR(xhr) {
+        this.recordXHR = xhr;
         this.dispatch("before-blob-request", {
             xhr: xhr
         });
     }
     directUploadWillStoreFileWithXHR(xhr) {
+        this.uploadXHR = xhr;
         this.dispatch("before-storage-request", {
             xhr: xhr
         });
@@ -1411,6 +1430,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
     removeClicked = event => {
         event.stopPropagation();
         event.preventDefault();
+        this.controller?.cancel();
         this.removeEvent.emit(this);
     };
     inputField;
@@ -1434,7 +1454,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         this.file = undefined;
         this.validationMessage = undefined;
         this.uid = undefined;
-        this.uid = uid++ + '';
+        this.uid = uid++;
         this.inputField = document.createElement("input");
         this.inputField.style.cssText = "opacity: 0.01; width: 1px; height: 1px; z-index: -999";
         this.inputField.name = this.name;
@@ -1463,8 +1483,10 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         this.inputField.setCustomValidity(error);
     }
     end(_event) {
-        this.state = "complete";
-        this.percent = 100;
+        if (this.state !== "error") {
+            this.state = "complete";
+            this.percent = 100;
+        }
     }
     render() {
         return (h(Host, null, h("slot", null), h("figure", null, h("div", { class: "progress-details" }, h("progress-bar", { percent: this.percent, class: this.state }, this.filename), h("a", { class: "remove-media", onClick: this.removeClicked, href: "#" }, h("span", null, "Remove media"))), h("file-preview", { src: this.src, mimetype: this.mimetype }))));
@@ -1496,7 +1518,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         "percent": [1538],
         "file": [16],
         "validationMessage": [1, "validation-message"],
-        "uid": [1]
+        "uid": [2]
     }, [[0, "direct-upload:initialize", "start"], [0, "direct-upload:start", "start"], [0, "direct-upload:progress", "progress"], [0, "direct-upload:error", "error"], [0, "direct-upload:end", "end"]]]);
 let uid = 0;
 function defineCustomElement() {

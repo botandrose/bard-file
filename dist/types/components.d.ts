@@ -38,7 +38,7 @@ export namespace Components {
         "size": number;
         "src": string;
         "state": string;
-        "uid": string;
+        "uid": number;
         "validationMessage": string;
         "value": string;
     }
@@ -131,7 +131,7 @@ declare namespace LocalJSX {
         "size"?: number;
         "src"?: string;
         "state"?: string;
-        "uid"?: string;
+        "uid"?: number;
         "validationMessage"?: string;
         "value"?: string;
     }

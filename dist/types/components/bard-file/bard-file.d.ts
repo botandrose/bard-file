@@ -18,7 +18,6 @@ export declare class BardFile {
     fileTargetChanged(_event: any): void;
     assignFiles(uploadedFiles: any): void;
     removeUploadedFile(event: any): void;
-    removeFile(uploadedFile: any): void;
     componentWillLoad(): void;
     render(): any;
     renderFiles(): void;
