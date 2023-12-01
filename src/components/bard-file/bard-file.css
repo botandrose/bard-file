@@ -42,6 +42,7 @@ drag-and-drop.-full{
 }
 .drag-icon + p{
   margin: 0;
+  font-size: 0.9rem;
 }
 .media-preview {
   display: flex;

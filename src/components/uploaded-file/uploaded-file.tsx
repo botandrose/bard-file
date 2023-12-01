@@ -130,14 +130,14 @@ export class UploadedFile {
         </slot>
         <figure>
           <div class="progress-details">
-            <progress-bar percent={this.percent} class={`separate-upload direct-upload--${this.state}`}>
+            <progress-bar percent={this.percent} class={this.state}>
               {this.filename}
             </progress-bar>
             <a class="remove-media" onClick={this.removeClicked} href="#">
               <span>Remove media</span>
             </a>
           </div>
-          <file-preview src={this.src}></file-preview>
+          <file-preview src={this.src} mimetype={this.mimetype}></file-preview>
         </figure>
       </Host>
     )

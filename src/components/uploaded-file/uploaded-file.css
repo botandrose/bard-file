@@ -12,23 +12,20 @@ figure{
 
 progress-bar{
   flex: 1 0 calc(100% - 30px);
-}
-
-progress-bar.separate-upload{
   padding: 0 10px;
   margin-top: 10px;
   font-size: 0.9em;
 }
 
-progress-bar.direct-upload--pending{
+progress-bar.pending{
   opacity: 0.5;
 }
 
-progress-bar.direct-upload--complete {
+progress-bar.complete {
   opacity: 0.8;
 }
 
-progress-bar.direct-upload--error{
+progress-bar.error{
   background: #f8b3b1;
   background: rgba(255,0,0,0.25);
   opacity: 1;

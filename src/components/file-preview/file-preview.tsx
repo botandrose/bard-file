@@ -1,5 +1,4 @@
 import { Component, Prop, Host, h } from '@stencil/core';
-import Mime from 'mime-lite'
 
 @Component({
   tag: 'file-preview',
@@ -7,12 +6,8 @@ import Mime from 'mime-lite'
   shadow: true,
 })
 export class FilePreview {
-  @Prop() src: string
-
-  get mimetype(): string {
-    const extension = (this.src || "").split(".").at(-1)
-    return Mime.getType(extension) || ""
-  }
+  @Prop({ reflect: true }) src: string
+  @Prop({ reflect: true }) mimetype: string
 
   render() {
     return (
@@ -32,11 +27,11 @@ export class FilePreview {
   }
 
   private isImage() {
-    return this.mimetype.startsWith("image/")
+    return this.mimetype?.startsWith("image/")
   }
 
   private isVideo() {
-    return this.mimetype.startsWith("video/")
+    return this.mimetype?.startsWith("video/")
   }
 
   private isOther() {
