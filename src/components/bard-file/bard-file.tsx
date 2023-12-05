@@ -100,18 +100,18 @@ export class BardFile {
   }
 
   componentWillLoad() {
-    this.el.insertAdjacentHTML("afterbegin", `
-      <input type="file"
-        style="opacity: 0.01; width: 1px; height: 1px; z-index: -999"
-        id="${this.originalId}"
-      />
-      <input type="hidden" name="${this.name}" />
-    `)
-    this.fileTarget = this.el.querySelector("input[type=file]")
+    this.hiddenTarget = document.createElement("input")
+    this.hiddenTarget.setAttribute("type", "hidden")
+    this.hiddenTarget.setAttribute("name", this.name)
+    this.el.insertAdjacentElement("afterbegin", this.hiddenTarget)
+
+    this.fileTarget = document.createElement("input")
+    this.fileTarget.setAttribute("type", "file")
+    this.fileTarget.setAttribute("id", this.originalId)
+    this.fileTarget.style.cssText = "opacity: 0.01; width: 1px; height: 1px; z-index: -999"
     this.fileTarget.multiple = this.multiple
     this.fileTarget.addEventListener("change", event => this.fileTargetChanged(event))
-
-    this.hiddenTarget = this.el.querySelector("input[type=hidden]")
+    this.el.insertAdjacentElement("afterbegin", this.fileTarget)
   }
 
   render() {

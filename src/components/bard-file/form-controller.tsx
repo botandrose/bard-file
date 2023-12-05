@@ -87,7 +87,9 @@ export default class FormController {
     if(this.submitted) {
       Array.from(this.element.querySelectorAll("input[type=file]"))
         .forEach((e: HTMLInputElement) => e.disabled = true)
-      this.element.submit()
+      window.setTimeout(() => { // allow other async tasks to complete
+        this.element.submit()
+      }, 10)
     }
   }
 
