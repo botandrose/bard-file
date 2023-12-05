@@ -4,6 +4,5 @@ export default class Accepts {
     uploadedFile: UploadedFile;
     constructor(uploadedFile: any);
     get errors(): string[];
-    private get regexMap();
     private joinWords;
 }

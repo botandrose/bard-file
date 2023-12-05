@@ -252,7 +252,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         "required": [4],
         "accepts": [1],
         "max": [2],
-        "files": [16]
+        "files": [1040]
     }, [[0, "uploaded-file:remove", "removeUploadedFile"]]]);
 function defineCustomElement$1() {
     if (typeof customElements === "undefined") {

@@ -8,7 +8,7 @@ export declare class UploadedFile {
     value: string;
     filename: string;
     src: string;
-    mimetype: string;
+    filetype: string;
     size: number;
     accepts: string;
     max: number;

@@ -7,7 +7,7 @@ import { Component, Prop, Host, h } from '@stencil/core';
 })
 export class FilePreview {
   @Prop({ reflect: true }) src: string
-  @Prop({ reflect: true }) mimetype: string
+  @Prop({ reflect: true }) filetype: string
 
   render() {
     return (
@@ -27,11 +27,11 @@ export class FilePreview {
   }
 
   private isImage() {
-    return this.mimetype?.startsWith("image/")
+    return this.filetype == "image"
   }
 
   private isVideo() {
-    return this.mimetype?.startsWith("video/")
+    return this.filetype == "video"
   }
 
   private isOther() {

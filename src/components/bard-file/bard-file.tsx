@@ -19,7 +19,7 @@ export class BardFile {
   @Prop() accepts: string
   @Prop() max: number
 
-  @Prop() files: Array<any>
+  @Prop({ mutable: true }) files: Array<any>
 
   originalId: string
   fileTarget: HTMLInputElement

@@ -12,8 +12,8 @@
 | `accepts`           | `accepts`            |             | `string` | `undefined`  |
 | `file`              | --                   |             | `File`   | `undefined`  |
 | `filename`          | `filename`           |             | `string` | `undefined`  |
+| `filetype`          | `filetype`           |             | `string` | `undefined`  |
 | `max`               | `max`                |             | `number` | `undefined`  |
-| `mimetype`          | `mimetype`           |             | `string` | `undefined`  |
 | `name`              | `name`               |             | `string` | `undefined`  |
 | `percent`           | `percent`            |             | `number` | `100`        |
 | `size`              | `size`               |             | `number` | `undefined`  |

@@ -10,15 +10,15 @@
     <fieldset>
       <legend>&lt;bard-file&gt;</legend>
       <form>
-        <bard-file name="image" id="image" multiple directupload="http://smh.localhost/rails/active_storage/direct_uploads" required>
-          <uploaded-file name="image" src="images/example.jpg" filename="example.jpg" size="36287" mimetype="image/jpeg" max="1000000" accepts="image"></uploaded-file>
+        <bard-file name="image" id="image" directupload="http://smh.localhost/rails/active_storage/direct_uploads" accepts="image,video">
+          <uploaded-file name="image" src="images/example.jpg" filename="example.jpg" size="36287" filetype="image" max="1000000"></uploaded-file>
         </bard-file>
       </form>
     </fieldset>
 
     <fieldset>
       <legend>&lt;uploaded-file&gt;</legend>
-      <uploaded-file name="image" src="images/example.jpg" filename="example.jpg" size="36287" mimetype="image/jpeg" max="1000000" accepts="image"></uploaded-file>
+      <uploaded-file name="image" src="images/example.jpg" filename="example.jpg" size="36287" filetype="image" max="1000000"></uploaded-file>
     </fieldset>
 
     <fieldset>
@@ -35,7 +35,7 @@
 
     <fieldset>
       <legend>&lt;file-preview&gt;</legend>
-      <file-preview src="images/example.jpg" mimetype="image/jpeg"></file-preview>
+      <file-preview src="images/example.jpg" filetype="image"></file-preview>
     </fieldset>
   </body>
 </html>

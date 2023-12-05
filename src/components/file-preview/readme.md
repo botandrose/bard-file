@@ -9,7 +9,7 @@
 
 | Property   | Attribute  | Description | Type     | Default     |
 | ---------- | ---------- | ----------- | -------- | ----------- |
-| `mimetype` | `mimetype` |             | `string` | `undefined` |
+| `filetype` | `filetype` |             | `string` | `undefined` |
 | `src`      | `src`      |             | `string` | `undefined` |
 
 

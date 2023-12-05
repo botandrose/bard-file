@@ -3,7 +3,7 @@ import { Listen, Event, EventEmitter } from '@stencil/core'
 import DirectUploadController from './direct-upload-controller'
 import Max from './max'
 import Accepts from './accepts'
-import Mime from 'mime'
+import Extensions from './extensions'
 import { get } from 'rails-request-json'
 
 @Component({
@@ -13,13 +13,12 @@ import { get } from 'rails-request-json'
 })
 export class UploadedFile {
   static fromFile(file, props={}): UploadedFile {
-    const extension = file.name.split(".").at(-1)
     let uploadedFile = document.createElement("uploaded-file") as any
     uploadedFile = Object.assign(uploadedFile, {
       ...props,
       src: URL.createObjectURL(file),
       filename: file.name,
-      mimetype: Mime.getType(extension),
+      filetype: Extensions.getFileType(file.name),
       size: file.size,
       state: "pending",
       percent: 0,
@@ -34,7 +33,7 @@ export class UploadedFile {
         ...props,
         src: `/rails/active_storage/blobs/redirect/${signedId}/${blob.filename}`,
         filename: blob.filename,
-        mimetype: blob.content_type,
+        filetype: Extensions.getFileType(blob.filename),
         size: blob.byte_size,
         state: "complete",
         percent: 100,
@@ -49,7 +48,7 @@ export class UploadedFile {
   @Prop({ reflect: true }) value: string
   @Prop({ reflect: true }) filename: string
   @Prop({ reflect: true }) src: string
-  @Prop({ reflect: true }) mimetype: string
+  @Prop({ reflect: true }) filetype: string
   @Prop({ reflect: true }) size: number
 
   @Prop({ reflect: true }) accepts: string
@@ -135,7 +134,7 @@ export class UploadedFile {
               <span>Remove media</span>
             </a>
           </div>
-          <file-preview src={this.src} mimetype={this.mimetype}></file-preview>
+          <file-preview src={this.src} filetype={this.filetype}></file-preview>
         </figure>
       </Host>
     )

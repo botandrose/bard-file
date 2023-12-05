@@ -8,7 +8,7 @@ const FilePreview = /*@__PURE__*/ proxyCustomElement(class FilePreview extends H
         this.__registerHost();
         this.__attachShadow();
         this.src = undefined;
-        this.mimetype = undefined;
+        this.filetype = undefined;
     }
     render() {
         return (h(Host, { class: this.computeClass() }, this.isImage() && h("img", { src: this.src }), this.isVideo() && h("video", { src: this.src, onClick: toggle }), this.isOther() && "This file does not offer a preview", h("slot", null)));
@@ -21,10 +21,10 @@ const FilePreview = /*@__PURE__*/ proxyCustomElement(class FilePreview extends H
         return "other";
     }
     isImage() {
-        return this.mimetype?.startsWith("image/");
+        return this.filetype == "image";
     }
     isVideo() {
-        return this.mimetype?.startsWith("video/");
+        return this.filetype == "video";
     }
     isOther() {
         return !this.isImage() && !this.isVideo();
@@ -32,7 +32,7 @@ const FilePreview = /*@__PURE__*/ proxyCustomElement(class FilePreview extends H
     static get style() { return filePreviewCss; }
 }, [1, "file-preview", {
         "src": [513],
-        "mimetype": [513]
+        "filetype": [513]
     }]);
 const toggle = function () { this.paused ? this.play() : this.pause(); return false; };
 function defineCustomElement() {

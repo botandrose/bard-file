@@ -22,7 +22,7 @@ export namespace Components {
         "for": string;
     }
     interface FilePreview {
-        "mimetype": string;
+        "filetype": string;
         "src": string;
     }
     interface ProgressBar {
@@ -32,8 +32,8 @@ export namespace Components {
         "accepts": string;
         "file": File;
         "filename": string;
+        "filetype": string;
         "max": number;
-        "mimetype": string;
         "name": string;
         "percent": number;
         "size": number;
@@ -115,7 +115,7 @@ declare namespace LocalJSX {
         "for"?: string;
     }
     interface FilePreview {
-        "mimetype"?: string;
+        "filetype"?: string;
         "src"?: string;
     }
     interface ProgressBar {
@@ -125,8 +125,8 @@ declare namespace LocalJSX {
         "accepts"?: string;
         "file"?: File;
         "filename"?: string;
+        "filetype"?: string;
         "max"?: number;
-        "mimetype"?: string;
         "name"?: string;
         "onUploaded-file:remove"?: (event: UploadedFileCustomEvent<any>) => void;
         "percent"?: number;
