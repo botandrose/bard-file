@@ -189,6 +189,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         else {
             this.files = uploadedFiles.slice(-1);
         }
+        this.render();
         this.renderFiles();
         this.el.dispatchEvent(new Event("change"));
     }
@@ -196,6 +197,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         const index = this.files.findIndex(uf => uf.uid === event.detail.uid);
         if (index !== -1)
             this.files.splice(index, 1);
+        this.render();
         this.renderFiles();
         this.el.dispatchEvent(new Event("change"));
     }

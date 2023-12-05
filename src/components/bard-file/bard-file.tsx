@@ -85,6 +85,7 @@ export class BardFile {
     } else {
       this.files = uploadedFiles.slice(-1)
     }
+    this.render()
     this.renderFiles()
     this.el.dispatchEvent(new Event("change"))
   }
@@ -93,6 +94,7 @@ export class BardFile {
   removeUploadedFile(event) {
     const index = this.files.findIndex(uf => uf.uid === event.detail.uid)
     if(index !== -1) this.files.splice(index, 1)
+    this.render()
     this.renderFiles()
     this.el.dispatchEvent(new Event("change"))
   }
