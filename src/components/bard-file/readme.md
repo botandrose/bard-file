@@ -11,6 +11,7 @@
 | -------------- | -------------- | ----------- | --------- | ----------- |
 | `accepts`      | `accepts`      |             | `string`  | `undefined` |
 | `directupload` | `directupload` |             | `string`  | `undefined` |
+| `files`        | --             |             | `any[]`   | `undefined` |
 | `max`          | `max`          |             | `number`  | `undefined` |
 | `multiple`     | `multiple`     |             | `boolean` | `false`     |
 | `name`         | `name`         |             | `string`  | `undefined` |

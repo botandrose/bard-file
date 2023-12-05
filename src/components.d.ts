@@ -9,6 +9,7 @@ export namespace Components {
     interface BardFile {
         "accepts": string;
         "directupload": string;
+        "files": Array<any>;
         "max": number;
         "multiple": boolean;
         "name": string;
@@ -101,6 +102,7 @@ declare namespace LocalJSX {
     interface BardFile {
         "accepts"?: string;
         "directupload"?: string;
+        "files"?: Array<any>;
         "max"?: number;
         "multiple"?: boolean;
         "name"?: string;

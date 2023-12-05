@@ -135,8 +135,9 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         this.required = false;
         this.accepts = undefined;
         this.max = undefined;
-        this.files = [];
+        this.files = undefined;
         this.originalId = this.el.id;
+        this.files = Array.from(this.el.children).filter(e => e.tagName == "UPLOADED-FILE");
         Object.defineProperty(this.el, "value", {
             get() {
                 return this.files.map(uploadedFile => uploadedFile.value);
@@ -249,7 +250,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         "required": [4],
         "accepts": [1],
         "max": [2],
-        "files": [32]
+        "files": [16]
     }, [[0, "uploaded-file:remove", "removeUploadedFile"]]]);
 function defineCustomElement$1() {
     if (typeof customElements === "undefined") {

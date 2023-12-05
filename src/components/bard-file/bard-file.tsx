@@ -1,4 +1,4 @@
-import { Component, Element, Prop, State, Listen, Host, h } from '@stencil/core';
+import { Component, Element, Prop, Listen, Host, h } from '@stencil/core';
 import FormController from "./form-controller"
 import { UploadedFile } from "../uploaded-file/uploaded-file"
 import { FileDrop as _ } from "../file-drop/file-drop"
@@ -19,7 +19,7 @@ export class BardFile {
   @Prop() accepts: string
   @Prop() max: number
 
-  @State() files: Array<any> = []
+  @Prop() files: Array<any>
 
   originalId: string
   fileTarget: HTMLInputElement
@@ -28,6 +28,8 @@ export class BardFile {
 
   constructor() {
     this.originalId = this.el.id
+
+    this.files = Array.from(this.el.children).filter(e => e.tagName == "UPLOADED-FILE")
 
     Object.defineProperty(this.el, "value", {
       get () {
