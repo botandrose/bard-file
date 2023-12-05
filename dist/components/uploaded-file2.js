@@ -1422,8 +1422,8 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         this.el.appendChild(this.inputField);
     }
     componentDidRender() {
-        this.inputField.name = this.name;
-        this.inputField.value = this.value;
+        this.inputField.setAttribute("name", this.name);
+        this.inputField.setAttribute("value", this.value);
     }
     componentDidLoad() {
         if (this.el.checkValidity() && this.state == "pending") {

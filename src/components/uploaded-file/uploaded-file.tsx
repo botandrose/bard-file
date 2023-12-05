@@ -145,8 +145,8 @@ export class UploadedFile {
   }
 
   componentDidRender() {
-    this.inputField.name = this.name
-    this.inputField.value = this.value
+    this.inputField.setAttribute("name", this.name)
+    this.inputField.setAttribute("value", this.value)
   }
 
   componentDidLoad() {
