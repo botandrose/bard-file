@@ -30,7 +30,6 @@ export namespace Components {
     }
     interface UploadedFile {
         "accepts": string;
-        "file": File;
         "filename": string;
         "filetype": string;
         "max": number;
@@ -39,7 +38,7 @@ export namespace Components {
         "size": number;
         "src": string;
         "state": string;
-        "uid": number;
+        "url": string;
         "validationMessage": string;
         "value": string;
     }
@@ -123,7 +122,6 @@ declare namespace LocalJSX {
     }
     interface UploadedFile {
         "accepts"?: string;
-        "file"?: File;
         "filename"?: string;
         "filetype"?: string;
         "max"?: number;
@@ -133,7 +131,7 @@ declare namespace LocalJSX {
         "size"?: number;
         "src"?: string;
         "state"?: string;
-        "uid"?: number;
+        "url"?: string;
         "validationMessage"?: string;
         "value"?: string;
     }

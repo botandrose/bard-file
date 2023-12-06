@@ -11,7 +11,7 @@ export default class DirectUploadController {
 
   constructor(uploadedFile) {
     this.uploadedFile = uploadedFile
-    this.file = this.uploadedFile.file
+    this.file = this.uploadedFile["file"]
     this.directUpload = new DirectUpload(this.file, this.uploadedFile.url, this)
   }
 

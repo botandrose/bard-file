@@ -5,6 +5,9 @@ import Max from './max'
 import Accepts from './accepts'
 import Extensions from './extensions'
 import { get } from 'rails-request-json'
+import morph from "morphdom"
+
+let uid = 0
 
 @Component({
   tag: 'uploaded-file',
@@ -12,54 +15,22 @@ import { get } from 'rails-request-json'
   shadow: true,
 })
 export class UploadedFile {
-  static fromFile(file, props={}): UploadedFile {
-    let uploadedFile = document.createElement("uploaded-file") as any
-    uploadedFile = Object.assign(uploadedFile, {
-      ...props,
-      src: URL.createObjectURL(file),
-      filename: file.name,
-      filetype: Extensions.getFileType(file.name),
-      size: file.size,
-      state: "pending",
-      percent: 0,
-      file: file,
-    })
-    return uploadedFile
-  }
-
-  static fromSignedId(signedId, props={}) {
-    return get(`/rails/active_storage/blobs/info/${signedId}`).then(blob => {
-      return Object.assign(document.createElement("uploaded-file"), {
-        ...props,
-        src: `/rails/active_storage/blobs/redirect/${signedId}/${blob.filename}`,
-        filename: blob.filename,
-        filetype: Extensions.getFileType(blob.filename),
-        size: blob.byte_size,
-        state: "complete",
-        percent: 100,
-        value: signedId,
-      })
-    })
-  }
-
   @Element() el
 
-  @Prop({ reflect: true }) name: string
-  @Prop({ reflect: true }) value: string
-  @Prop({ reflect: true }) filename: string
-  @Prop({ reflect: true }) src: string
-  @Prop({ reflect: true }) filetype: string
-  @Prop({ reflect: true }) size: number
+  @Prop({ reflect: true, mutable: true }) name: string
+  @Prop({ reflect: true, mutable: true }) accepts: string
+  @Prop({ reflect: true, mutable: true }) max: number
+  @Prop({ reflect: true, mutable: true }) url: string
 
-  @Prop({ reflect: true }) accepts: string
-  @Prop({ reflect: true }) max: number
-
+  @Prop({ reflect: true, mutable: true }) value: string
+  @Prop({ reflect: true, mutable: true }) filename: string
+  @Prop({ reflect: true, mutable: true }) src: string
+  @Prop({ reflect: true, mutable: true }) filetype: string
+  @Prop({ reflect: true, mutable: true }) size: number
   @Prop({ reflect: true, mutable: true }) state: string = "complete"
   @Prop({ reflect: true, mutable: true }) percent: number = 100
 
-  @Prop() file: File
   @Prop() validationMessage: string
-  @Prop() uid: number
 
   @Event({ eventName: "uploaded-file:remove" }) removeEvent: EventEmitter
 
@@ -70,25 +41,45 @@ export class UploadedFile {
     this.removeEvent.emit(this)
   }
 
-  inputField: HTMLInputElement
+  inputTarget: HTMLInputElement
   controller: DirectUploadController
-  url: string
+  _file: File
+  uid: number
 
   constructor() {
     this.uid = uid++
-    this.inputField = document.createElement("input")
-    this.inputField.style.cssText = "opacity: 0.01; width: 1px; height: 1px; z-index: -999"
-    this.inputField.name = this.name
-    this.inputField.value = this.value
+    this.inputTarget = document.createElement("input")
+    this.inputTarget.id = "input-target"
+  }
 
-    this.el.checkValidity = () => {
-      let errors = []
-      errors.push(...new Accepts(this).errors)
-      errors.push(...new Max(this).errors)
-      this.inputField.setCustomValidity(errors.join(" "))
-      this.inputField.reportValidity()
-      return errors.length === 0
-    }
+  componentWillLoad() {
+    this.el.appendChild(this.inputTarget)
+  }
+
+  get file() {
+    return this._file
+  }
+
+  set file(file: any) {
+    this.src = URL.createObjectURL(file)
+    this.filename = file.name
+    this.filetype = Extensions.getFileType(file.name)
+    this.size = file.size
+    this.state = "pending"
+    this.percent = 0
+    this._file = file
+  }
+
+  set signedId(val) {
+    get(`/rails/active_storage/blobs/info/${val}`).then(blob => {
+      this.src = `/rails/active_storage/blobs/redirect/${val}/${blob.filename}`
+      this.filename = blob.filename
+      this.filetype = Extensions.getFileType(blob.filename)
+      this.size = blob.byte_size
+      this.state = "complete"
+      this.percent = 100
+      this.value = val
+    })
   }
 
   @Listen("direct-upload:initialize")
@@ -109,7 +100,7 @@ export class UploadedFile {
     event.preventDefault()
     const { error } = event.detail
     this.state = "error"
-    this.inputField.setCustomValidity(error)
+    this.inputTarget.setCustomValidity(error)
   }
 
   @Listen("direct-upload:end")
@@ -140,21 +131,30 @@ export class UploadedFile {
     )
   }
 
-  componentWillLoad() {
-    this.el.appendChild(this.inputField)
-  }
-
   componentDidRender() {
-    this.inputField.setAttribute("name", this.name)
-    this.inputField.setAttribute("value", this.value)
+    morph(this.inputTarget, `
+      <input
+        id="input-target"
+        style="opacity: 0.01; width: 1px; height: 1px; z-index: -999"
+        name="${this.name}"
+        value="${this.value}"
+      >`)
   }
 
   componentDidLoad() {
-    if(this.el.checkValidity() && this.state == "pending") {
+    if(this.checkValidity() && this.state == "pending") {
       this.controller = new DirectUploadController(this.el)
       this.controller.dispatch("initialize", { controller: this.controller })
     }
   }
+
+  checkValidity() {
+    let errors = []
+    errors.push(...new Accepts(this).errors)
+    errors.push(...new Max(this).errors)
+    this.inputTarget.setCustomValidity(errors.join(" "))
+    this.inputTarget.reportValidity()
+    return errors.length === 0
+  }
 }
 
-let uid = 0

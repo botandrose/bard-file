@@ -1,5 +1,5 @@
 import { proxyCustomElement, HTMLElement, h, Host } from '@stencil/core/internal/client';
-import { U as UploadedFile } from './uploaded-file2.js';
+import { U as UploadedFile, m as morphdom } from './uploaded-file2.js';
 import { d as defineCustomElement$2 } from './file-drop2.js';
 
 class FormController {
@@ -123,6 +123,9 @@ const bardFileCss = ":host{display:block;padding:25px;color:var(--bard-file-text
 
 const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLElement {
     get el() { return this; }
+    forceUpdate() {
+        this._forceUpdate = !this._forceUpdate;
+    }
     originalId;
     fileTarget;
     hiddenTarget;
@@ -138,25 +141,37 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         this.accepts = undefined;
         this.max = undefined;
         this.files = undefined;
+        this._forceUpdate = false;
         this.originalId = this.el.id;
+        this.hiddenTarget = document.createElement("input");
+        this.hiddenTarget.id = "hidden-target";
+        this.fileTarget = document.createElement("input");
+        this.fileTarget.id = this.originalId;
+        this.fileTarget.addEventListener("change", event => this.fileTargetChanged(event));
         this.files = Array.from(this.el.children).filter(e => e.tagName == "UPLOADED-FILE");
-        Object.defineProperty(this.el, "value", {
-            get() {
-                return this.files.map(uploadedFile => uploadedFile.value);
-            },
-            set(val) {
-                this.files = [];
-                const signedIds = this.signedIdsFromValue(val);
-                const promises = signedIds.map(signedId => {
-                    return UploadedFile.fromSignedId(signedId, { name: this.name });
-                });
-                Promise.all(promises).then(uploadedFiles => {
-                    this.assignFiles(uploadedFiles);
-                });
-            },
-        });
     }
-    signedIdsFromValue(value) {
+    componentWillLoad() {
+        this.el.removeAttribute("id");
+        this.el.insertAdjacentElement("afterbegin", this.hiddenTarget);
+        this.el.insertAdjacentElement("afterbegin", this.fileTarget);
+        this.formController = FormController.forForm(this.el.closest("form"));
+    }
+    // Methods
+    get value() {
+        return this.files.map(uploadedFile => uploadedFile.value);
+    }
+    set value(val) {
+        this.files = [];
+        const signedIds = this._signedIdsFromValue(val);
+        const uploadedFiles = signedIds.map(signedId => {
+            const e = new UploadedFile();
+            e.name = this.name;
+            e.signedId = signedId;
+            return e;
+        });
+        this.assignFiles(uploadedFiles);
+    }
+    _signedIdsFromValue(value) {
         let signedIds = [];
         if (typeof value == "string" && value.length > 0) {
             signedIds = value.split(",");
@@ -168,18 +183,17 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
             return signedId.toString().length > 0;
         });
     }
-    connectedCallback() {
-        this.el.removeAttribute("id");
-        this.formController = FormController.forForm(this.el.closest("form"));
-    }
     fileTargetChanged(_event) {
         const uploadedFiles = Array.from(this.fileTarget.files).map(file => {
-            return UploadedFile.fromFile(file, {
-                name: this.name,
-                accepts: this.accepts,
-                max: this.max,
-                url: this.directupload,
-            });
+            const e = new UploadedFile();
+            e.name = this.name;
+            e.url = this.directupload;
+            if (this.accepts)
+                e.accepts = this.accepts;
+            if (this.max)
+                e.max = this.max;
+            e["file"] = file;
+            return e;
         });
         this.fileTarget.value = null;
         this.assignFiles(uploadedFiles);
@@ -187,41 +201,39 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
     assignFiles(uploadedFiles) {
         if (this.multiple) {
             this.files.push(...uploadedFiles);
+            this.forceUpdate();
         }
         else {
             this.files = uploadedFiles.slice(-1);
         }
-        this.render();
-        this.renderFiles();
         this.el.dispatchEvent(new Event("change"));
     }
     removeUploadedFile(event) {
-        const index = this.files.findIndex(uf => uf.uid === event.detail.uid);
+        const index = this.files.findIndex(uf => uf === event.detail);
         if (index !== -1)
             this.files.splice(index, 1);
-        this.render();
-        this.renderFiles();
+        this.forceUpdate();
         this.el.dispatchEvent(new Event("change"));
     }
-    componentWillLoad() {
-        this.hiddenTarget = document.createElement("input");
-        this.hiddenTarget.setAttribute("type", "hidden");
-        this.hiddenTarget.setAttribute("name", this.name);
-        this.el.insertAdjacentElement("afterbegin", this.hiddenTarget);
-        this.fileTarget = document.createElement("input");
-        this.fileTarget.setAttribute("type", "file");
-        this.fileTarget.setAttribute("id", this.originalId);
-        this.fileTarget.style.cssText = "opacity: 0.01; width: 1px; height: 1px; z-index: -999";
-        this.fileTarget.multiple = this.multiple;
-        this.fileTarget.addEventListener("change", event => this.fileTargetChanged(event));
-        this.el.insertAdjacentElement("afterbegin", this.fileTarget);
-    }
+    // Rendering
     render() {
-        this.fileTarget.required = this.files.length === 0 && this.required;
-        this.hiddenTarget.disabled = this.files.length > 0;
         return (h(Host, null, h("file-drop", { for: this.originalId }, h("i", { class: "drag-icon" }), h("p", null, h("strong", null, "Choose ", this.multiple ? "files" : "file", " "), h("span", null, "or drag ", this.multiple ? "them" : "it", " here.")), h("div", { class: `media-preview ${this.multiple ? '-stacked' : ''}` }, h("slot", null)))));
     }
-    renderFiles() {
+    componentDidRender() {
+        morphdom(this.fileTarget, `
+      <input
+        type="file"
+        id="${this.originalId}"
+        ${this.multiple ? "multiple" : ""}
+        ${this.required && this.files.length === 0 ? "required" : ""}
+        style="opacity: 0.01; width: 1px; height: 1px; z-index: -999"
+      >`);
+        morphdom(this.hiddenTarget, `
+      <input
+        type="hidden"
+        id="hidden-target"
+        name="${this.name}" ${this.files.length > 0 ? "disabled" : ""}
+      >`);
         const existingUploadedFiles = Array.from(this.el.children).filter(e => e.tagName === "UPLOADED-FILE");
         this.files.forEach(uploadedFile => {
             if (!existingUploadedFiles.includes(uploadedFile)) {
@@ -234,6 +246,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
             }
         });
     }
+    // Validations
     checkValidity() {
         return this.fileTarget.checkValidity();
     }
@@ -254,7 +267,8 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         "required": [4],
         "accepts": [1],
         "max": [2],
-        "files": [1040]
+        "files": [1040],
+        "_forceUpdate": [32]
     }, [[0, "uploaded-file:remove", "removeUploadedFile"]]]);
 function defineCustomElement$1() {
     if (typeof customElements === "undefined") {

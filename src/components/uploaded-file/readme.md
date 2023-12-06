@@ -10,7 +10,6 @@
 | Property            | Attribute            | Description | Type     | Default      |
 | ------------------- | -------------------- | ----------- | -------- | ------------ |
 | `accepts`           | `accepts`            |             | `string` | `undefined`  |
-| `file`              | --                   |             | `File`   | `undefined`  |
 | `filename`          | `filename`           |             | `string` | `undefined`  |
 | `filetype`          | `filetype`           |             | `string` | `undefined`  |
 | `max`               | `max`                |             | `number` | `undefined`  |
@@ -19,7 +18,7 @@
 | `size`              | `size`               |             | `number` | `undefined`  |
 | `src`               | `src`                |             | `string` | `undefined`  |
 | `state`             | `state`              |             | `string` | `"complete"` |
-| `uid`               | `uid`                |             | `number` | `undefined`  |
+| `url`               | `url`                |             | `string` | `undefined`  |
 | `validationMessage` | `validation-message` |             | `string` | `undefined`  |
 | `value`             | `value`              |             | `string` | `undefined`  |
 
@@ -33,20 +32,16 @@
 
 ## Dependencies
 
-### Used by
-
- - [uploaded-file](.)
-
 ### Depends on
 
-- [uploaded-file](.)
 - [progress-bar](../progress-bar)
 - [file-preview](../file-preview)
 
 ### Graph
 ```mermaid
 graph TD;
-  uploaded-file --> uploaded-file
+  uploaded-file --> progress-bar
+  uploaded-file --> file-preview
   style uploaded-file fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

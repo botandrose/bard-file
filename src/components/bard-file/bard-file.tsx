@@ -1,7 +1,8 @@
-import { Component, Element, Prop, Listen, Host, h } from '@stencil/core';
+import { Component, Element, Prop, State, Listen, Host, h } from '@stencil/core';
 import FormController from "./form-controller"
 import { UploadedFile } from "../uploaded-file/uploaded-file"
 import { FileDrop as _ } from "../file-drop/file-drop"
+import morph from "morphdom"
 
 @Component({
   tag: 'bard-file',
@@ -21,6 +22,11 @@ export class BardFile {
 
   @Prop({ mutable: true }) files: Array<any>
 
+  @State() _forceUpdate: boolean = false
+  forceUpdate() {
+    this._forceUpdate = !this._forceUpdate
+  }
+
   originalId: string
   fileTarget: HTMLInputElement
   hiddenTarget: HTMLInputElement
@@ -29,26 +35,42 @@ export class BardFile {
   constructor() {
     this.originalId = this.el.id
 
-    this.files = Array.from(this.el.children).filter(e => e.tagName == "UPLOADED-FILE")
+    this.hiddenTarget = document.createElement("input")
+    this.hiddenTarget.id = "hidden-target"
 
-    Object.defineProperty(this.el, "value", {
-      get () {
-        return this.files.map(uploadedFile => uploadedFile.value)
-      },
-      set (val) {
-        this.files = []
-        const signedIds = this.signedIdsFromValue(val)
-        const promises = signedIds.map(signedId => {
-          return UploadedFile.fromSignedId(signedId, { name: this.name })
-        })
-        Promise.all(promises).then(uploadedFiles => {
-          this.assignFiles(uploadedFiles)
-        })
-      },
-    })
+    this.fileTarget = document.createElement("input")
+    this.fileTarget.id = this.originalId
+    this.fileTarget.addEventListener("change", event => this.fileTargetChanged(event))
+
+    this.files = Array.from(this.el.children).filter(e => e.tagName == "UPLOADED-FILE")
   }
 
-  signedIdsFromValue(value) {
+  componentWillLoad() {
+    this.el.removeAttribute("id")
+    this.el.insertAdjacentElement("afterbegin", this.hiddenTarget)
+    this.el.insertAdjacentElement("afterbegin", this.fileTarget)
+    this.formController = FormController.forForm(this.el.closest("form"))
+  }
+
+  // Methods
+
+  get value() {
+    return this.files.map(uploadedFile => uploadedFile.value)
+  }
+
+  set value(val) {
+    this.files = []
+    const signedIds = this._signedIdsFromValue(val)
+    const uploadedFiles = signedIds.map(signedId => {
+      const e = new UploadedFile()
+      e.name = this.name
+      e.signedId = signedId
+      return e
+    })
+    this.assignFiles(uploadedFiles)
+  }
+
+  _signedIdsFromValue(value) {
     let signedIds = []
     if(typeof value == "string" && value.length > 0) {
       signedIds = value.split(",")
@@ -61,19 +83,15 @@ export class BardFile {
     })
   }
 
-  connectedCallback() {
-    this.el.removeAttribute("id")
-    this.formController = FormController.forForm(this.el.closest("form"))
-  }
-
   fileTargetChanged(_event) {
     const uploadedFiles = Array.from(this.fileTarget.files).map(file => {
-      return UploadedFile.fromFile(file, {
-        name: this.name,
-        accepts: this.accepts,
-        max: this.max,
-        url: this.directupload,
-      })
+      const e = new UploadedFile()
+      e.name = this.name
+      e.url = this.directupload
+      if(this.accepts) e.accepts = this.accepts
+      if(this.max) e.max = this.max
+      e["file"] = file
+      return e
     })
     this.fileTarget.value = null
     this.assignFiles(uploadedFiles)
@@ -81,43 +99,25 @@ export class BardFile {
 
   assignFiles(uploadedFiles) {
     if(this.multiple) {
-      this.files.push(...uploadedFiles)
+      this.files.push(...uploadedFiles);
+      this.forceUpdate()
     } else {
       this.files = uploadedFiles.slice(-1)
     }
-    this.render()
-    this.renderFiles()
     this.el.dispatchEvent(new Event("change"))
   }
 
   @Listen("uploaded-file:remove")
   removeUploadedFile(event) {
-    const index = this.files.findIndex(uf => uf.uid === event.detail.uid)
-    if(index !== -1) this.files.splice(index, 1)
-    this.render()
-    this.renderFiles()
+    const index = this.files.findIndex(uf => uf === event.detail)
+    if(index !== -1) this.files.splice(index, 1);
+    this.forceUpdate()
     this.el.dispatchEvent(new Event("change"))
   }
 
-  componentWillLoad() {
-    this.hiddenTarget = document.createElement("input")
-    this.hiddenTarget.setAttribute("type", "hidden")
-    this.hiddenTarget.setAttribute("name", this.name)
-    this.el.insertAdjacentElement("afterbegin", this.hiddenTarget)
-
-    this.fileTarget = document.createElement("input")
-    this.fileTarget.setAttribute("type", "file")
-    this.fileTarget.setAttribute("id", this.originalId)
-    this.fileTarget.style.cssText = "opacity: 0.01; width: 1px; height: 1px; z-index: -999"
-    this.fileTarget.multiple = this.multiple
-    this.fileTarget.addEventListener("change", event => this.fileTargetChanged(event))
-    this.el.insertAdjacentElement("afterbegin", this.fileTarget)
-  }
+  // Rendering
 
   render() {
-    this.fileTarget.required = this.files.length === 0 && this.required
-    this.hiddenTarget.disabled = this.files.length > 0
-
     return (
       <Host>
         <file-drop for={this.originalId}>
@@ -135,7 +135,22 @@ export class BardFile {
     )
   }
 
-  renderFiles() {
+  componentDidRender() {
+    morph(this.fileTarget, `
+      <input
+        type="file"
+        id="${this.originalId}"
+        ${this.multiple ? "multiple" : ""}
+        ${this.required && this.files.length === 0 ? "required" : ""}
+        style="opacity: 0.01; width: 1px; height: 1px; z-index: -999"
+      >`)
+    morph(this.hiddenTarget, `
+      <input
+        type="hidden"
+        id="hidden-target"
+        name="${this.name}" ${this.files.length > 0 ? "disabled" : ""}
+      >`)
+
     const existingUploadedFiles = Array.from(this.el.children).filter(e => e.tagName === "UPLOADED-FILE")
     this.files.forEach(uploadedFile => {
       if(!existingUploadedFiles.includes(uploadedFile as any)) {
@@ -148,6 +163,8 @@ export class BardFile {
       }
     })
   }
+
+  // Validations
 
   checkValidity() {
     return this.fileTarget.checkValidity()
@@ -165,3 +182,9 @@ export class BardFile {
     return this.fileTarget.validationMessage
   }
 }
+
+// function html(html) {
+//   const el = document.createElement("div")
+//   morph(el, `<div>${html}</div>`)
+//   return el.children[0]
+// }
