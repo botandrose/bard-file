@@ -1,7 +1,7 @@
 import DirectUploadController from "../uploaded-file/direct-upload-controller"
 
 export default class FormController {
-  static forForm(form) {
+  static instance(form) {
     return form.bardFileFormController ||= new FormController(form)
   }
 

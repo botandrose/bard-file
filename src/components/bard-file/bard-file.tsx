@@ -30,7 +30,6 @@ export class BardFile {
   originalId: string
   fileTarget: HTMLInputElement
   hiddenTarget: HTMLInputElement
-  formController: FormController
 
   constructor() {
     this.originalId = this.el.id
@@ -49,7 +48,7 @@ export class BardFile {
     this.el.removeAttribute("id")
     this.el.insertAdjacentElement("afterbegin", this.hiddenTarget)
     this.el.insertAdjacentElement("afterbegin", this.fileTarget)
-    this.formController = FormController.forForm(this.el.closest("form"))
+    FormController.instance(this.el.closest("form"))
   }
 
   // Methods
