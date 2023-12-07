@@ -20,27 +20,16 @@ export class BardFile {
   @Prop() accepts: string
   @Prop() max: number
 
-  @Prop({ mutable: true }) files: Array<any>
-
   @State() _forceUpdate: boolean = false
-  forceUpdate() {
-    this._forceUpdate = !this._forceUpdate
-  }
+  forceUpdate() { this._forceUpdate = !this._forceUpdate }
 
-  originalId: string
   fileTarget: HTMLInputElement
   hiddenTarget: HTMLInputElement
+  _files: Array<any>
 
   constructor() {
-    this.originalId = this.el.id
-
-    this.hiddenTarget = document.createElement("input")
-    this.hiddenTarget.id = "hidden-target"
-
-    this.fileTarget = document.createElement("input")
-    this.fileTarget.id = this.originalId
-    this.fileTarget.addEventListener("change", event => this.fileTargetChanged(event))
-
+    this.hiddenTarget = html(`<input id="hidden-target">`) as HTMLInputElement
+    this.fileTarget = html(`<input id="${this.el.id}">`) as HTMLInputElement
     this.files = Array.from(this.el.children).filter(e => e.tagName == "UPLOADED-FILE")
   }
 
@@ -53,64 +42,46 @@ export class BardFile {
 
   // Methods
 
+  get files() {
+    return this._files
+  }
+
+  set files(val) {
+    this._files = val
+    if(!this.multiple) this._files = this._files.slice(-1)
+    this.forceUpdate()
+  }
+
   get value() {
-    return this.files.map(uploadedFile => uploadedFile.value)
+    return this.files.map(e => e.value)
   }
 
   set value(val) {
-    this.files = []
-    const signedIds = this._signedIdsFromValue(val)
-    const uploadedFiles = signedIds.map(signedId => {
-      const e = new UploadedFile()
-      e.name = this.name
-      e.signedId = signedId
-      return e
-    })
-    this.assignFiles(uploadedFiles)
+    this.files = (val || []).map(signedId => Object.assign(new UploadedFile(), {
+      name: this.name,
+      signedId,
+    }))
   }
 
-  _signedIdsFromValue(value) {
-    let signedIds = []
-    if(typeof value == "string" && value.length > 0) {
-      signedIds = value.split(",")
-    }
-    if(Array.isArray(value)) {
-      signedIds = value
-    }
-    return signedIds.filter(signedId => {
-      return signedId.toString().length > 0
-    })
-  }
-
-  fileTargetChanged(_event) {
-    const uploadedFiles = Array.from(this.fileTarget.files).map(file => {
-      const e = new UploadedFile()
-      e.name = this.name
-      e.url = this.directupload
-      if(this.accepts) e.accepts = this.accepts
-      if(this.max) e.max = this.max
-      e["file"] = file
-      return e
-    })
+  @Listen("change")
+  fileTargetChanged(event) {
+    if(event.target !== this.fileTarget) return
+    this.files.push(...Array.from(this.fileTarget.files).map(file => Object.assign(new UploadedFile(), {
+      name: this.name,
+      url: this.directupload,
+      accepts: this.accepts,
+      max: this.max,
+      file,
+    })))
+    this.files = this.files
     this.fileTarget.value = null
-    this.assignFiles(uploadedFiles)
-  }
-
-  assignFiles(uploadedFiles) {
-    if(this.multiple) {
-      this.files.push(...uploadedFiles);
-      this.forceUpdate()
-    } else {
-      this.files = uploadedFiles.slice(-1)
-    }
     this.el.dispatchEvent(new Event("change"))
   }
 
   @Listen("uploaded-file:remove")
   removeUploadedFile(event) {
-    const index = this.files.findIndex(uf => uf === event.detail)
-    if(index !== -1) this.files.splice(index, 1);
-    this.forceUpdate()
+    arrayRemove(this.files, event.detail)
+    this.files = this.files
     this.el.dispatchEvent(new Event("change"))
   }
 
@@ -119,7 +90,7 @@ export class BardFile {
   render() {
     return (
       <Host>
-        <file-drop for={this.originalId}>
+        <file-drop for={this.fileTarget.id}>
           <i class="drag-icon"></i>
           <p>
             <strong>Choose {this.multiple ? "files" : "file"} </strong>
@@ -138,7 +109,7 @@ export class BardFile {
     morph(this.fileTarget, `
       <input
         type="file"
-        id="${this.originalId}"
+        id="${this.fileTarget.id}"
         ${this.multiple ? "multiple" : ""}
         ${this.required && this.files.length === 0 ? "required" : ""}
         style="opacity: 0.01; width: 1px; height: 1px; z-index: -999"
@@ -182,8 +153,15 @@ export class BardFile {
   }
 }
 
-// function html(html) {
-//   const el = document.createElement("div")
-//   morph(el, `<div>${html}</div>`)
-//   return el.children[0]
-// }
+function html(html) {
+  const el = document.createElement("div")
+  morph(el, `<div>${html}</div>`)
+  return el.children[0]
+}
+
+function arrayRemove(arr, e) {
+  const index = arr.findIndex(x => x === e)
+  if(index !== -1) {
+    arr.splice(index, 1)
+  }
+}

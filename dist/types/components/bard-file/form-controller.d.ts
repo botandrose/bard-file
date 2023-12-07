@@ -1,6 +1,6 @@
 import DirectUploadController from "../uploaded-file/direct-upload-controller";
 export default class FormController {
-    static forForm(form: any): any;
+    static instance(form: any): any;
     progressContainerTarget: HTMLElement;
     dialog: HTMLDialogElement;
     element: HTMLFormElement;

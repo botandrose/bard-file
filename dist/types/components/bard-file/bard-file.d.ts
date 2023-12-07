@@ -1,4 +1,3 @@
-import FormController from "./form-controller";
 export declare class BardFile {
     el: HTMLElement;
     name: string;
@@ -7,20 +6,18 @@ export declare class BardFile {
     required: boolean;
     accepts: string;
     max: number;
-    files: Array<any>;
     _forceUpdate: boolean;
     forceUpdate(): void;
-    originalId: string;
     fileTarget: HTMLInputElement;
     hiddenTarget: HTMLInputElement;
-    formController: FormController;
+    _files: Array<any>;
     constructor();
     componentWillLoad(): void;
+    get files(): any[];
+    set files(val: any[]);
     get value(): any[];
     set value(val: any[]);
-    _signedIdsFromValue(value: any): any[];
-    fileTargetChanged(_event: any): void;
-    assignFiles(uploadedFiles: any): void;
+    fileTargetChanged(event: any): void;
     removeUploadedFile(event: any): void;
     render(): any;
     componentDidRender(): void;
