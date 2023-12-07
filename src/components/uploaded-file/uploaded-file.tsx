@@ -5,7 +5,7 @@ import Max from './max'
 import Accepts from './accepts'
 import Extensions from './extensions'
 import { get } from 'rails-request-json'
-import morph from "morphdom"
+import { morph, html } from "../../utils/utils"
 
 let uid = 0
 
@@ -48,8 +48,7 @@ export class UploadedFile {
 
   constructor() {
     this.uid = uid++
-    this.inputTarget = document.createElement("input")
-    this.inputTarget.id = "input-target"
+    this.inputTarget = html(`<input id="input-target">`) as HTMLInputElement
   }
 
   componentWillLoad() {

@@ -1,5 +1,5 @@
 import { proxyCustomElement, HTMLElement, h, Host } from '@stencil/core/internal/client';
-import { U as UploadedFile, m as morphdom } from './uploaded-file2.js';
+import { h as html, U as UploadedFile, a as arrayRemove, m as morphdom } from './uploaded-file2.js';
 import { d as defineCustomElement$2 } from './file-drop2.js';
 
 class FormController {
@@ -202,19 +202,12 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
       <input
         type="hidden"
         id="hidden-target"
-        name="${this.name}" ${this.files.length > 0 ? "disabled" : ""}
+        name="${this.name}"
+        ${this.files.length > 0 ? "disabled" : ""}
       >`);
-        const existingUploadedFiles = Array.from(this.el.children).filter(e => e.tagName === "UPLOADED-FILE");
-        this.files.forEach(uploadedFile => {
-            if (!existingUploadedFiles.includes(uploadedFile)) {
-                this.el.append(uploadedFile);
-            }
-        });
-        existingUploadedFiles.forEach(dom => {
-            if (!this.files.includes(dom)) {
-                this.el.removeChild(dom);
-            }
-        });
+        const wrapper = document.createElement("div");
+        wrapper.replaceChildren(this.fileTarget, this.hiddenTarget, ...this.files);
+        morphdom(this.el, wrapper, { childrenOnly: true });
     }
     // Validations
     checkValidity() {
@@ -239,17 +232,6 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         "max": [2],
         "_forceUpdate": [32]
     }, [[0, "change", "fileTargetChanged"], [0, "uploaded-file:remove", "removeUploadedFile"]]]);
-function html(html) {
-    const el = document.createElement("div");
-    morphdom(el, `<div>${html}</div>`);
-    return el.children[0];
-}
-function arrayRemove(arr, e) {
-    const index = arr.findIndex(x => x === e);
-    if (index !== -1) {
-        arr.splice(index, 1);
-    }
-}
 function defineCustomElement$1() {
     if (typeof customElements === "undefined") {
         return;

@@ -121,17 +121,9 @@ export class BardFile {
         ${this.files.length > 0 ? "disabled" : ""}
       >`)
 
-    const existingUploadedFiles = Array.from(this.el.children).filter(e => e.tagName === "UPLOADED-FILE")
-    this.files.forEach(uploadedFile => {
-      if(!existingUploadedFiles.includes(uploadedFile as any)) {
-        this.el.append(uploadedFile as any)
-      }
-    })
-    existingUploadedFiles.forEach(dom => {
-      if(!this.files.includes(dom as any)) {
-        this.el.removeChild(dom as any)
-      }
-    })
+    const wrapper = document.createElement("div")
+    wrapper.replaceChildren(this.fileTarget, this.hiddenTarget, ...this.files)
+    morph(this.el, wrapper, { childrenOnly: true })
   }
 
   // Validations
