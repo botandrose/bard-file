@@ -50,6 +50,7 @@ export class BardFile {
     this._files = val
     if(!this.multiple) this._files = this._files.slice(-1)
     this.forceUpdate()
+    this.el.dispatchEvent(new Event("change"))
   }
 
   get value() {
@@ -75,14 +76,12 @@ export class BardFile {
     })))
     this.files = this.files
     this.fileTarget.value = null
-    this.el.dispatchEvent(new Event("change"))
   }
 
   @Listen("uploaded-file:remove")
   removeUploadedFile(event) {
     arrayRemove(this.files, event.detail)
     this.files = this.files
-    this.el.dispatchEvent(new Event("change"))
   }
 
   // Rendering
