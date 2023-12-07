@@ -2,7 +2,7 @@ import { Component, Element, Prop, State, Listen, Host, h } from '@stencil/core'
 import FormController from "./form-controller"
 import { UploadedFile } from "../uploaded-file/uploaded-file"
 import { FileDrop as _ } from "../file-drop/file-drop"
-import morph from "morphdom"
+import { morph, html, arrayRemove } from "../../utils/utils"
 
 @Component({
   tag: 'bard-file',
@@ -117,7 +117,8 @@ export class BardFile {
       <input
         type="hidden"
         id="hidden-target"
-        name="${this.name}" ${this.files.length > 0 ? "disabled" : ""}
+        name="${this.name}"
+        ${this.files.length > 0 ? "disabled" : ""}
       >`)
 
     const existingUploadedFiles = Array.from(this.el.children).filter(e => e.tagName === "UPLOADED-FILE")
@@ -152,15 +153,3 @@ export class BardFile {
   }
 }
 
-function html(html) {
-  const el = document.createElement("div")
-  morph(el, `<div>${html}</div>`)
-  return el.children[0]
-}
-
-function arrayRemove(arr, e) {
-  const index = arr.findIndex(x => x === e)
-  if(index !== -1) {
-    arr.splice(index, 1)
-  }
-}

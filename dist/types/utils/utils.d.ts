@@ -1,1 +1,4 @@
-export declare function format(first: string, middle: string, last: string): string;
+import morph from "morphdom";
+declare function html(html: any): Element;
+declare function arrayRemove(arr: any, e: any): void;
+export { morph, html, arrayRemove };
