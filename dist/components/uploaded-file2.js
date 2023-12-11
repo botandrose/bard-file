@@ -2130,6 +2130,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
     }
     componentWillLoad() {
         this.el.appendChild(this.inputTarget);
+        this.setMissingFiletype();
     }
     get file() {
         return this._file;
@@ -2137,7 +2138,6 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
     set file(file) {
         this.src = URL.createObjectURL(file);
         this.filename = file.name;
-        this.filetype = Extensions.getFileType(file.name);
         this.size = file.size;
         this.state = "pending";
         this.percent = 0;
@@ -2147,12 +2147,16 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         get(`/rails/active_storage/blobs/info/${val}`).then(blob => {
             this.src = `/rails/active_storage/blobs/redirect/${val}/${blob.filename}`;
             this.filename = blob.filename;
-            this.filetype = Extensions.getFileType(blob.filename);
             this.size = blob.byte_size;
             this.state = "complete";
             this.percent = 100;
             this.value = val;
         });
+    }
+    setMissingFiletype(_value, _previousValue) {
+        if (!this.filetype && this.filename) {
+            this.filetype = Extensions.getFileType(this.filename);
+        }
     }
     start(_event) {
         this.state = "pending";
@@ -2200,6 +2204,9 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         this.inputTarget.reportValidity();
         return errors.length === 0;
     }
+    static get watchers() { return {
+        "filename": ["setMissingFiletype"]
+    }; }
     static get style() { return uploadedFileCss; }
 }, [1, "uploaded-file", {
         "name": [1537],
@@ -2214,7 +2221,9 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         "state": [1537],
         "percent": [1538],
         "validationMessage": [1, "validation-message"]
-    }, [[0, "direct-upload:initialize", "start"], [0, "direct-upload:start", "start"], [0, "direct-upload:progress", "progress"], [0, "direct-upload:error", "error"], [0, "direct-upload:end", "end"]]]);
+    }, [[0, "direct-upload:initialize", "start"], [0, "direct-upload:start", "start"], [0, "direct-upload:progress", "progress"], [0, "direct-upload:error", "error"], [0, "direct-upload:end", "end"]], {
+        "filename": ["setMissingFiletype"]
+    }]);
 function defineCustomElement() {
     if (typeof customElements === "undefined") {
         return;

@@ -1,4 +1,4 @@
-import { Component, Prop, Element, Host, h } from '@stencil/core'
+import { Component, Prop, Element, Watch, Host, h } from '@stencil/core'
 import { Listen, Event, EventEmitter } from '@stencil/core'
 import DirectUploadController from './direct-upload-controller'
 import Max from './max'
@@ -53,6 +53,7 @@ export class UploadedFile {
 
   componentWillLoad() {
     this.el.appendChild(this.inputTarget)
+    this.setMissingFiletype()
   }
 
   get file() {
@@ -62,7 +63,6 @@ export class UploadedFile {
   set file(file: any) {
     this.src = URL.createObjectURL(file)
     this.filename = file.name
-    this.filetype = Extensions.getFileType(file.name)
     this.size = file.size
     this.state = "pending"
     this.percent = 0
@@ -73,12 +73,18 @@ export class UploadedFile {
     get(`/rails/active_storage/blobs/info/${val}`).then(blob => {
       this.src = `/rails/active_storage/blobs/redirect/${val}/${blob.filename}`
       this.filename = blob.filename
-      this.filetype = Extensions.getFileType(blob.filename)
       this.size = blob.byte_size
       this.state = "complete"
       this.percent = 100
       this.value = val
     })
+  }
+
+  @Watch("filename")
+  setMissingFiletype(_value?, _previousValue?) {
+    if(!this.filetype && this.filename) {
+      this.filetype = Extensions.getFileType(this.filename)
+    }
   }
 
   @Listen("direct-upload:initialize")

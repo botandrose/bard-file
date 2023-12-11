@@ -25,6 +25,7 @@ export declare class UploadedFile {
     get file(): any;
     set file(file: any);
     set signedId(val: any);
+    setMissingFiletype(_value?: any, _previousValue?: any): void;
     start(_event: any): void;
     progress(event: any): void;
     error(event: any): void;
