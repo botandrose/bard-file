@@ -8,6 +8,7 @@ export declare class BardFile {
     max: number;
     _forceUpdate: boolean;
     forceUpdate(): void;
+    inputId: string;
     fileTarget: HTMLInputElement;
     hiddenTarget: HTMLInputElement;
     _files: Array<any>;

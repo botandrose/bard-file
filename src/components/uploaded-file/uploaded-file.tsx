@@ -48,7 +48,7 @@ export class UploadedFile {
 
   constructor() {
     this.uid = uid++
-    this.inputTarget = html(`<input id="input-target">`) as HTMLInputElement
+    this.inputTarget = html(`<input id="input-target-${this.uid}">`) as HTMLInputElement
   }
 
   componentWillLoad() {
@@ -139,7 +139,7 @@ export class UploadedFile {
   componentDidRender() {
     morph(this.inputTarget, `
       <input
-        id="input-target"
+        id="input-target-${this.uid}"
         style="opacity: 0.01; width: 1px; height: 1px; z-index: -999"
         name="${this.name}"
         value="${this.value}"

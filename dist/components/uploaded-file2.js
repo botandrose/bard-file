@@ -2126,7 +2126,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         this.percent = 100;
         this.validationMessage = undefined;
         this.uid = uid++;
-        this.inputTarget = html(`<input id="input-target">`);
+        this.inputTarget = html(`<input id="input-target-${this.uid}">`);
     }
     componentWillLoad() {
         this.el.appendChild(this.inputTarget);
@@ -2184,7 +2184,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
     componentDidRender() {
         morphdom(this.inputTarget, `
       <input
-        id="input-target"
+        id="input-target-${this.uid}"
         style="opacity: 0.01; width: 1px; height: 1px; z-index: -999"
         name="${this.name}"
         value="${this.value}"

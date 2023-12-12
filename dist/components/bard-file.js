@@ -124,6 +124,7 @@ const bardFileCss = ":host{display:block;padding:25px;color:var(--bard-file-text
 const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLElement {
     get el() { return this; }
     forceUpdate() { this._forceUpdate = !this._forceUpdate; }
+    inputId;
     fileTarget;
     hiddenTarget;
     _files;
@@ -138,14 +139,13 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         this.accepts = undefined;
         this.max = undefined;
         this._forceUpdate = false;
-        this.hiddenTarget = html(`<input id="hidden-target">`);
-        this.fileTarget = html(`<input id="${this.el.id}">`);
+        this.inputId = this.el.id;
+        this.hiddenTarget = html(`<input id="hidden-target-${this.name}">`);
+        this.fileTarget = html(`<input id="${this.inputId}">`);
         this.files = Array.from(this.el.children).filter(e => e.tagName == "UPLOADED-FILE");
     }
     componentWillLoad() {
         this.el.removeAttribute("id");
-        this.el.insertAdjacentElement("afterbegin", this.hiddenTarget);
-        this.el.insertAdjacentElement("afterbegin", this.fileTarget);
         FormController.instance(this.el.closest("form"));
     }
     // Methods
@@ -187,13 +187,13 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
     }
     // Rendering
     render() {
-        return (h(Host, null, h("file-drop", { for: this.fileTarget.id }, h("i", { class: "drag-icon" }), h("p", null, h("strong", null, "Choose ", this.multiple ? "files" : "file", " "), h("span", null, "or drag ", this.multiple ? "them" : "it", " here.")), h("div", { class: `media-preview ${this.multiple ? '-stacked' : ''}` }, h("slot", null)))));
+        return (h(Host, null, h("file-drop", { for: this.inputId }, h("i", { class: "drag-icon" }), h("p", null, h("strong", null, "Choose ", this.multiple ? "files" : "file", " "), h("span", null, "or drag ", this.multiple ? "them" : "it", " here.")), h("div", { class: `media-preview ${this.multiple ? '-stacked' : ''}` }, h("slot", null)))));
     }
     componentDidRender() {
         morphdom(this.fileTarget, `
       <input
         type="file"
-        id="${this.fileTarget.id}"
+        id="${this.inputId}"
         ${this.multiple ? "multiple" : ""}
         ${this.required && this.files.length === 0 ? "required" : ""}
         style="opacity: 0.01; width: 1px; height: 1px; z-index: -999"
@@ -201,7 +201,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         morphdom(this.hiddenTarget, `
       <input
         type="hidden"
-        id="hidden-target"
+        id="hidden-target-${this.name}"
         name="${this.name}"
         ${this.files.length > 0 ? "disabled" : ""}
       >`);

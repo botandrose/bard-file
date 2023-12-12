@@ -26,11 +26,12 @@ const FileDrop = /*@__PURE__*/ proxyCustomElement(class FileDrop extends HTMLEle
         event.preventDefault();
         this.el.classList.remove("-dragover");
         this.fileTarget.files = event.dataTransfer.files;
-        this.fileTarget.dispatchEvent(new Event("change"));
+        const changeEvent = new Event("change", { bubbles: true });
+        this.fileTarget.dispatchEvent(changeEvent);
     }
     static get style() { return fileDropCss; }
 }, [0, "file-drop", {
-        "for": [1]
+        "for": [1537]
     }, [[0, "click", "openFilePicker"], [0, "dragover", "highlight"], [0, "dragleave", "unhighlight"], [0, "drop", "drop"]]]);
 function defineCustomElement() {
     if (typeof customElements === "undefined") {
