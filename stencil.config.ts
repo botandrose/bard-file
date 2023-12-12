@@ -10,22 +10,17 @@ export const config: Config = {
       isPrimaryPackageOutputTarget: true,
       copy: [
         { src: 'images', dest: 'dist/images/' },
-        { src: 'index.components.html', dest: 'dist/index.html' },
+        { src: 'index.html', dest: 'dist/index.html' },
       ]
     },
     {
       type: 'docs-readme',
     },
-    {
-      type: 'www',
-      copy: [
-        {
-          src: 'images',
-        }
-      ]
-      serviceWorker: null, // disable service workers
-    },
   ],
+  devServer: {
+    reloadStrategy: 'pageReload',
+    root: '/home/micah/work/bard-file/dist',
+  },
   testing: {
     browserHeadless: "new",
     useESModules: true,

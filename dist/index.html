@@ -16,19 +16,24 @@
       defineCustomElements()
     </script>
   </head>
-  <body>
+  <body style="background: #f0f0f0;">
     <fieldset>
       <legend>&lt;bard-file&gt;</legend>
       <form>
-        <bard-file name="image" id="image" directupload="http://smh.localhost/rails/active_storage/direct_uploads">
-          <uploaded-file name="image" src="images/example.jpg" filename="example.jpg" size="36287" filetype="image" max="1000000" accepts="image"></uploaded-file>
+        <bard-file name="image" id="image" directupload="http://smh.localhost/rails/active_storage/direct_uploads" accepts="image,video">
+          <uploaded-file name="image" src="images/example.jpg" filename="example.jpg" size="36287" max="1000000"></uploaded-file>
         </bard-file>
       </form>
     </fieldset>
 
     <fieldset>
+      <legend>&lt;uploaded-file&gt;</legend>
+      <uploaded-file name="image" src="images/example.jpg" filename="example.jpg" size="36287" filetype="image" max="1000000"></uploaded-file>
+    </fieldset>
+
+    <fieldset>
       <legend>&lt;file-drop&gt;</legend>
-      <file-drop for="file-field" style="width: 200px; height: 200px; border: 1px solid black">
+      <file-drop for="file-field">
         <input type="file" id="file-field">
       </file-drop>
     </fieldset>
@@ -39,8 +44,8 @@
     </fieldset>
 
     <fieldset>
-      <legend>&lt;uploaded-file&gt;</legend>
-      <uploaded-file name="image" src="images/example.jpg" filename="example.jpg" size="36287" filetype="image" max="1000000" accepts="image"></uploaded-file>
+      <legend>&lt;file-preview&gt;</legend>
+      <file-preview src="images/example.jpg" filetype="image"></file-preview>
     </fieldset>
   </body>
 </html>

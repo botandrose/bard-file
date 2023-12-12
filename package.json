@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build": "stencil build --docs",
-    "start": "stencil build --dev --watch --serve",
+    "start": "stencil build --docs --watch --serve",
     "spec": "NODE_OPTIONS=--experimental-vm-modules stencil test --spec",
     "test": "NODE_OPTIONS=--experimental-vm-modules stencil test --spec --e2e",
     "test.watch": "NODE_OPTIONS=--experimental-vm-modules stencil test --spec --e2e --watchAll",
