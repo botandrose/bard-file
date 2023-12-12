@@ -8,8 +8,9 @@ export declare class BardFile {
     max: number;
     _forceUpdate: boolean;
     forceUpdate(): void;
-    inputId: string;
+    fileTargetId: string;
     fileTarget: HTMLInputElement;
+    hiddenTargetId: string;
     hiddenTarget: HTMLInputElement;
     _files: Array<any>;
     constructor();

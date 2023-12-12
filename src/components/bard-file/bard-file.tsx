@@ -23,15 +23,17 @@ export class BardFile {
   @State() _forceUpdate: boolean = false
   forceUpdate() { this._forceUpdate = !this._forceUpdate }
 
-  inputId: string
+  fileTargetId: string
   fileTarget: HTMLInputElement
+  hiddenTargetId: string
   hiddenTarget: HTMLInputElement
   _files: Array<any>
 
   constructor() {
-    this.inputId = this.el.id
-    this.hiddenTarget = html(`<input id="hidden-target-${this.name}">`) as HTMLInputElement
-    this.fileTarget = html(`<input id="${this.inputId}">`) as HTMLInputElement
+    this.fileTargetId = this.el.id
+    this.fileTarget = html(`<input id="${this.fileTargetId}">`) as HTMLInputElement
+    this.hiddenTargetId = `hidden-target-${this.name}`
+    this.hiddenTarget = html(`<input id="${this.hiddenTargetId}">`) as HTMLInputElement
     this.files = Array.from(this.el.children).filter(e => e.tagName == "UPLOADED-FILE")
   }
 
@@ -89,7 +91,7 @@ export class BardFile {
   render() {
     return (
       <Host>
-        <file-drop for={this.inputId}>
+        <file-drop for={this.fileTargetId}>
           <i class="drag-icon"></i>
           <p>
             <strong>Choose {this.multiple ? "files" : "file"} </strong>
@@ -106,17 +108,15 @@ export class BardFile {
 
   componentDidRender() {
     morph(this.fileTarget, `
-      <input
+      <input id="${this.fileTargetId}"
         type="file"
-        id="${this.inputId}"
         ${this.multiple ? "multiple" : ""}
         ${this.required && this.files.length === 0 ? "required" : ""}
         style="opacity: 0.01; width: 1px; height: 1px; z-index: -999"
       >`)
     morph(this.hiddenTarget, `
-      <input
+      <input id="${this.hiddenTargetId}"
         type="hidden"
-        id="hidden-target-${this.name}"
         name="${this.name}"
         ${this.files.length > 0 ? "disabled" : ""}
       >`)
