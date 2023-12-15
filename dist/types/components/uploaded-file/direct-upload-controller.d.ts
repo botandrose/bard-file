@@ -10,7 +10,7 @@ export default class DirectUploadController {
     cancel(): void;
     abortXHR(xhr: any): void;
     start(callback: any): void;
-    complete(error: any, attributes: any): void;
+    complete(error: any, _attributes: any): void;
     uploadRequestDidProgress(event: any): void;
     dispatch(name: any, detail?: {}): any;
     dispatchError(error: any): void;
