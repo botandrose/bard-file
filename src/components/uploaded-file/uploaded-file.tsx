@@ -70,14 +70,16 @@ export class UploadedFile {
   }
 
   set signedId(val) {
-    get(`/rails/active_storage/blobs/info/${val}`).then(blob => {
-      this.src = `/rails/active_storage/blobs/redirect/${val}/${blob.filename}`
-      this.filename = blob.filename
-      this.size = blob.byte_size
-      this.state = "complete"
-      this.percent = 100
-      this.value = val
-    })
+    if(this.value !== val) {
+      get(`/rails/active_storage/blobs/info/${val}`).then(blob => {
+        this.src = `/rails/active_storage/blobs/redirect/${val}/${blob.filename}`
+        this.filename = blob.filename
+        this.size = blob.byte_size
+        this.state = "complete"
+        this.percent = 100
+        this.value = val
+      })
+    }
   }
 
   @Watch("filename")

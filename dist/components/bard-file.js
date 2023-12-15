@@ -165,10 +165,13 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         return this.files.map(e => e.value);
     }
     set value(val) {
-        this.files = (val || []).map(signedId => Object.assign(new UploadedFile(), {
-            name: this.name,
-            signedId,
-        }));
+        const newValue = val || [];
+        if (JSON.stringify(this.value) !== JSON.stringify(newValue)) { // this is insane. javascript is fucking garbage.
+            this.files = newValue.map(signedId => Object.assign(new UploadedFile(), {
+                name: this.name,
+                signedId,
+            }));
+        }
     }
     fileTargetChanged(event) {
         if (event.target !== this.fileTarget)
