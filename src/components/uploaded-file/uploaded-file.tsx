@@ -126,7 +126,9 @@ export class UploadedFile {
         <figure>
           <div class="progress-details">
             <progress-bar percent={this.percent} class={this.state}>
-              {this.filename}
+              <a href={this.src} download={this.filename} onClick={e => e.stopPropagation()}>
+                {this.filename}
+              </a>
             </progress-bar>
             <a class="remove-media" onClick={this.removeClicked} href="#">
               <span>Remove media</span>
@@ -164,4 +166,3 @@ export class UploadedFile {
     return errors.length === 0
   }
 }
-

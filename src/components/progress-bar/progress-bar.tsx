@@ -12,7 +12,9 @@ export class ProgressBar {
     return (
       <Host>
         <div class="bar" style={{ width: `${this.percent}%` }}></div>
-        <slot></slot>
+        <span class="content">
+          <slot></slot>
+        </span>
       </Host>
     )
   }

@@ -2181,7 +2181,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         }
     }
     render() {
-        return (h(Host, null, h("slot", null), h("figure", null, h("div", { class: "progress-details" }, h("progress-bar", { percent: this.percent, class: this.state }, this.filename), h("a", { class: "remove-media", onClick: this.removeClicked, href: "#" }, h("span", null, "Remove media"))), h("file-preview", { src: this.src, filetype: this.filetype }))));
+        return (h(Host, null, h("slot", null), h("figure", null, h("div", { class: "progress-details" }, h("progress-bar", { percent: this.percent, class: this.state }, h("a", { href: this.src, download: this.filename, onClick: e => e.stopPropagation() }, this.filename)), h("a", { class: "remove-media", onClick: this.removeClicked, href: "#" }, h("span", null, "Remove media"))), h("file-preview", { src: this.src, filetype: this.filetype }))));
     }
     componentDidRender() {
         morphdom(this.inputTarget, `
