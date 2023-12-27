@@ -1,6 +1,6 @@
 import { proxyCustomElement, HTMLElement, h, Host } from '@stencil/core/internal/client';
 
-const progressBarCss = ":host{display:block;position:relative;padding:0 20px;margin:0 0px 10px 0;border:1px solid rgba(0, 0, 0, 0.3);border-radius:3px;line-height:2;flex:1 0;box-sizing:border-box;text-align:left;font-size:0.7rem}.bar{position:absolute;top:0;left:0;bottom:0;opacity:0.2;background:#398927;transition:width 120ms ease-out, opacity 60ms 60ms ease-in;transform:translate3d(0, 0, 0)}.content{position:relative}";
+const progressBarCss = ":host{display:block;position:relative;padding:0 20px;margin:0 0px 10px 0;border:1px solid rgba(0, 0, 0, 0.3);border-radius:3px;line-height:2;flex:1 0;box-sizing:border-box;text-align:left;font-size:0.7rem}.bar{position:absolute;top:0;left:0;bottom:0;background:rgba(57, 137, 39, 1);transition:width 120ms ease-out, opacity 60ms 60ms ease-in;transform:translate3d(0, 0, 0)}.content{position:relative;color:#fff}";
 
 const ProgressBar = /*@__PURE__*/ proxyCustomElement(class ProgressBar extends HTMLElement {
     constructor() {
