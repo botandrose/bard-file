@@ -7,20 +7,21 @@
 
 ## Properties
 
-| Property            | Attribute            | Description | Type     | Default      |
-| ------------------- | -------------------- | ----------- | -------- | ------------ |
-| `accepts`           | `accepts`            |             | `string` | `undefined`  |
-| `filename`          | `filename`           |             | `string` | `undefined`  |
-| `filetype`          | `filetype`           |             | `string` | `undefined`  |
-| `max`               | `max`                |             | `number` | `undefined`  |
-| `name`              | `name`               |             | `string` | `undefined`  |
-| `percent`           | `percent`            |             | `number` | `100`        |
-| `size`              | `size`               |             | `number` | `undefined`  |
-| `src`               | `src`                |             | `string` | `undefined`  |
-| `state`             | `state`              |             | `string` | `"complete"` |
-| `url`               | `url`                |             | `string` | `undefined`  |
-| `validationMessage` | `validation-message` |             | `string` | `undefined`  |
-| `value`             | `value`              |             | `string` | `undefined`  |
+| Property            | Attribute            | Description | Type      | Default      |
+| ------------------- | -------------------- | ----------- | --------- | ------------ |
+| `accepts`           | `accepts`            |             | `string`  | `undefined`  |
+| `filename`          | `filename`           |             | `string`  | `undefined`  |
+| `filetype`          | `filetype`           |             | `string`  | `undefined`  |
+| `max`               | `max`                |             | `number`  | `undefined`  |
+| `name`              | `name`               |             | `string`  | `undefined`  |
+| `percent`           | `percent`            |             | `number`  | `100`        |
+| `preview`           | `preview`            |             | `boolean` | `true`       |
+| `size`              | `size`               |             | `number`  | `undefined`  |
+| `src`               | `src`                |             | `string`  | `undefined`  |
+| `state`             | `state`              |             | `string`  | `"complete"` |
+| `url`               | `url`                |             | `string`  | `undefined`  |
+| `validationMessage` | `validation-message` |             | `string`  | `undefined`  |
+| `value`             | `value`              |             | `string`  | `undefined`  |
 
 
 ## Events

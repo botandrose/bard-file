@@ -19,6 +19,7 @@ export class BardFile {
   @Prop() required: boolean = false
   @Prop() accepts: string
   @Prop() max: number
+  @Prop() preview: boolean = true
 
   @State() _forceUpdate: boolean = false
   forceUpdate() { this._forceUpdate = !this._forceUpdate }
@@ -34,12 +35,12 @@ export class BardFile {
     this.fileTarget = html(`<input id="${this.fileTargetId}">`) as HTMLInputElement
     this.hiddenTargetId = `hidden-target-${this.el.getAttribute("name")}`
     this.hiddenTarget = html(`<input id="${this.hiddenTargetId}">`) as HTMLInputElement
-    this.files = Array.from(this.el.children).filter(e => e.tagName == "UPLOADED-FILE")
   }
 
   componentWillLoad() {
     this.el.removeAttribute("id")
     FormController.instance(this.el.closest("form"))
+    this.files = Array.from(this.el.children).filter(e => e.tagName == "UPLOADED-FILE")
   }
 
   // Methods
@@ -64,6 +65,7 @@ export class BardFile {
     if(JSON.stringify(this.value) !== JSON.stringify(newValue)) { // this is insane. javascript is fucking garbage.
       this.files = newValue.map(signedId => Object.assign(new UploadedFile(), {
         name: this.name,
+        preview: this.preview,
         signedId,
       }))
     }
@@ -74,6 +76,7 @@ export class BardFile {
     if(event.target !== this.fileTarget) return
     this.files.push(...Array.from(this.fileTarget.files).map(file => Object.assign(new UploadedFile(), {
       name: this.name,
+      preview: this.preview,
       url: this.directupload,
       accepts: this.accepts,
       max: this.max,

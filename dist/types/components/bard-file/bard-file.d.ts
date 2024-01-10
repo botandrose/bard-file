@@ -6,6 +6,7 @@ export declare class BardFile {
     required: boolean;
     accepts: string;
     max: number;
+    preview: boolean;
     _forceUpdate: boolean;
     forceUpdate(): void;
     fileTargetId: string;

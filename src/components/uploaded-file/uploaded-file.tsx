@@ -29,6 +29,7 @@ export class UploadedFile {
   @Prop({ reflect: true, mutable: true }) size: number
   @Prop({ reflect: true, mutable: true }) state: string = "complete"
   @Prop({ reflect: true, mutable: true }) percent: number = 100
+  @Prop({ reflect: true, mutable: true }) preview: boolean = true
 
   @Prop() validationMessage: string
 
@@ -135,7 +136,7 @@ export class UploadedFile {
               <span>Remove media</span>
             </a>
           </div>
-          <file-preview src={this.src} filetype={this.filetype}></file-preview>
+          {this.preview ? <file-preview src={this.src} filetype={this.filetype}></file-preview> : ''}
         </figure>
       </Host>
     )

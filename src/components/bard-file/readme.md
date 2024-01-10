@@ -14,6 +14,7 @@
 | `max`          | `max`          |             | `number`  | `undefined` |
 | `multiple`     | `multiple`     |             | `boolean` | `false`     |
 | `name`         | `name`         |             | `string`  | `undefined` |
+| `preview`      | `preview`      |             | `boolean` | `true`      |
 | `required`     | `required`     |             | `boolean` | `false`     |
 
 

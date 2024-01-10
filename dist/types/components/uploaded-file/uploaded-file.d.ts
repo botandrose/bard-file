@@ -13,6 +13,7 @@ export declare class UploadedFile {
     size: number;
     state: string;
     percent: number;
+    preview: boolean;
     validationMessage: string;
     removeEvent: EventEmitter;
     private removeClicked;

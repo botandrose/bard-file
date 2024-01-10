@@ -12,6 +12,7 @@ export namespace Components {
         "max": number;
         "multiple": boolean;
         "name": string;
+        "preview": boolean;
         "required": boolean;
     }
     interface FileDrop {
@@ -34,6 +35,7 @@ export namespace Components {
         "max": number;
         "name": string;
         "percent": number;
+        "preview": boolean;
         "size": number;
         "src": string;
         "state": string;
@@ -103,6 +105,7 @@ declare namespace LocalJSX {
         "max"?: number;
         "multiple"?: boolean;
         "name"?: string;
+        "preview"?: boolean;
         "required"?: boolean;
     }
     interface FileDrop {
@@ -126,6 +129,7 @@ declare namespace LocalJSX {
         "name"?: string;
         "onUploaded-file:remove"?: (event: UploadedFileCustomEvent<any>) => void;
         "percent"?: number;
+        "preview"?: boolean;
         "size"?: number;
         "src"?: string;
         "state"?: string;

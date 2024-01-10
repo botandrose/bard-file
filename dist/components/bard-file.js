@@ -139,16 +139,17 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         this.required = false;
         this.accepts = undefined;
         this.max = undefined;
+        this.preview = true;
         this._forceUpdate = false;
         this.fileTargetId = this.el.id;
         this.fileTarget = html(`<input id="${this.fileTargetId}">`);
         this.hiddenTargetId = `hidden-target-${this.el.getAttribute("name")}`;
         this.hiddenTarget = html(`<input id="${this.hiddenTargetId}">`);
-        this.files = Array.from(this.el.children).filter(e => e.tagName == "UPLOADED-FILE");
     }
     componentWillLoad() {
         this.el.removeAttribute("id");
         FormController.instance(this.el.closest("form"));
+        this.files = Array.from(this.el.children).filter(e => e.tagName == "UPLOADED-FILE");
     }
     // Methods
     get files() {
@@ -169,6 +170,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         if (JSON.stringify(this.value) !== JSON.stringify(newValue)) { // this is insane. javascript is fucking garbage.
             this.files = newValue.map(signedId => Object.assign(new UploadedFile(), {
                 name: this.name,
+                preview: this.preview,
                 signedId,
             }));
         }
@@ -178,6 +180,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
             return;
         this.files.push(...Array.from(this.fileTarget.files).map(file => Object.assign(new UploadedFile(), {
             name: this.name,
+            preview: this.preview,
             url: this.directupload,
             accepts: this.accepts,
             max: this.max,
@@ -233,6 +236,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         "required": [4],
         "accepts": [1],
         "max": [2],
+        "preview": [4],
         "_forceUpdate": [32]
     }, [[0, "change", "fileTargetChanged"], [0, "uploaded-file:remove", "removeUploadedFile"]]]);
 function defineCustomElement$1() {
