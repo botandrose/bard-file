@@ -31,7 +31,9 @@ class FormController {
       </dialog>`);
         this.dialog = this.element.querySelector("#form-controller-dialog");
         this.progressContainerTarget = this.dialog.querySelector("#progress-container");
-        this.element.addEventListener("submit", event => this.submit(event));
+        if (!this.element.dataset.remote) {
+            this.element.addEventListener("submit", event => this.submit(event));
+        }
         window.addEventListener("beforeunload", event => this.beforeUnload(event));
         this.element.addEventListener("direct-upload:initialize", event => this.init(event));
         this.element.addEventListener("direct-upload:start", event => this.start(event));
