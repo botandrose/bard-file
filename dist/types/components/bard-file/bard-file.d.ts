@@ -22,6 +22,7 @@ export declare class BardFile {
     set value(val: any[]);
     fileTargetChanged(event: any): void;
     removeUploadedFile(event: any): void;
+    fireChangeEvent(): void;
     render(): any;
     componentDidRender(): void;
     checkValidity(): boolean;
