@@ -160,6 +160,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         if (!this.multiple)
             this._files = this._files.slice(-1);
         this.forceUpdate();
+        this.el.dispatchEvent(new Event("input"));
         this.el.dispatchEvent(new Event("change"));
     }
     get value() {
