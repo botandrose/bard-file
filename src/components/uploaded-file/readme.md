@@ -21,7 +21,7 @@
 | `state`             | `state`              |             | `string`  | `"complete"` |
 | `url`               | `url`                |             | `string`  | `undefined`  |
 | `validationMessage` | `validation-message` |             | `string`  | `undefined`  |
-| `value`             | `value`              |             | `string`  | `undefined`  |
+| `value`             | `value`              |             | `string`  | `""`         |
 
 
 ## Events

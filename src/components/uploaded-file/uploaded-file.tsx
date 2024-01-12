@@ -22,7 +22,7 @@ export class UploadedFile {
   @Prop({ reflect: true, mutable: true }) max: number
   @Prop({ reflect: true, mutable: true }) url: string
 
-  @Prop({ reflect: true, mutable: true }) value: string
+  @Prop({ reflect: true, mutable: true }) value: string = ""
   @Prop({ reflect: true, mutable: true }) filename: string
   @Prop({ reflect: true, mutable: true }) src: string
   @Prop({ reflect: true, mutable: true }) filetype: string
