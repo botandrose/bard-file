@@ -1,6 +1,7 @@
 :host {
   display: block;
   width: 100%;
+  max-width: 100%;
 }
 
 figure{
@@ -16,7 +17,6 @@ figure{
 progress-bar{
   flex: 1 0;
   padding: 0 10px;
-  margin-top: 10px;
   font-size: 0.9em;
 }
 
@@ -56,7 +56,10 @@ progress-bar.error{
 
 .progress-bar a{color: #fff;}
 
-.download-link{color: #fff;}
+.download-link{
+  padding-right: 20px;
+  color: #fff;
+}
 
 .remove-media{
   display: inline-block;

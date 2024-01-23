@@ -146,7 +146,7 @@ export class UploadedFile {
     morph(this.inputTarget, `
       <input
         id="input-target-${this.uid}"
-        style="opacity: 0.01; width: 1px; height: 1px; z-index: -999"
+        style="opacity: 0.01; width: 1px; height: 1px; z-index: -999; position: absolute;"
         name="${this.name}"
         value="${this.value}"
       >`)

@@ -103,8 +103,7 @@ export class BardFile {
     return (
       <Host>
         <file-drop for={this.fileTargetId}>
-          <i class="drag-icon"></i>
-          <p>
+          <p part="title">
             <strong>Choose {this.multiple ? "files" : "file"} </strong>
             <span>or drag {this.multiple ? "them" : "it"} here.</span>
           </p>
@@ -155,4 +154,3 @@ export class BardFile {
     return this.fileTarget.validationMessage
   }
 }
-

@@ -18,6 +18,13 @@
 | `required`     | `required`     |             | `boolean` | `false`     |
 
 
+## Shadow Parts
+
+| Part      | Description |
+| --------- | ----------- |
+| `"title"` |             |
+
+
 ## Dependencies
 
 ### Depends on
