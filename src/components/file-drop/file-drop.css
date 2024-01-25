@@ -11,4 +11,5 @@ file-drop {
   text-align: center;
   transition: all 0.15s ease 0s;
   outline: rgba(0, 0, 0, 0.25) dashed 2px;
+  font-size: 13px;
 }

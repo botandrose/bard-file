@@ -1,6 +1,6 @@
 import { proxyCustomElement, HTMLElement, h, Host } from '@stencil/core/internal/client';
 
-const filePreviewCss = ":host{display:block}img,video{max-width:100%;margin-top:10px}";
+const filePreviewCss = ":host{display:block;font-size:13px}img,video{max-width:100%;margin-top:10px}";
 
 const FilePreview = /*@__PURE__*/ proxyCustomElement(class FilePreview extends HTMLElement {
     constructor() {
