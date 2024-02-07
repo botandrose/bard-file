@@ -31,7 +31,7 @@ class FormController {
       </dialog>`);
         this.dialog = this.element.querySelector("#form-controller-dialog");
         this.progressContainerTarget = this.dialog.querySelector("#progress-container");
-        if (!this.element.dataset.remote) {
+        if (this.element.dataset.remote !== "true") {
             this.element.addEventListener("submit", event => this.submit(event));
         }
         window.addEventListener("beforeunload", event => this.beforeUnload(event));
