@@ -28,7 +28,7 @@ export class BardFile {
   fileTarget: HTMLInputElement
   hiddenTargetId: string
   hiddenTarget: HTMLInputElement
-  _files: Array<any>
+  _files: Array<any> = []
 
   constructor() {
     this.fileTargetId = this.el.id

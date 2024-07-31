@@ -130,7 +130,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
     fileTarget;
     hiddenTargetId;
     hiddenTarget;
-    _files;
+    _files = [];
     constructor() {
         super();
         this.__registerHost();
