@@ -12,7 +12,7 @@ export class FilePreview {
   render() {
     return (
       <Host class={this.computeClass()}>
-        {this.isImage() && <img src={this.src} />}
+        {this.isImage() && <div class="base-image" style="background-image: url('{this.src}'); width:; height:;"><img style="aspect-ratio: 1/1;" src={this.src} /></div>}
         {this.isVideo() && <video src={this.src} onClick={toggle} />}
         {this.isOther() && "This file does not offer a preview"}
         <slot></slot>
