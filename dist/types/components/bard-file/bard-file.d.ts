@@ -9,6 +9,7 @@ export declare class BardFile {
     preview: boolean;
     _forceUpdate: boolean;
     forceUpdate(): void;
+    form: HTMLFormElement;
     fileTargetId: string;
     fileTarget: HTMLInputElement;
     hiddenTargetId: string;
@@ -20,6 +21,7 @@ export declare class BardFile {
     set files(val: any[]);
     get value(): any[];
     set value(val: any[]);
+    reset(): void;
     fileTargetChanged(event: any): void;
     removeUploadedFile(event: any): void;
     fireChangeEvent(): void;

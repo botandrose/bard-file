@@ -126,6 +126,7 @@ const bardFileCss = ":host{display:block;padding:25px;color:var(--bard-file-text
 const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLElement {
     get el() { return this; }
     forceUpdate() { this._forceUpdate = !this._forceUpdate; }
+    form;
     fileTargetId;
     fileTarget;
     hiddenTargetId;
@@ -150,7 +151,9 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
     }
     componentWillLoad() {
         this.el.removeAttribute("id");
-        FormController.instance(this.el.closest("form"));
+        this.form = this.el.closest("form");
+        this.form.addEventListener("reset", () => this.reset());
+        FormController.instance(this.form);
         const existingFiles = Array.from(this.el.children).filter(e => e.tagName == "UPLOADED-FILE");
         if (existingFiles.length > 0)
             this.files = existingFiles;
@@ -178,6 +181,9 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
                 signedId,
             }));
         }
+    }
+    reset() {
+        this.value = [];
     }
     fileTargetChanged(event) {
         if (event.target !== this.fileTarget)

@@ -24,6 +24,7 @@ export class BardFile {
   @State() _forceUpdate: boolean = false
   forceUpdate() { this._forceUpdate = !this._forceUpdate }
 
+  form: HTMLFormElement
   fileTargetId: string
   fileTarget: HTMLInputElement
   hiddenTargetId: string
@@ -39,7 +40,9 @@ export class BardFile {
 
   componentWillLoad() {
     this.el.removeAttribute("id")
-    FormController.instance(this.el.closest("form"))
+    this.form = this.el.closest("form")
+    this.form.addEventListener("reset", () => this.reset())
+    FormController.instance(this.form)
     const existingFiles = Array.from(this.el.children).filter(e => e.tagName == "UPLOADED-FILE");
     if(existingFiles.length > 0) this.files = existingFiles
   }
@@ -70,6 +73,10 @@ export class BardFile {
         signedId,
       }))
     }
+  }
+
+  reset() {
+    this.value = []
   }
 
   @Listen("change")
