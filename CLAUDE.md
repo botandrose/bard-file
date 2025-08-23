@@ -1,0 +1,61 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Development Commands
+
+- **Build**: `npm run build` - Compiles Stencil components with docs generation
+- **Development server**: `npm start` - Watch mode with live reload 
+- **Tests**: `npm test` - Run unit and e2e tests
+- **Spec tests only**: `npm run spec` - Run unit tests without e2e
+- **Watch tests**: `npm run test.watch` - Run tests in watch mode
+- **Generate component**: `npm run generate` - Create new Stencil component
+
+## Architecture Overview
+
+This is a Stencil-based Web Components library for advanced file upload functionality, specifically designed to work with Rails Active Storage direct uploads.
+
+### Core Components Structure
+
+- **`<bard-file>`** - Main file upload component with drag/drop support
+  - Acts as form field replacement with validation API compatibility
+  - Manages file state and coordinates with Rails Active Storage
+  - Uses `FormController` for upload orchestration and progress tracking
+  
+- **`<uploaded-file>`** - Individual file representation component
+  - Handles direct upload via `DirectUploadController` 
+  - Manages file preview, validation, and removal
+  - Supports both existing files (via signed IDs) and new uploads
+  
+- **`<file-drop>`** - Drag and drop interface component
+- **`<file-preview>`** - File preview display component  
+- **`<progress-bar>`** - Upload progress indicator
+
+### Key Integration Points
+
+- **Rails Active Storage**: Uses `@rails/activestorage` for direct uploads
+- **Form Integration**: Components integrate with standard HTML forms via `FormController`
+- **DOM Morphing**: Uses `morphdom` for efficient DOM updates while preserving form state
+- **Validation**: Implements HTML5 form validation APIs (`checkValidity`, `setCustomValidity`, etc.)
+
+### Component Communication
+
+- Uses Stencil's event system for component communication
+- Key events: `direct-upload:*`, `uploaded-file:remove`, `change`
+- `FormController` coordinates upload queue and progress display
+- Components maintain form field compatibility for seamless integration
+
+### File Upload Flow
+
+1. User selects/drops files into `<bard-file>`
+2. Files become `<uploaded-file>` components with validation
+3. On form submit, `FormController` manages upload queue
+4. `DirectUploadController` handles Rails Active Storage uploads
+5. Progress tracked via `<progress-bar>` components
+6. Completed uploads provide signed IDs for form submission
+
+## Testing Configuration
+
+- Uses Jest with ts-jest for TypeScript support
+- Puppeteer for e2e testing (headless Chrome)
+- ESM modules enabled via `NODE_OPTIONS=--experimental-vm-modules`
