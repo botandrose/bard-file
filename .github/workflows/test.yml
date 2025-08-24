@@ -1,10 +1,6 @@
 name: Test
 
-on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+on: [push, pull_request]
 
 jobs:
   test:
@@ -22,4 +18,4 @@ jobs:
       run: bun install
 
     - name: Run tests
-      run: bun test
+      run: NODE_OPTIONS=--experimental-vm-modules bun run test

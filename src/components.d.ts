@@ -15,6 +15,12 @@ export namespace Components {
         "preview": boolean;
         "required": boolean;
     }
+    interface FileDrop {
+        /**
+          * The id of the an input[type=file] to assign dropped files to
+         */
+        "for": string;
+    }
     interface FilePreview {
         "filetype": string;
         "src": string;
@@ -49,6 +55,12 @@ declare global {
         prototype: HTMLBardFileElement;
         new (): HTMLBardFileElement;
     };
+    interface HTMLFileDropElement extends Components.FileDrop, HTMLStencilElement {
+    }
+    var HTMLFileDropElement: {
+        prototype: HTMLFileDropElement;
+        new (): HTMLFileDropElement;
+    };
     interface HTMLFilePreviewElement extends Components.FilePreview, HTMLStencilElement {
     }
     var HTMLFilePreviewElement: {
@@ -80,6 +92,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "bard-file": HTMLBardFileElement;
+        "file-drop": HTMLFileDropElement;
         "file-preview": HTMLFilePreviewElement;
         "progress-bar": HTMLProgressBarElement;
         "uploaded-file": HTMLUploadedFileElement;
@@ -94,6 +107,12 @@ declare namespace LocalJSX {
         "name"?: string;
         "preview"?: boolean;
         "required"?: boolean;
+    }
+    interface FileDrop {
+        /**
+          * The id of the an input[type=file] to assign dropped files to
+         */
+        "for"?: string;
     }
     interface FilePreview {
         "filetype"?: string;
@@ -120,6 +139,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "bard-file": BardFile;
+        "file-drop": FileDrop;
         "file-preview": FilePreview;
         "progress-bar": ProgressBar;
         "uploaded-file": UploadedFile;
@@ -130,6 +150,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "bard-file": LocalJSX.BardFile & JSXBase.HTMLAttributes<HTMLBardFileElement>;
+            "file-drop": LocalJSX.FileDrop & JSXBase.HTMLAttributes<HTMLFileDropElement>;
             "file-preview": LocalJSX.FilePreview & JSXBase.HTMLAttributes<HTMLFilePreviewElement>;
             "progress-bar": LocalJSX.ProgressBar & JSXBase.HTMLAttributes<HTMLProgressBarElement>;
             "uploaded-file": LocalJSX.UploadedFile & JSXBase.HTMLAttributes<HTMLUploadedFileElement>;

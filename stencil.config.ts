@@ -36,7 +36,8 @@ export const config: Config = {
     transformIgnorePatterns: [
       "node_modules/(?!(rails-request-json|@botandrose))"
     ],
-    setupFilesAfterEnv: ["<rootDir>/jest-setup.js"]
+    setupFilesAfterEnv: ["<rootDir>/jest-setup.js"],
+    browserArgs: process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox'] : []
   },
   validatePrimaryPackageOutputTarget: true,
 };
