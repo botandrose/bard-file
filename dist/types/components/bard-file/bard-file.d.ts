@@ -1,3 +1,4 @@
+import '@botandrose/file-drop';
 export declare class BardFile {
     el: HTMLElement;
     name: string;

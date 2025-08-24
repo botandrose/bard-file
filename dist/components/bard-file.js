@@ -1,6 +1,5 @@
-import { proxyCustomElement, HTMLElement, h, Host } from '@stencil/core/internal/client';
+import { proxyCustomElement, HTMLElement as HTMLElement$1, h, Host } from '@stencil/core/internal/client';
 import { h as html, U as UploadedFile, a as arrayRemove, m as morphdom } from './uploaded-file2.js';
-import { d as defineCustomElement$2 } from './file-drop2.js';
 
 class FormController {
     static instance(form) {
@@ -31,7 +30,7 @@ class FormController {
       </dialog>`);
         this.dialog = this.element.querySelector("#form-controller-dialog");
         this.progressContainerTarget = this.dialog.querySelector("#progress-container");
-        if (this.element.dataset.remote !== "true" && !window.Turbo?.session?.enabled) {
+        if (this.element.dataset.remote !== "true" && (this.element.dataset.turbo == "false" || !window.Turbo?.session?.enabled)) {
             this.element.addEventListener("submit", event => this.submit(event));
         }
         window.addEventListener("beforeunload", event => this.beforeUnload(event));
@@ -121,9 +120,119 @@ class FormController {
     }
 }
 
-const bardFileCss = ":host{display:block;padding:25px;color:var(--bard-file-text-color, #000);font-size:13px}:host *{box-sizing:border-box;position:relative}drag-and-drop{display:block;outline-offset:-10px;background:rgba(255,255,255, 0.25);margin:0;text-align:center;transition:all 0.15s;outline:2px dashed rgba(0,0,0,0.25);color:#444;font-size:14px}p{padding:10px 20px;margin:0}drag-and-drop.-full{width:100%}.-dragover{background:rgba(255,255,255,0.5);outline:2px dashed rgba(0,0,0,0.25)}.media-preview{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center}// UPLOADER .direct-upload-wrapper{position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:rgba(#333, 0.9)}.direct-upload-content{display:block;background:#fcfcfc;padding:40px 60px 60px;border-radius:3px;width:60vw}.direct-upload-content h3{border-bottom:2px solid #1f1f1f;margin-bottom:20px}.separate-upload{padding:0 10px;margin-top:10px;font-size:0.9em}.direct-upload--pending{opacity:0.6}.direct-upload--complete{opacity:0.4}.direct-upload--error{border-color:red}input[type=file][data-direct-upload-url][disabled]{display:none}:host.separate-upload{padding:0 10px;margin-top:10px;font-size:0.9em}";
+/**
+ * File Drop Component
+ *
+ * A vanilla JS custom element for drag-and-drop file handling.
+ * Provides drag-and-drop interface that assigns files to a target input element.
+ *
+ * Usage:
+ *   <file-drop for="file-input">Drop files here</file-drop>
+ *   <input type="file" id="file-input" multiple>
+ *
+ * Features:
+ * - Drag and drop file handling
+ * - Click to open file picker
+ * - Visual feedback during drag operations
+ * - Framework-agnostic vanilla JS
+ */
 
-const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLElement {
+class FileDrop extends HTMLElement {
+  constructor() {
+    super();
+    this.handleDragOver = this.handleDragOver.bind(this);
+    this.handleDragLeave = this.handleDragLeave.bind(this);
+    this.handleDrop = this.handleDrop.bind(this);
+  }
+
+  static get observedAttributes() {
+    return ['for']
+  }
+
+  connectedCallback() {
+    this.addEventListener('dragover', this.handleDragOver);
+    this.addEventListener('dragleave', this.handleDragLeave);
+    this.addEventListener('drop', this.handleDrop);
+    this.applyDefaultStyles();
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('dragover', this.handleDragOver);
+    this.removeEventListener('dragleave', this.handleDragLeave);
+    this.removeEventListener('drop', this.handleDrop);
+  }
+
+  get fileTarget() {
+    const forValue = this.getAttribute('for');
+    if (!forValue) return null
+    return document.querySelector(`#${forValue}`)
+  }
+
+
+  handleDragOver(event) {
+    event.preventDefault();
+    this.classList.add('-dragover');
+  }
+
+  handleDragLeave() {
+    this.classList.remove('-dragover');
+  }
+
+  handleDrop(event) {
+    event.preventDefault();
+    this.classList.remove('-dragover');
+
+    const target = this.fileTarget;
+    if (target && event.dataTransfer.files.length > 0) {
+      target.files = event.dataTransfer.files;
+      const changeEvent = new Event('change', { bubbles: true });
+      target.dispatchEvent(changeEvent);
+    }
+  }
+
+  applyDefaultStyles() {
+    if (!this.hasAttribute('data-no-default-styles')) {
+      const styles = `
+        file-drop {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          box-sizing: border-box;
+          min-height: 60px;
+          outline-offset: -10px;
+          padding: 20px;
+          background: rgba(255, 255, 255, 0.25);
+          text-align: center;
+          transition: all 0.15s ease 0s;
+          outline: rgba(0, 0, 0, 0.25) dashed 2px;
+          font-size: 13px;
+        }
+
+        file-drop.-dragover {
+          background: rgba(0, 0, 0, 0.1);
+          outline-color: rgba(0, 0, 0, 0.5);
+        }
+      `;
+
+      if (!document.querySelector('#file-drop-default-styles')) {
+        const styleElement = document.createElement('style');
+        styleElement.id = 'file-drop-default-styles';
+        styleElement.textContent = styles;
+        document.head.appendChild(styleElement);
+      }
+    }
+  }
+}
+
+// Auto-register the custom element
+if (!customElements.get('file-drop')) {
+  customElements.define('file-drop', FileDrop);
+}
+
+const bardFileCss = ":host{display:block;padding:25px;color:var(--bard-file-text-color, #000);font-size:13px}file-drop{cursor:pointer}:host *{box-sizing:border-box;position:relative}drag-and-drop{display:block;outline-offset:-10px;background:rgba(255,255,255, 0.25);margin:0;text-align:center;transition:all 0.15s;outline:2px dashed rgba(0,0,0,0.25);color:#444;font-size:14px}p{padding:10px 20px;margin:0}drag-and-drop.-full{width:100%}.-dragover{background:rgba(255,255,255,0.5);outline:2px dashed rgba(0,0,0,0.25)}.media-preview{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center}// UPLOADER .direct-upload-wrapper{position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:rgba(#333, 0.9)}.direct-upload-content{display:block;background:#fcfcfc;padding:40px 60px 60px;border-radius:3px;width:60vw}.direct-upload-content h3{border-bottom:2px solid #1f1f1f;margin-bottom:20px}.separate-upload{padding:0 10px;margin-top:10px;font-size:0.9em}.direct-upload--pending{opacity:0.6}.direct-upload--complete{opacity:0.4}.direct-upload--error{border-color:red}input[type=file][data-direct-upload-url][disabled]{display:none}:host.separate-upload{padding:0 10px;margin-top:10px;font-size:0.9em}";
+
+const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLElement$1 {
     get el() { return this; }
     forceUpdate() { this._forceUpdate = !this._forceUpdate; }
     form;
@@ -208,7 +317,7 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
     }
     // Rendering
     render() {
-        return (h(Host, null, h("file-drop", { for: this.fileTargetId }, h("p", { part: "title" }, h("strong", null, "Choose ", this.multiple ? "files" : "file", " "), h("span", null, "or drag ", this.multiple ? "them" : "it", " here.")), h("div", { class: `media-preview ${this.multiple ? '-stacked' : ''}` }, h("slot", null)))));
+        return (h(Host, null, h("file-drop", { for: this.fileTargetId, onClick: () => this.fileTarget.click() }, h("p", { part: "title" }, h("strong", null, "Choose ", this.multiple ? "files" : "file", " "), h("span", null, "or drag ", this.multiple ? "them" : "it", " here.")), h("div", { class: `media-preview ${this.multiple ? '-stacked' : ''}` }, h("slot", null)))));
     }
     componentDidRender() {
         morphdom(this.fileTarget, `
@@ -225,7 +334,13 @@ const BardFile$1 = /*@__PURE__*/ proxyCustomElement(class BardFile extends HTMLE
         ${this.files.length > 0 ? "disabled" : ""}
       >`);
         const wrapper = document.createElement("div");
-        wrapper.replaceChildren(this.fileTarget, this.hiddenTarget, ...this.files);
+        // Clear wrapper and append children (replaceChildren polyfill)
+        while (wrapper.firstChild) {
+            wrapper.removeChild(wrapper.firstChild);
+        }
+        wrapper.appendChild(this.fileTarget);
+        wrapper.appendChild(this.hiddenTarget);
+        this.files.forEach(file => wrapper.appendChild(file));
         morphdom(this.el, wrapper, { childrenOnly: true });
     }
     // Validations
@@ -256,16 +371,11 @@ function defineCustomElement$1() {
     if (typeof customElements === "undefined") {
         return;
     }
-    const components = ["bard-file", "file-drop"];
+    const components = ["bard-file"];
     components.forEach(tagName => { switch (tagName) {
         case "bard-file":
             if (!customElements.get(tagName)) {
                 customElements.define(tagName, BardFile$1);
-            }
-            break;
-        case "file-drop":
-            if (!customElements.get(tagName)) {
-                defineCustomElement$2();
             }
             break;
     } });

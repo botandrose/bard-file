@@ -1,8 +1,8 @@
 import { Component, Element, Prop, State, Listen, Host, h } from '@stencil/core';
 import FormController from "./form-controller"
 import { UploadedFile } from "../uploaded-file/uploaded-file"
-import { FileDrop as _ } from "../file-drop/file-drop"
 import { morph, html, arrayRemove } from "../../utils/utils"
+import '@botandrose/file-drop'
 
 @Component({
   tag: 'bard-file',
@@ -110,7 +110,7 @@ export class BardFile {
   render() {
     return (
       <Host>
-        <file-drop for={this.fileTargetId}>
+        <file-drop for={this.fileTargetId} onClick={() => this.fileTarget.click()}>
           <p part="title">
             <strong>Choose {this.multiple ? "files" : "file"} </strong>
             <span>or drag {this.multiple ? "them" : "it"} here.</span>
@@ -140,7 +140,13 @@ export class BardFile {
       >`)
 
     const wrapper = document.createElement("div")
-    wrapper.replaceChildren(this.fileTarget, this.hiddenTarget, ...this.files)
+    // Clear wrapper and append children (replaceChildren polyfill)
+    while (wrapper.firstChild) {
+      wrapper.removeChild(wrapper.firstChild)
+    }
+    wrapper.appendChild(this.fileTarget)
+    wrapper.appendChild(this.hiddenTarget)
+    this.files.forEach(file => wrapper.appendChild(file))
     morph(this.el, wrapper, { childrenOnly: true })
   }
 

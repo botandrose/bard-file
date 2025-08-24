@@ -1,19 +1,19 @@
-import './utils';
+import { html, morph, arrayRemove } from './utils';
 
-describe('format', () => {
-  // it('returns empty string for no names defined', () => {
-  //   expect(format(undefined, undefined, undefined)).toEqual('');
-  // });
+describe('utils', () => {
+  describe('html', () => {
+    it('creates DOM elements from HTML string', () => {
+      const element = html('<div>test</div>');
+      expect(element.tagName).toBe('DIV');
+      expect(element.textContent).toBe('test');
+    });
+  });
 
-  // it('formats just first names', () => {
-  //   expect(format('Joseph', undefined, undefined)).toEqual('Joseph');
-  // });
-
-  // it('formats first and last names', () => {
-  //   expect(format('Joseph', undefined, 'Publique')).toEqual('Joseph Publique');
-  // });
-
-  // it('formats first, middle and last names', () => {
-  //   expect(format('Joseph', 'Quincy', 'Publique')).toEqual('Joseph Quincy Publique');
-  // });
+  describe('arrayRemove', () => {
+    it('removes first occurrence of item from array', () => {
+      const arr = [1, 2, 3, 4, 3];
+      arrayRemove(arr, 3);
+      expect(arr).toEqual([1, 2, 4, 3]);
+    });
+  });
 });

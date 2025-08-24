@@ -1305,6 +1305,31 @@ class FetchRequest {
   }
 }
 
+async function get$1 (url, options) {
+  const request = new FetchRequest('get', url, options);
+  return request.perform()
+}
+
+async function post$1 (url, options) {
+  const request = new FetchRequest('post', url, options);
+  return request.perform()
+}
+
+async function put$1 (url, options) {
+  const request = new FetchRequest('put', url, options);
+  return request.perform()
+}
+
+async function patch$1 (url, options) {
+  const request = new FetchRequest('patch', url, options);
+  return request.perform()
+}
+
+async function destroy$1 (url, options) {
+  const request = new FetchRequest('delete', url, options);
+  return request.perform()
+}
+
 const request = (verb, url, payload) => {
   const req = new FetchRequest(verb, url, {
     headers: { Accept: "application/json" },
@@ -1320,6 +1345,10 @@ const request = (verb, url, payload) => {
 };
 
 const get = (url, payload) => request('get', url, payload);
+const post = (url, payload) => request('post', url, payload);
+const put = (url, payload) => request('put', url, payload);
+const patch = (url, payload) => request('patch', url, payload);
+const destroy = (url, payload) => request('delete', url, payload);
 
 var DOCUMENT_FRAGMENT_NODE = 11;
 

@@ -4,12 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Commands
 
-- **Build**: `npm run build` - Compiles Stencil components with docs generation
-- **Development server**: `npm start` - Watch mode with live reload 
-- **Tests**: `npm test` - Run unit and e2e tests
-- **Spec tests only**: `npm run spec` - Run unit tests without e2e
-- **Watch tests**: `npm run test.watch` - Run tests in watch mode
-- **Generate component**: `npm run generate` - Create new Stencil component
+**Note: This project uses Bun instead of npm for package management and script execution.**
+
+- **Build**: `bun run build` - Compiles Stencil components with docs generation
+- **Development server**: `bun start` - Watch mode with live reload 
+- **Tests**: `bun test` - Run unit and e2e tests
+- **Spec tests only**: `bun run spec` - Run unit tests without e2e
+- **Watch tests**: `bun run test.watch` - Run tests in watch mode
+- **Generate component**: `bun run generate` - Create new Stencil component
 
 ## Architecture Overview
 
@@ -27,7 +29,7 @@ This is a Stencil-based Web Components library for advanced file upload function
   - Manages file preview, validation, and removal
   - Supports both existing files (via signed IDs) and new uploads
   
-- **`<file-drop>`** - Drag and drop interface component
+- **`<file-drop>`** - Drag and drop interface component (provided by `@botandrose/file-drop` package)
 - **`<file-preview>`** - File preview display component  
 - **`<progress-bar>`** - Upload progress indicator
 

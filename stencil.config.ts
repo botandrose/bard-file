@@ -14,16 +14,29 @@ export const config: Config = {
       ]
     },
     {
+      type: 'dist',
+      esmLoaderPath: '../loader',
+    },
+    {
+      type: 'www',
+      dir: 'www',
+      serviceWorker: null,
+    },
+    {
       type: 'docs-readme',
     },
   ],
   devServer: {
     reloadStrategy: 'pageReload',
-    root: '/home/micah/work/bard-file/dist',
+    root: 'www',
   },
   testing: {
     browserHeadless: "new",
     useESModules: true,
+    transformIgnorePatterns: [
+      "node_modules/(?!(rails-request-json|@botandrose))"
+    ],
+    setupFilesAfterEnv: ["<rootDir>/jest-setup.js"]
   },
   validatePrimaryPackageOutputTarget: true,
 };
