@@ -14,10 +14,6 @@ export const config: Config = {
       ]
     },
     {
-      type: 'dist',
-      esmLoaderPath: '../loader',
-    },
-    {
       type: 'www',
       dir: 'www',
       serviceWorker: null,
@@ -34,8 +30,9 @@ export const config: Config = {
     browserHeadless: "new",
     useESModules: true,
     transformIgnorePatterns: [
-      "node_modules/(?!(rails-request-json|@botandrose))"
+      "node_modules/(?!(rails-request-json|@botandrose|@rails/request\.js))"
     ],
+    testPathIgnorePatterns: ["/node_modules/", "/dist/"],
     setupFilesAfterEnv: ["<rootDir>/jest-setup.js"],
     browserArgs: process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox'] : []
   },

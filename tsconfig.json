@@ -12,13 +12,21 @@
     "module": "esnext",
     "moduleResolution": "node",
     "target": "esnext",
+    "skipLibCheck": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "jsx": "react",
     "jsxFactory": "h",
-    "jsxFragmentFactory": "Fragment"
+    "jsxFragmentFactory": "Fragment",
+    "types": []
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.e2e.ts",
+    "**/*.e2e.tsx"
   ]
 }

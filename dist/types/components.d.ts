@@ -10,9 +10,18 @@ export namespace Components {
         "accepts": string;
         "directupload": string;
         "max": number;
+        /**
+          * @default false
+         */
         "multiple": boolean;
         "name": string;
+        /**
+          * @default true
+         */
         "preview": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
     }
     interface FilePreview {
@@ -20,6 +29,9 @@ export namespace Components {
         "src": string;
     }
     interface ProgressBar {
+        /**
+          * @default 0
+         */
         "percent": number;
     }
     interface UploadedFile {
@@ -28,13 +40,25 @@ export namespace Components {
         "filetype": string;
         "max": number;
         "name": string;
+        /**
+          * @default 100
+         */
         "percent": number;
+        /**
+          * @default true
+         */
         "preview": boolean;
         "size": number;
         "src": string;
+        /**
+          * @default "complete"
+         */
         "state": string;
         "url": string;
         "validationMessage": string;
+        /**
+          * @default ""
+         */
         "value": string;
     }
 }
@@ -90,9 +114,18 @@ declare namespace LocalJSX {
         "accepts"?: string;
         "directupload"?: string;
         "max"?: number;
+        /**
+          * @default false
+         */
         "multiple"?: boolean;
         "name"?: string;
+        /**
+          * @default true
+         */
         "preview"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
     }
     interface FilePreview {
@@ -100,6 +133,9 @@ declare namespace LocalJSX {
         "src"?: string;
     }
     interface ProgressBar {
+        /**
+          * @default 0
+         */
         "percent"?: number;
     }
     interface UploadedFile {
@@ -109,13 +145,25 @@ declare namespace LocalJSX {
         "max"?: number;
         "name"?: string;
         "onUploaded-file:remove"?: (event: UploadedFileCustomEvent<any>) => void;
+        /**
+          * @default 100
+         */
         "percent"?: number;
+        /**
+          * @default true
+         */
         "preview"?: boolean;
         "size"?: number;
         "src"?: string;
+        /**
+          * @default "complete"
+         */
         "state"?: string;
         "url"?: string;
         "validationMessage"?: string;
+        /**
+          * @default ""
+         */
         "value"?: string;
     }
     interface IntrinsicElements {

@@ -1,4 +1,4 @@
-import { html, morph, arrayRemove } from './utils';
+import { html, arrayRemove } from './utils';
 
 describe('utils', () => {
   describe('html', () => {

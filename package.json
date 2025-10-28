@@ -9,12 +9,13 @@
     "dist/"
   ],
   "scripts": {
-    "build": "stencil build --docs",
-    "start": "stencil build --docs --watch --serve",
-    "spec": "NODE_OPTIONS=--experimental-vm-modules stencil test --spec",
-    "test": "NODE_OPTIONS=--experimental-vm-modules stencil test --spec --e2e",
-    "test.watch": "NODE_OPTIONS=--experimental-vm-modules stencil test --spec --e2e --watchAll",
-    "generate": "stencil generate"
+    "build": "bunx stencil build --docs",
+    "start": "bunx stencil build --docs --watch --serve",
+    "spec": "NODE_OPTIONS=--experimental-vm-modules bunx stencil test --spec --max-workers=1",
+    "test": "bun run spec",
+    "test:e2e": "NODE_OPTIONS=--experimental-vm-modules bunx stencil test --spec --e2e --max-workers=1",
+    "test.watch": "NODE_OPTIONS=--experimental-vm-modules bunx stencil test --spec --watchAll --max-workers=1",
+    "generate": "bunx stencil generate"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts", ".tsx"],
@@ -25,19 +26,25 @@
     }
   },
   "dependencies": {
-    "@rails/activestorage": "^7.1.2",
-    "@stencil/core": "^4.8.0",
     "@botandrose/file-drop": "^0.1.0",
-    "morphdom": "^2.7.1",
-    "rails-request-json": "^0.1.1",
-    "ts-jest": "^29.1.1"
+    "@rails/activestorage": "^8.1.0",
+    "@stencil/core": "^4.38.2",
+    "morphdom": "^2.7.7",
+    "rails-request-json": "^0.2.0",
+    "ts-jest": "^29.4.5"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.6",
-    "@types/node": "^16.18.11",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^24.9.1",
     "jest": "^29.7.0",
     "jest-cli": "^29.7.0",
-    "puppeteer": "21.1.1"
+    "puppeteer": "^24.26.1"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/types/components.d.ts",
+      "import": "./dist/components/index.js"
+    }
   },
   "license": "MIT"
 }

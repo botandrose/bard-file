@@ -1,4 +1,4 @@
-import { proxyCustomElement, HTMLElement, createEvent, h, Host } from '@stencil/core/internal/client';
+import { proxyCustomElement, HTMLElement as HTMLElement$1, createEvent, h, Host } from '@stencil/core/internal/client';
 import { d as defineCustomElement$2 } from './file-preview2.js';
 import { d as defineCustomElement$1 } from './progress-bar2.js';
 
@@ -277,7 +277,7 @@ var sparkMd5 = {
       var result = new Uint8Array(first.byteLength + second.byteLength);
       result.set(new Uint8Array(first));
       result.set(new Uint8Array(second), first.byteLength);
-      return returnUInt8Array ? result : result.buffer;
+      return result ;
     }
     function hexToBinaryString(hex) {
       var bytes = [], length = hex.length, x;
@@ -368,7 +368,7 @@ var sparkMd5 = {
       this.reset();
     };
     SparkMD5.ArrayBuffer.prototype.append = function(arr) {
-      var buff = concatenateArrayBuffers(this._buff.buffer, arr, true), length = buff.length, i;
+      var buff = concatenateArrayBuffers(this._buff.buffer, arr), length = buff.length, i;
       this._length += arr.byteLength;
       for (i = 64; i <= length; i += 64) {
         md5cycle(this._hash, md5blk_array(buff.subarray(i - 64, i)));
@@ -651,7 +651,7 @@ function notify(object, methodName, ...messages) {
   }
 }
 
-class DirectUploadController$1 {
+let DirectUploadController$1 = class DirectUploadController {
   constructor(input, file) {
     this.input = input;
     this.file = file;
@@ -676,7 +676,7 @@ class DirectUploadController$1 {
     }));
   }
   uploadRequestDidProgress(event) {
-    const progress = event.loaded / event.total * 100;
+    const progress = event.loaded / event.total * 90;
     if (progress) {
       this.dispatch("progress", {
         progress: progress
@@ -711,8 +711,44 @@ class DirectUploadController$1 {
       xhr: xhr
     });
     xhr.upload.addEventListener("progress", (event => this.uploadRequestDidProgress(event)));
+    xhr.upload.addEventListener("loadend", (() => {
+      this.simulateResponseProgress(xhr);
+    }));
   }
-}
+  simulateResponseProgress(xhr) {
+    let progress = 90;
+    const startTime = Date.now();
+    const updateProgress = () => {
+      const elapsed = Date.now() - startTime;
+      const estimatedResponseTime = this.estimateResponseTime();
+      const responseProgress = Math.min(elapsed / estimatedResponseTime, 1);
+      progress = 90 + responseProgress * 9;
+      this.dispatch("progress", {
+        progress: progress
+      });
+      if (xhr.readyState !== XMLHttpRequest.DONE && progress < 99) {
+        requestAnimationFrame(updateProgress);
+      }
+    };
+    xhr.addEventListener("loadend", (() => {
+      this.dispatch("progress", {
+        progress: 100
+      });
+    }));
+    requestAnimationFrame(updateProgress);
+  }
+  estimateResponseTime() {
+    const fileSize = this.file.size;
+    const MB = 1024 * 1024;
+    if (fileSize < MB) {
+      return 1e3;
+    } else if (fileSize < 10 * MB) {
+      return 2e3;
+    } else {
+      return 3e3 + fileSize / MB * 50;
+    }
+  }
+};
 
 const inputSelector = "input[type=file][data-direct-upload-url]:not([disabled])";
 
@@ -775,9 +811,9 @@ function start() {
 }
 
 function didClick(event) {
-  const {target: target} = event;
-  if ((target.tagName == "INPUT" || target.tagName == "BUTTON") && target.type == "submit" && target.form) {
-    submitButtonsByForm.set(target.form, target);
+  const button = event.target.closest("button, input");
+  if (button && button.type === "submit" && button.form) {
+    submitButtonsByForm.set(button.form, button);
   }
 }
 
@@ -1005,7 +1041,7 @@ class Accepts {
     }
 }
 
-const Extensions = {
+var Extensions = {
     image: ["ase", "art", "bmp", "blp", "cd5", "cit", "cpt", "cr2", "cut", "dds", "dib", "djvu", "egt", "exif", "gif", "gpl", "grf", "icns", "ico", "iff", "jng", "jpeg", "jpg", "jfif", "jp2", "jps", "lbm", "max", "miff", "mng", "msp", "nef", "nitf", "ota", "pbm", "pc1", "pc2", "pc3", "pcf", "pcx", "pdn", "pgm", "PI1", "PI2", "PI3", "pict", "pct", "pnm", "pns", "ppm", "psb", "psd", "pdd", "psp", "px", "pxm", "pxr", "qfx", "raw", "rle", "sct", "sgi", "rgb", "int", "bw", "tga", "tiff", "tif", "vtf", "xbm", "xcf", "xpm", "3dv", "amf", "ai", "awg", "cgm", "cdr", "cmx", "dxf", "e2d", "egt", "eps", "fs", "gbr", "odg", "svg", "stl", "vrml", "x3d", "sxd", "v2d", "vnd", "wmf", "emf", "art", "xar", "png", "webp", "jxr", "hdp", "wdp", "cur", "ecw", "iff", "lbm", "liff", "nrrd", "pam", "pcx", "pgf", "sgi", "rgb", "rgba", "bw", "int", "inta", "sid", "ras", "sun", "tga", "heic", "heif"],
     video: ["3g2", "3gp", "3gpp", "aaf", "asf", "avchd", "avi", "drc", "flv", "m2v", "m3u8", "m4p", "m4v", "mkv", "mng", "mov", "mp2", "mp4", "mpe", "mpeg", "mpg", "mpv", "mxf", "nsv", "ogg", "ogv", "qt", "rm", "rmvb", "roq", "svi", "vob", "webm", "wmv", "yuv"],
     pdf: ["pdf"],
@@ -1305,34 +1341,9 @@ class FetchRequest {
   }
 }
 
-async function get$1 (url, options) {
-  const request = new FetchRequest('get', url, options);
-  return request.perform()
-}
-
-async function post$1 (url, options) {
-  const request = new FetchRequest('post', url, options);
-  return request.perform()
-}
-
-async function put$1 (url, options) {
-  const request = new FetchRequest('put', url, options);
-  return request.perform()
-}
-
-async function patch$1 (url, options) {
-  const request = new FetchRequest('patch', url, options);
-  return request.perform()
-}
-
-async function destroy$1 (url, options) {
-  const request = new FetchRequest('delete', url, options);
-  return request.perform()
-}
-
-const request = (verb, url, payload) => {
+const request = (verb, url, payload, headers) => {
   const req = new FetchRequest(verb, url, {
-    headers: { Accept: "application/json" },
+    headers: { Accept: "application/json", ...headers },
     body: payload,
   });
   return req.perform().then(response => {
@@ -1344,11 +1355,7 @@ const request = (verb, url, payload) => {
   })
 };
 
-const get = (url, payload) => request('get', url, payload);
-const post = (url, payload) => request('post', url, payload);
-const put = (url, payload) => request('put', url, payload);
-const patch = (url, payload) => request('patch', url, payload);
-const destroy = (url, payload) => request('delete', url, payload);
+const get = (url, payload = {}, headers = {}) => request('get', url, payload, headers);
 
 var DOCUMENT_FRAGMENT_NODE = 11;
 
@@ -1618,6 +1625,11 @@ var specialElHandlers = {
                 if (nodeName === 'OPTGROUP') {
                     optgroup = curChild;
                     curChild = optgroup.firstChild;
+                    // handle empty optgroups
+                    if (!curChild) {
+                        curChild = optgroup.nextSibling;
+                        optgroup = null;
+                    }
                 } else {
                     if (nodeName === 'OPTION') {
                         if (curChild.hasAttribute('selected')) {
@@ -1843,8 +1855,16 @@ function morphdomFactory(morphAttrs) {
 
       if (!childrenOnly) {
         // optional
-        if (onBeforeElUpdated(fromEl, toEl) === false) {
+        var beforeUpdateResult = onBeforeElUpdated(fromEl, toEl);
+        if (beforeUpdateResult === false) {
           return;
+        } else if (beforeUpdateResult instanceof HTMLElement) {
+          fromEl = beforeUpdateResult;
+          // reindex the new fromEl in case it's not in the same
+          // tree as the original fromEl
+          // (Phoenix LiveView sometimes returns a cloned tree,
+          //  but keyed lookups would still point to the original tree)
+          indexTree(fromEl);
         }
 
         // update attributes on original DOM element first
@@ -1939,6 +1959,7 @@ function morphdomFactory(morphAttrs) {
                       }
 
                       curFromNodeChild = matchingFromEl;
+                      curFromNodeKey = getNodeKey(curFromNodeChild);
                     }
                   } else {
                     // The nodes are not compatible since the "to" node has a key and there
@@ -2124,8 +2145,21 @@ function arrayRemove(arr, e) {
 const uploadedFileCss = ":host{display:block;width:100%;max-width:100%;font-size:13px}figure{margin:0}.progress-details{position:relative;display:flex;align-items:center}progress-bar{flex:1 0;padding:0 10px}progress-bar.pending{opacity:0.5}progress-bar.complete{opacity:0.8}progress-bar:not(.complete)+.progress-icon{display:none}progress-bar.complete+.progress-icon{content:url('data:image/svg+xml;utf8,<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" viewBox=\"0 0 20 20\" style=\"enable-background:new 0 0 20 20;\" xml:space=\"preserve\"><g><path d=\"M6.3,9.1c0.2,0,0.5,0.1,0.7,0.4c0.5,0.5,1,1,1.4,1.4c0.3,0.3,0.3,0.3,0.6,0c1.4-1.3,2.7-2.6,4-3.9c0.3-0.3,0.6-0.4,1-0.4 c0.5,0.1,0.9,0.6,0.7,1.1c-0.1,0.2-0.2,0.4-0.3,0.6c-1.6,1.6-3.2,3.2-4.8,4.8c-0.5,0.5-1,0.5-1.6,0c-0.8-0.7-1.5-1.5-2.3-2.3 c-0.3-0.3-0.5-0.6-0.3-1.1C5.5,9.3,5.8,9.1,6.3,9.1z\"/></g></svg>');filter:invert(100%)}.progress-icon{display:inline-block;flex:0 0 20px;width:28px;height:28px;background-size:contain;position:absolute;right:30px;z-index:1}progress-bar.error{background:#f8b3b1;background:rgba(74, 70, 70, 0.25);opacity:1}.progress-bar a{color:#fff}.download-link{padding-right:20px;color:#fff}.remove-media{display:inline-block;content:url('data:image/svg+xml;utf8,<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" viewBox=\"0 0 40 40\" style=\"enable-background:new 0 0 40 40;\" xml:space=\"preserve\"><g><path d=\"M0,19.9C0.2,8.5,9.2-0.1,20.1,0C31.8,0.1,40.2,9.5,40,20.4c-0.2,11-8.9,19.7-20.1,19.6C8,39.9,0,30.5,0,19.9z M20,3.7 c-9,0-16.3,7-16.3,16.2C3.7,29,10.9,36.3,20,36.3c9,0,16.3-7.1,16.4-16.3C36.3,11,29.2,3.8,20,3.7z\"/><path d=\"M17.3,20c-0.2-0.2-0.3-0.4-0.5-0.6c-1-1-2-1.9-2.9-2.9c-0.5-0.5-0.8-1.1-0.7-1.9c0.1-0.7,0.5-1.2,1.2-1.4 c0.8-0.2,1.5,0,2.1,0.6c1,1,2,2,3,3.1c0.3,0.4,0.6,0.3,0.9,0c1-1,2-2,3-3c0.3-0.3,0.7-0.5,1.1-0.6c0.8-0.2,1.6,0.1,2,0.8 c0.4,0.8,0.3,1.7-0.4,2.4c-1,1-2,2-3,3c-0.2,0.2-0.3,0.4-0.5,0.6c1.2,1.2,2.3,2.3,3.4,3.4c0.6,0.6,0.9,1.3,0.6,2.2 c-0.4,1.1-1.7,1.6-2.6,1c-0.3-0.2-0.5-0.4-0.8-0.6c-1-1-1.9-1.9-2.9-2.9c-0.3-0.3-0.5-0.3-0.9,0c-1,1-2,2.1-3,3 c-0.4,0.4-1,0.6-1.5,0.8c-0.6,0.1-1.2-0.2-1.5-0.8c-0.4-0.6-0.5-1.3-0.1-1.9c0.2-0.3,0.4-0.5,0.6-0.7C15.1,22.3,16.2,21.2,17.3,20z \"/></g></svg>');flex:0 0 25px;width:25px;height:20px;align-items:center;opacity:0.25}.remove-media:hover{opacity:1;filter:invert(50%)sepia(100%)saturate(10000%)}.remove-media span{display:inline-block;text-indent:-9999px;color:transparent}";
 
 let uid = 0;
-const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends HTMLElement {
+const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends HTMLElement$1 {
     get el() { return this; }
+    name;
+    accepts;
+    max;
+    url;
+    value = "";
+    filename;
+    src;
+    filetype;
+    size;
+    state = "complete";
+    percent = 100;
+    preview = true;
+    validationMessage;
     removeEvent;
     removeClicked = event => {
         event.stopPropagation();
@@ -2137,24 +2171,13 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
     controller;
     _file;
     uid;
-    constructor() {
+    constructor(registerHost) {
         super();
-        this.__registerHost();
+        if (registerHost !== false) {
+            this.__registerHost();
+        }
         this.__attachShadow();
         this.removeEvent = createEvent(this, "uploaded-file:remove", 7);
-        this.name = undefined;
-        this.accepts = undefined;
-        this.max = undefined;
-        this.url = undefined;
-        this.value = "";
-        this.filename = undefined;
-        this.src = undefined;
-        this.filetype = undefined;
-        this.size = undefined;
-        this.state = "complete";
-        this.percent = 100;
-        this.preview = true;
-        this.validationMessage = undefined;
         this.uid = uid++;
         this.inputTarget = html(`<input id="input-target-${this.uid}">`);
     }
@@ -2211,7 +2234,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         }
     }
     render() {
-        return (h(Host, null, h("slot", null), h("figure", null, h("div", { class: "progress-details" }, h("progress-bar", { percent: this.percent, class: this.state }, h("a", { class: "download-link", href: this.src, download: this.filename, onClick: e => e.stopPropagation() }, this.filename)), h("span", { class: "progress-icon" }), h("a", { class: "remove-media", onClick: this.removeClicked, href: "#" }, h("span", null, "Remove media"))), this.preview ? h("file-preview", { src: this.src, filetype: this.filetype }) : '')));
+        return (h(Host, { key: '96c1384d31a457130b0c071c08a45893f7c7cb36' }, h("slot", { key: '6d5f3984fa1be3d5c0d622b7a5863edc0f0584e6' }), h("figure", { key: '78734d047d4a9ef076ab842b328693561f514f42' }, h("div", { key: '886a7c98839e78a912e0ba1d0f442a635785505e', class: "progress-details" }, h("progress-bar", { key: 'e418bdbc6ee75ba88b805fd081ababf653774b75', percent: this.percent, class: this.state }, h("a", { key: 'b14bdbe97a4ed14cf54be53ff382d3cd36161b41', class: "download-link", href: this.src, download: this.filename, onClick: e => e.stopPropagation() }, this.filename)), h("span", { key: '1c381a458062d834917ff488bd9ce02d0f99d6f1', class: "progress-icon" }), h("a", { key: '859963a28223dcf857588a0437090039bf12af88', class: "remove-media", onClick: this.removeClicked, href: "#" }, h("span", { key: '60752bc3c18f279cffe5a088e16cc24bf7444bca' }, "Remove media"))), this.preview ? h("file-preview", { src: this.src, filetype: this.filetype }) : '')));
     }
     componentDidRender() {
         morphdom(this.inputTarget, `
@@ -2240,7 +2263,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         "filename": ["setMissingFiletype"]
     }; }
     static get style() { return uploadedFileCss; }
-}, [1, "uploaded-file", {
+}, [257, "uploaded-file", {
         "name": [1537],
         "accepts": [1537],
         "max": [1538],
@@ -2282,5 +2305,6 @@ function defineCustomElement() {
 }
 
 export { UploadedFile as U, arrayRemove as a, defineCustomElement as d, html as h, morphdom as m };
+//# sourceMappingURL=uploaded-file2.js.map
 
 //# sourceMappingURL=uploaded-file2.js.map

@@ -8,7 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **Build**: `bun run build` - Compiles Stencil components with docs generation
 - **Development server**: `bun start` - Watch mode with live reload 
-- **Tests**: `bun test` - Run unit and e2e tests
+- **Tests**: `bun run test` - Run unit tests (Jest via Stencil)
+- **E2E tests**: `bun run test:e2e` - Run unit + e2e
 - **Spec tests only**: `bun run spec` - Run unit tests without e2e
 - **Watch tests**: `bun run test.watch` - Run tests in watch mode
 - **Generate component**: `bun run generate` - Create new Stencil component
