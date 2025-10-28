@@ -20,18 +20,18 @@ This is a Stencil-based Web Components library for advanced file upload function
 
 ### Core Components Structure
 
-- **`<bard-file>`** - Main file upload component with drag/drop support
+- **`<input-attachment>`** - Main file upload component with drag/drop support
   - Acts as form field replacement with validation API compatibility
   - Manages file state and coordinates with Rails Active Storage
   - Uses `FormController` for upload orchestration and progress tracking
-  
-- **`<uploaded-file>`** - Individual file representation component
-  - Handles direct upload via `DirectUploadController` 
+
+- **`<attachment-file>`** - Individual file representation component
+  - Handles direct upload via `DirectUploadController`
   - Manages file preview, validation, and removal
   - Supports both existing files (via signed IDs) and new uploads
-  
+
 - **`<file-drop>`** - Drag and drop interface component (provided by `@botandrose/file-drop` package)
-- **`<file-preview>`** - File preview display component
+- **`<attachment-preview>`** - File preview display component
 - **`<progress-bar>`** - Upload progress indicator (provided by `@botandrose/progress-bar` package)
 
 ### Key Integration Points
@@ -44,14 +44,14 @@ This is a Stencil-based Web Components library for advanced file upload function
 ### Component Communication
 
 - Uses Stencil's event system for component communication
-- Key events: `direct-upload:*`, `uploaded-file:remove`, `change`
+- Key events: `direct-upload:*`, `attachment-file:remove`, `change`
 - `FormController` coordinates upload queue and progress display
 - Components maintain form field compatibility for seamless integration
 
 ### File Upload Flow
 
-1. User selects/drops files into `<bard-file>`
-2. Files become `<uploaded-file>` components with validation
+1. User selects/drops files into `<input-attachment>`
+2. Files become `<attachment-file>` components with validation
 3. On form submit, `FormController` manages upload queue
 4. `DirectUploadController` handles Rails Active Storage uploads
 5. Progress tracked via `<progress-bar>` components

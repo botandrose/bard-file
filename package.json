@@ -1,5 +1,5 @@
 {
-  "name": "bard-file",
+  "name": "@botandrose/input-attachment",
   "version": "0.0.1",
   "description": "Next-gen file field",
   "type": "module",

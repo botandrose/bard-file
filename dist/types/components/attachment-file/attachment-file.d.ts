@@ -1,0 +1,38 @@
+import { EventEmitter } from '../../stencil-public-runtime';
+import DirectUploadController from './direct-upload-controller';
+export declare class AttachmentFile {
+    el: any;
+    name: string;
+    accepts: string;
+    max: number;
+    url: string;
+    value: string;
+    filename: string;
+    src: string;
+    filetype: string;
+    size: number;
+    state: string;
+    percent: number;
+    preview: boolean;
+    validationMessage: string;
+    removeEvent: EventEmitter;
+    private removeClicked;
+    inputTarget: HTMLInputElement;
+    controller: DirectUploadController;
+    _file: File;
+    uid: number;
+    constructor();
+    componentWillLoad(): void;
+    get file(): any;
+    set file(file: any);
+    set signedId(val: any);
+    setMissingFiletype(_value?: any, _previousValue?: any): void;
+    start(_event: any): void;
+    progress(event: any): void;
+    error(event: any): void;
+    end(_event: any): void;
+    render(): any;
+    componentDidRender(): void;
+    componentDidLoad(): void;
+    checkValidity(): boolean;
+}

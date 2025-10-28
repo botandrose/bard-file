@@ -1,0 +1,35 @@
+import '@botandrose/file-drop';
+export declare class InputAttachment {
+    el: HTMLElement;
+    name: string;
+    directupload: string;
+    multiple: boolean;
+    required: boolean;
+    accepts: string;
+    max: number;
+    preview: boolean;
+    _forceUpdate: boolean;
+    forceUpdate(): void;
+    form: HTMLFormElement;
+    fileTargetId: string;
+    fileTarget: HTMLInputElement;
+    hiddenTargetId: string;
+    hiddenTarget: HTMLInputElement;
+    _files: Array<any>;
+    constructor();
+    componentWillLoad(): void;
+    get files(): any[];
+    set files(val: any[]);
+    get value(): any[];
+    set value(val: any[]);
+    reset(): void;
+    fileTargetChanged(event: any): void;
+    removeUploadedFile(event: any): void;
+    fireChangeEvent(): void;
+    render(): any;
+    componentDidRender(): void;
+    checkValidity(): boolean;
+    setCustomValidity(msg: any): void;
+    reportValidity(): void;
+    get validationMessage(): string;
+}

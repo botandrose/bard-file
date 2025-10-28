@@ -1,18 +1,14 @@
-import { BardFile } from './bard-file.js';
-import { FilePreview } from './file-preview.js';
-import { UploadedFile } from './uploaded-file.js';
+import { AttachmentFile } from './attachment-file.js';
+import { AttachmentPreview } from './attachment-preview.js';
+import { InputAttachment } from './input-attachment.js';
 export { getAssetPath, render, setAssetPath, setNonce, setPlatformOptions } from '@stencil/core/internal/client';
 
-const globalScripts = () => {};
-const globalStyles = "";
-
-globalScripts();
 const defineCustomElements = (opts) => {
     if (typeof customElements !== 'undefined') {
         [
-            BardFile,
-            FilePreview,
-            UploadedFile,
+            AttachmentFile,
+            AttachmentPreview,
+            InputAttachment,
         ].forEach(cmp => {
             if (!customElements.get(cmp.is)) {
                 customElements.define(cmp.is, cmp, opts);

@@ -6,29 +6,7 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
-    interface BardFile {
-        "accepts": string;
-        "directupload": string;
-        "max": number;
-        /**
-          * @default false
-         */
-        "multiple": boolean;
-        "name": string;
-        /**
-          * @default true
-         */
-        "preview": boolean;
-        /**
-          * @default false
-         */
-        "required": boolean;
-    }
-    interface FilePreview {
-        "filetype": string;
-        "src": string;
-    }
-    interface UploadedFile {
+    interface AttachmentFile {
         "accepts": string;
         "filename": string;
         "filetype": string;
@@ -55,77 +33,77 @@ export namespace Components {
          */
         "value": string;
     }
+    interface AttachmentPreview {
+        "filetype": string;
+        "src": string;
+    }
+    interface InputAttachment {
+        "accepts": string;
+        "directupload": string;
+        "max": number;
+        /**
+          * @default false
+         */
+        "multiple": boolean;
+        "name": string;
+        /**
+          * @default true
+         */
+        "preview": boolean;
+        /**
+          * @default false
+         */
+        "required": boolean;
+    }
 }
-export interface UploadedFileCustomEvent<T> extends CustomEvent<T> {
+export interface AttachmentFileCustomEvent<T> extends CustomEvent<T> {
     detail: T;
-    target: HTMLUploadedFileElement;
+    target: HTMLAttachmentFileElement;
 }
 declare global {
-    interface HTMLBardFileElement extends Components.BardFile, HTMLStencilElement {
+    interface HTMLAttachmentFileElementEventMap {
+        "attachment-file:remove": any;
     }
-    var HTMLBardFileElement: {
-        prototype: HTMLBardFileElement;
-        new (): HTMLBardFileElement;
-    };
-    interface HTMLFilePreviewElement extends Components.FilePreview, HTMLStencilElement {
-    }
-    var HTMLFilePreviewElement: {
-        prototype: HTMLFilePreviewElement;
-        new (): HTMLFilePreviewElement;
-    };
-    interface HTMLUploadedFileElementEventMap {
-        "uploaded-file:remove": any;
-    }
-    interface HTMLUploadedFileElement extends Components.UploadedFile, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLUploadedFileElementEventMap>(type: K, listener: (this: HTMLUploadedFileElement, ev: UploadedFileCustomEvent<HTMLUploadedFileElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+    interface HTMLAttachmentFileElement extends Components.AttachmentFile, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLAttachmentFileElementEventMap>(type: K, listener: (this: HTMLAttachmentFileElement, ev: AttachmentFileCustomEvent<HTMLAttachmentFileElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLUploadedFileElementEventMap>(type: K, listener: (this: HTMLUploadedFileElement, ev: UploadedFileCustomEvent<HTMLUploadedFileElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLAttachmentFileElementEventMap>(type: K, listener: (this: HTMLAttachmentFileElement, ev: AttachmentFileCustomEvent<HTMLAttachmentFileElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
         removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
         removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
         removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
-    var HTMLUploadedFileElement: {
-        prototype: HTMLUploadedFileElement;
-        new (): HTMLUploadedFileElement;
+    var HTMLAttachmentFileElement: {
+        prototype: HTMLAttachmentFileElement;
+        new (): HTMLAttachmentFileElement;
+    };
+    interface HTMLAttachmentPreviewElement extends Components.AttachmentPreview, HTMLStencilElement {
+    }
+    var HTMLAttachmentPreviewElement: {
+        prototype: HTMLAttachmentPreviewElement;
+        new (): HTMLAttachmentPreviewElement;
+    };
+    interface HTMLInputAttachmentElement extends Components.InputAttachment, HTMLStencilElement {
+    }
+    var HTMLInputAttachmentElement: {
+        prototype: HTMLInputAttachmentElement;
+        new (): HTMLInputAttachmentElement;
     };
     interface HTMLElementTagNameMap {
-        "bard-file": HTMLBardFileElement;
-        "file-preview": HTMLFilePreviewElement;
-        "uploaded-file": HTMLUploadedFileElement;
+        "attachment-file": HTMLAttachmentFileElement;
+        "attachment-preview": HTMLAttachmentPreviewElement;
+        "input-attachment": HTMLInputAttachmentElement;
     }
 }
 declare namespace LocalJSX {
-    interface BardFile {
-        "accepts"?: string;
-        "directupload"?: string;
-        "max"?: number;
-        /**
-          * @default false
-         */
-        "multiple"?: boolean;
-        "name"?: string;
-        /**
-          * @default true
-         */
-        "preview"?: boolean;
-        /**
-          * @default false
-         */
-        "required"?: boolean;
-    }
-    interface FilePreview {
-        "filetype"?: string;
-        "src"?: string;
-    }
-    interface UploadedFile {
+    interface AttachmentFile {
         "accepts"?: string;
         "filename"?: string;
         "filetype"?: string;
         "max"?: number;
         "name"?: string;
-        "onUploaded-file:remove"?: (event: UploadedFileCustomEvent<any>) => void;
+        "onAttachment-file:remove"?: (event: AttachmentFileCustomEvent<any>) => void;
         /**
           * @default 100
          */
@@ -147,19 +125,41 @@ declare namespace LocalJSX {
          */
         "value"?: string;
     }
+    interface AttachmentPreview {
+        "filetype"?: string;
+        "src"?: string;
+    }
+    interface InputAttachment {
+        "accepts"?: string;
+        "directupload"?: string;
+        "max"?: number;
+        /**
+          * @default false
+         */
+        "multiple"?: boolean;
+        "name"?: string;
+        /**
+          * @default true
+         */
+        "preview"?: boolean;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+    }
     interface IntrinsicElements {
-        "bard-file": BardFile;
-        "file-preview": FilePreview;
-        "uploaded-file": UploadedFile;
+        "attachment-file": AttachmentFile;
+        "attachment-preview": AttachmentPreview;
+        "input-attachment": InputAttachment;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "bard-file": LocalJSX.BardFile & JSXBase.HTMLAttributes<HTMLBardFileElement>;
-            "file-preview": LocalJSX.FilePreview & JSXBase.HTMLAttributes<HTMLFilePreviewElement>;
-            "uploaded-file": LocalJSX.UploadedFile & JSXBase.HTMLAttributes<HTMLUploadedFileElement>;
+            "attachment-file": LocalJSX.AttachmentFile & JSXBase.HTMLAttributes<HTMLAttachmentFileElement>;
+            "attachment-preview": LocalJSX.AttachmentPreview & JSXBase.HTMLAttributes<HTMLAttachmentPreviewElement>;
+            "input-attachment": LocalJSX.InputAttachment & JSXBase.HTMLAttributes<HTMLInputAttachmentElement>;
         }
     }
 }
