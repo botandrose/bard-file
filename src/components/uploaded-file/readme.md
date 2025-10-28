@@ -35,13 +35,11 @@
 
 ### Depends on
 
-- [progress-bar](../progress-bar)
 - [file-preview](../file-preview)
 
 ### Graph
 ```mermaid
 graph TD;
-  uploaded-file --> progress-bar
   uploaded-file --> file-preview
   style uploaded-file fill:#f9f,stroke:#333,stroke-width:4px
 ```

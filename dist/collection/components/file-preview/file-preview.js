@@ -1,11 +1,9 @@
 import { Host, h } from "@stencil/core";
 export class FilePreview {
-    constructor() {
-        this.src = undefined;
-        this.filetype = undefined;
-    }
+    src;
+    filetype;
     render() {
-        return (h(Host, { class: this.computeClass() }, this.isImage() && h("img", { src: this.src }), this.isVideo() && h("video", { src: this.src, onClick: toggle }), this.isOther() && "This file does not offer a preview", h("slot", null)));
+        return (h(Host, { key: '4ac011f2a5a1d7d9130f86014351513b9a42f843', class: this.computeClass() }, this.isImage() && h("img", { key: '7a169a7185eb1494a61a7b3c0f628f9a214bcb39', src: this.src }), this.isVideo() && h("video", { key: 'cd8b3414f65e19a24f8c2ccb55606c7b01fd31ff', src: this.src, onClick: toggle }), this.isOther() && "This file does not offer a preview", h("slot", { key: 'de543ee7457c0685666ed8acac67ba7d2e3631ed' })));
     }
     computeClass() {
         if (this.isImage())
@@ -51,8 +49,10 @@ export class FilePreview {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "src",
-                "reflect": true
+                "getter": false,
+                "setter": false,
+                "reflect": true,
+                "attribute": "src"
             },
             "filetype": {
                 "type": "string",
@@ -68,8 +68,10 @@ export class FilePreview {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "filetype",
-                "reflect": true
+                "getter": false,
+                "setter": false,
+                "reflect": true,
+                "attribute": "filetype"
             }
         };
     }

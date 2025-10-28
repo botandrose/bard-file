@@ -28,12 +28,6 @@ export namespace Components {
         "filetype": string;
         "src": string;
     }
-    interface ProgressBar {
-        /**
-          * @default 0
-         */
-        "percent": number;
-    }
     interface UploadedFile {
         "accepts": string;
         "filename": string;
@@ -79,12 +73,6 @@ declare global {
         prototype: HTMLFilePreviewElement;
         new (): HTMLFilePreviewElement;
     };
-    interface HTMLProgressBarElement extends Components.ProgressBar, HTMLStencilElement {
-    }
-    var HTMLProgressBarElement: {
-        prototype: HTMLProgressBarElement;
-        new (): HTMLProgressBarElement;
-    };
     interface HTMLUploadedFileElementEventMap {
         "uploaded-file:remove": any;
     }
@@ -105,7 +93,6 @@ declare global {
     interface HTMLElementTagNameMap {
         "bard-file": HTMLBardFileElement;
         "file-preview": HTMLFilePreviewElement;
-        "progress-bar": HTMLProgressBarElement;
         "uploaded-file": HTMLUploadedFileElement;
     }
 }
@@ -131,12 +118,6 @@ declare namespace LocalJSX {
     interface FilePreview {
         "filetype"?: string;
         "src"?: string;
-    }
-    interface ProgressBar {
-        /**
-          * @default 0
-         */
-        "percent"?: number;
     }
     interface UploadedFile {
         "accepts"?: string;
@@ -169,7 +150,6 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "bard-file": BardFile;
         "file-preview": FilePreview;
-        "progress-bar": ProgressBar;
         "uploaded-file": UploadedFile;
     }
 }
@@ -179,7 +159,6 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "bard-file": LocalJSX.BardFile & JSXBase.HTMLAttributes<HTMLBardFileElement>;
             "file-preview": LocalJSX.FilePreview & JSXBase.HTMLAttributes<HTMLFilePreviewElement>;
-            "progress-bar": LocalJSX.ProgressBar & JSXBase.HTMLAttributes<HTMLProgressBarElement>;
             "uploaded-file": LocalJSX.UploadedFile & JSXBase.HTMLAttributes<HTMLUploadedFileElement>;
         }
     }

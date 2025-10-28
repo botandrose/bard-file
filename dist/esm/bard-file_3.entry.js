@@ -1,5 +1,123 @@
-import { proxyCustomElement, HTMLElement as HTMLElement$1, createEvent, h, Host } from '@stencil/core/internal/client';
-import { d as defineCustomElement$1 } from './file-preview2.js';
+import { g as getElement, r as registerInstance, c as createEvent, h, H as Host } from './index-Cu049DBy.js';
+
+class FormController {
+    static instance(form) {
+        return form.bardFileFormController ||= new FormController(form);
+    }
+    progressContainerTarget;
+    dialog;
+    element;
+    progressTargetMap;
+    controllers;
+    submitted;
+    processing;
+    errors;
+    constructor(form) {
+        this.element = form;
+        this.progressTargetMap = {};
+        this.controllers = [];
+        this.submitted = false;
+        this.processing = false;
+        this.errors = false;
+        this.element.insertAdjacentHTML("beforeend", `<dialog id="form-controller-dialog">
+        <div class="direct-upload-wrapper">
+          <div class="direct-upload-content">
+            <h3>Uploading your media</h3>
+            <div id="progress-container"></div>
+          </div>
+        </div>
+      </dialog>`);
+        this.dialog = this.element.querySelector("#form-controller-dialog");
+        this.progressContainerTarget = this.dialog.querySelector("#progress-container");
+        if (this.element.dataset.remote !== "true" && (this.element.dataset.turbo == "false" || !window.Turbo?.session?.enabled)) {
+            this.element.addEventListener("submit", event => this.submit(event));
+        }
+        window.addEventListener("beforeunload", event => this.beforeUnload(event));
+        this.element.addEventListener("direct-upload:initialize", event => this.init(event));
+        this.element.addEventListener("direct-upload:start", event => this.start(event));
+        this.element.addEventListener("direct-upload:progress", event => this.progress(event));
+        this.element.addEventListener("direct-upload:error", event => this.error(event));
+        this.element.addEventListener("direct-upload:end", event => this.end(event));
+        this.element.addEventListener("uploaded-file:remove", event => this.removeUploadedFile(event));
+    }
+    beforeUnload(event) {
+        if (this.processing) {
+            event.preventDefault();
+            return (event.returnValue = "");
+        }
+    }
+    submit(event) {
+        event.preventDefault();
+        this.submitted = true;
+        this.startNextController();
+        if (this.processing) {
+            this.dialog.showModal();
+        }
+    }
+    startNextController() {
+        if (this.processing)
+            return;
+        const controller = this.controllers.shift();
+        if (controller) {
+            this.processing = true;
+            controller.start(error => {
+                if (error) {
+                    Array.from(this.element.querySelectorAll("input[type=file]"))
+                        .forEach((e) => e.disabled = false);
+                }
+                this.processing = false;
+                this.startNextController();
+            });
+        }
+        else {
+            this.submitForm();
+        }
+    }
+    submitForm() {
+        if (this.submitted) {
+            Array.from(this.element.querySelectorAll("input[type=file]"))
+                .forEach((e) => e.disabled = true);
+            window.setTimeout(() => {
+                this.element.submit();
+            }, 10);
+        }
+    }
+    init(event) {
+        const { id, file, controller } = event.detail;
+        this.progressContainerTarget.insertAdjacentHTML("beforebegin", `
+      <progress-bar id="direct-upload-${id}" class="direct-upload--pending">${file.name}</progress-bar>
+    `);
+        const progressTarget = document.getElementById(`direct-upload-${id}`);
+        this.progressTargetMap[id] = progressTarget;
+        this.controllers.push(controller);
+        this.startNextController();
+    }
+    start(event) {
+        this.progressTargetMap[event.detail.id].classList.remove("direct-upload--pending");
+    }
+    progress(event) {
+        const { id, progress } = event.detail;
+        this.progressTargetMap[id].percent = progress;
+    }
+    error(event) {
+        event.preventDefault();
+        const { id, error } = event.detail;
+        const target = this.progressTargetMap[id];
+        target.classList.add("direct-upload--error");
+        target.title = error;
+    }
+    end(event) {
+        this.progressTargetMap[event.detail.id].classList.add("direct-upload--complete");
+    }
+    removeUploadedFile(event) {
+        const uploadedFile = event.detail;
+        const id = uploadedFile.controller?.directUpload?.id;
+        if (id) {
+            document.getElementById(`direct-upload-${id}`).remove();
+            delete this.progressTargetMap[id];
+        }
+    }
+}
 
 var sparkMd5 = {
   exports: {}
@@ -276,7 +394,7 @@ var sparkMd5 = {
       var result = new Uint8Array(first.byteLength + second.byteLength);
       result.set(new Uint8Array(first));
       result.set(new Uint8Array(second), first.byteLength);
-      return returnUInt8Array ? result : result.buffer;
+      return result ;
     }
     function hexToBinaryString(hex) {
       var bytes = [], length = hex.length, x;
@@ -367,7 +485,7 @@ var sparkMd5 = {
       this.reset();
     };
     SparkMD5.ArrayBuffer.prototype.append = function(arr) {
-      var buff = concatenateArrayBuffers(this._buff.buffer, arr, true), length = buff.length, i;
+      var buff = concatenateArrayBuffers(this._buff.buffer, arr), length = buff.length, i;
       this._length += arr.byteLength;
       for (i = 64; i <= length; i += 64) {
         md5cycle(this._hash, md5blk_array(buff.subarray(i - 64, i)));
@@ -675,7 +793,7 @@ let DirectUploadController$1 = class DirectUploadController {
     }));
   }
   uploadRequestDidProgress(event) {
-    const progress = event.loaded / event.total * 90;
+    const progress = event.loaded / event.total * 100;
     if (progress) {
       this.dispatch("progress", {
         progress: progress
@@ -710,42 +828,6 @@ let DirectUploadController$1 = class DirectUploadController {
       xhr: xhr
     });
     xhr.upload.addEventListener("progress", (event => this.uploadRequestDidProgress(event)));
-    xhr.upload.addEventListener("loadend", (() => {
-      this.simulateResponseProgress(xhr);
-    }));
-  }
-  simulateResponseProgress(xhr) {
-    let progress = 90;
-    const startTime = Date.now();
-    const updateProgress = () => {
-      const elapsed = Date.now() - startTime;
-      const estimatedResponseTime = this.estimateResponseTime();
-      const responseProgress = Math.min(elapsed / estimatedResponseTime, 1);
-      progress = 90 + responseProgress * 9;
-      this.dispatch("progress", {
-        progress: progress
-      });
-      if (xhr.readyState !== XMLHttpRequest.DONE && progress < 99) {
-        requestAnimationFrame(updateProgress);
-      }
-    };
-    xhr.addEventListener("loadend", (() => {
-      this.dispatch("progress", {
-        progress: 100
-      });
-    }));
-    requestAnimationFrame(updateProgress);
-  }
-  estimateResponseTime() {
-    const fileSize = this.file.size;
-    const MB = 1024 * 1024;
-    if (fileSize < MB) {
-      return 1e3;
-    } else if (fileSize < 10 * MB) {
-      return 2e3;
-    } else {
-      return 3e3 + fileSize / MB * 50;
-    }
   }
 };
 
@@ -1340,34 +1422,9 @@ class FetchRequest {
   }
 }
 
-async function get$1 (url, options) {
-  const request = new FetchRequest('get', url, options);
-  return request.perform()
-}
-
-async function post$1 (url, options) {
-  const request = new FetchRequest('post', url, options);
-  return request.perform()
-}
-
-async function put$1 (url, options) {
-  const request = new FetchRequest('put', url, options);
-  return request.perform()
-}
-
-async function patch$1 (url, options) {
-  const request = new FetchRequest('patch', url, options);
-  return request.perform()
-}
-
-async function destroy$1 (url, options) {
-  const request = new FetchRequest('delete', url, options);
-  return request.perform()
-}
-
-const request = (verb, url, payload, headers) => {
+const request = (verb, url, payload) => {
   const req = new FetchRequest(verb, url, {
-    headers: { Accept: "application/json", ...headers },
+    headers: { Accept: "application/json" },
     body: payload,
   });
   return req.perform().then(response => {
@@ -1379,11 +1436,7 @@ const request = (verb, url, payload, headers) => {
   })
 };
 
-const get = (url, payload = {}, headers = {}) => request('get', url, payload, headers);
-const post = (url, payload = {}, headers = {}) => request('post', url, payload, headers);
-const put = (url, payload = {}, headers = {}) => request('put', url, payload, headers);
-const patch = (url, payload = {}, headers = {}) => request('patch', url, payload, headers);
-const destroy = (url, payload = {}, headers = {}) => request('delete', url, payload, headers);
+const get = (url, payload) => request('get', url, payload);
 
 var DOCUMENT_FRAGMENT_NODE = 11;
 
@@ -2170,11 +2223,98 @@ function arrayRemove(arr, e) {
     }
 }
 
+class ProgressBar extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this._percent = 0;
+  }
+
+  connectedCallback() {
+    this.render();
+    this.updateBar();
+  }
+
+  get percent() {
+    return this._percent;
+  }
+
+  set percent(value) {
+    this._percent = Number(value) || 0;
+    this.setAttribute('percent', this._percent);
+    this.updateBar();
+  }
+
+  static get observedAttributes() {
+    return ['percent'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'percent') {
+      this._percent = Number(newValue) || 0;
+      this.updateBar();
+    }
+  }
+
+  updateBar() {
+    const bar = this.shadowRoot?.querySelector('.bar');
+    if (bar) {
+      bar.style.width = `${this._percent}%`;
+    }
+  }
+
+  render() {
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host {
+          --progress-color: rgb(57, 137, 39);
+          --progress-duration: 120ms;
+          --bar-height: 32px;
+          --bar-radius: 4px;
+          --bar-padding: 8px;
+
+          display: block;
+          position: relative;
+          padding: var(--bar-padding);
+          border: 1px solid #999;
+          border-radius: var(--bar-radius);
+        }
+
+        .bar {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+          background: var(--progress-color);
+          width: 0%;
+          transition: width var(--progress-duration) ease, opacity 60ms ease;
+          border-radius: var(--bar-radius);
+        }
+
+        .content {
+          position: relative;
+          display: block;
+          color: white;
+          font-size: 13px;
+          z-index: 1;
+        }
+      </style>
+
+      <div class="bar"></div>
+      <span class="content">
+        <slot></slot>
+      </span>
+    `;
+  }
+}
+
+customElements.define('progress-bar', ProgressBar);
+
 const uploadedFileCss = ":host{display:block;width:100%;max-width:100%;font-size:13px}figure{margin:0}.progress-details{position:relative;display:flex;align-items:center}progress-bar{flex:1 0;padding:0 10px}progress-bar.pending{opacity:0.5}progress-bar.complete{opacity:0.8}progress-bar:not(.complete)+.progress-icon{display:none}progress-bar.complete+.progress-icon{content:url('data:image/svg+xml;utf8,<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" viewBox=\"0 0 20 20\" style=\"enable-background:new 0 0 20 20;\" xml:space=\"preserve\"><g><path d=\"M6.3,9.1c0.2,0,0.5,0.1,0.7,0.4c0.5,0.5,1,1,1.4,1.4c0.3,0.3,0.3,0.3,0.6,0c1.4-1.3,2.7-2.6,4-3.9c0.3-0.3,0.6-0.4,1-0.4 c0.5,0.1,0.9,0.6,0.7,1.1c-0.1,0.2-0.2,0.4-0.3,0.6c-1.6,1.6-3.2,3.2-4.8,4.8c-0.5,0.5-1,0.5-1.6,0c-0.8-0.7-1.5-1.5-2.3-2.3 c-0.3-0.3-0.5-0.6-0.3-1.1C5.5,9.3,5.8,9.1,6.3,9.1z\"/></g></svg>');filter:invert(100%)}.progress-icon{display:inline-block;flex:0 0 20px;width:28px;height:28px;background-size:contain;position:absolute;right:30px;z-index:1}progress-bar.error{background:#f8b3b1;background:rgba(74, 70, 70, 0.25);opacity:1}.progress-bar a{color:#fff}.download-link{padding-right:20px;color:#fff}.remove-media{display:inline-block;content:url('data:image/svg+xml;utf8,<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" viewBox=\"0 0 40 40\" style=\"enable-background:new 0 0 40 40;\" xml:space=\"preserve\"><g><path d=\"M0,19.9C0.2,8.5,9.2-0.1,20.1,0C31.8,0.1,40.2,9.5,40,20.4c-0.2,11-8.9,19.7-20.1,19.6C8,39.9,0,30.5,0,19.9z M20,3.7 c-9,0-16.3,7-16.3,16.2C3.7,29,10.9,36.3,20,36.3c9,0,16.3-7.1,16.4-16.3C36.3,11,29.2,3.8,20,3.7z\"/><path d=\"M17.3,20c-0.2-0.2-0.3-0.4-0.5-0.6c-1-1-2-1.9-2.9-2.9c-0.5-0.5-0.8-1.1-0.7-1.9c0.1-0.7,0.5-1.2,1.2-1.4 c0.8-0.2,1.5,0,2.1,0.6c1,1,2,2,3,3.1c0.3,0.4,0.6,0.3,0.9,0c1-1,2-2,3-3c0.3-0.3,0.7-0.5,1.1-0.6c0.8-0.2,1.6,0.1,2,0.8 c0.4,0.8,0.3,1.7-0.4,2.4c-1,1-2,2-3,3c-0.2,0.2-0.3,0.4-0.5,0.6c1.2,1.2,2.3,2.3,3.4,3.4c0.6,0.6,0.9,1.3,0.6,2.2 c-0.4,1.1-1.7,1.6-2.6,1c-0.3-0.2-0.5-0.4-0.8-0.6c-1-1-1.9-1.9-2.9-2.9c-0.3-0.3-0.5-0.3-0.9,0c-1,1-2,2.1-3,3 c-0.4,0.4-1,0.6-1.5,0.8c-0.6,0.1-1.2-0.2-1.5-0.8c-0.4-0.6-0.5-1.3-0.1-1.9c0.2-0.3,0.4-0.5,0.6-0.7C15.1,22.3,16.2,21.2,17.3,20z \"/></g></svg>');flex:0 0 25px;width:25px;height:20px;align-items:center;opacity:0.25}.remove-media:hover{opacity:1;filter:invert(50%)sepia(100%)saturate(10000%)}.remove-media span{display:inline-block;text-indent:-9999px;color:transparent}";
 
 let uid = 0;
-const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends HTMLElement$1 {
-    get el() { return this; }
+const UploadedFile = class {
+    get el() { return getElement(this); }
     name;
     accepts;
     max;
@@ -2199,13 +2339,9 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
     controller;
     _file;
     uid;
-    constructor(registerHost) {
-        super();
-        if (registerHost !== false) {
-            this.__registerHost();
-        }
-        this.__attachShadow();
-        this.removeEvent = createEvent(this, "uploaded-file:remove", 7);
+    constructor(hostRef) {
+        registerInstance(this, hostRef);
+        this.removeEvent = createEvent(this, "uploaded-file:remove");
         this.uid = uid++;
         this.inputTarget = html(`<input id="input-target-${this.uid}">`);
     }
@@ -2262,7 +2398,7 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
         }
     }
     render() {
-        return (h(Host, { key: '96c1384d31a457130b0c071c08a45893f7c7cb36' }, h("slot", { key: '6d5f3984fa1be3d5c0d622b7a5863edc0f0584e6' }), h("figure", { key: '78734d047d4a9ef076ab842b328693561f514f42' }, h("div", { key: '886a7c98839e78a912e0ba1d0f442a635785505e', class: "progress-details" }, h("progress-bar", { key: 'e418bdbc6ee75ba88b805fd081ababf653774b75', percent: this.percent, class: this.state }, h("a", { key: 'b14bdbe97a4ed14cf54be53ff382d3cd36161b41', class: "download-link", href: this.src, download: this.filename, onClick: e => e.stopPropagation() }, this.filename)), h("span", { key: '1c381a458062d834917ff488bd9ce02d0f99d6f1', class: "progress-icon" }), h("a", { key: '859963a28223dcf857588a0437090039bf12af88', class: "remove-media", onClick: this.removeClicked, href: "#" }, h("span", { key: '60752bc3c18f279cffe5a088e16cc24bf7444bca' }, "Remove media"))), this.preview ? h("file-preview", { src: this.src, filetype: this.filetype }) : '')));
+        return (h(Host, { key: 'fcfc0f35f9ea1709fa64840c6e72ad078a67a630' }, h("slot", { key: 'd71052b9e2aa323eeecbf86296e20e9c4df3acf4' }), h("figure", { key: 'aa373e5ded54689c29d07505b19f629a1d687029' }, h("div", { key: '7e84b497f44ad9362c866d30b7a044a44307cbd4', class: "progress-details" }, h("progress-bar", { key: '6775ae55eed138754d8d66e9e2b2d6e0bb477c59', percent: this.percent, class: this.state }, h("a", { key: 'd3f489b8930818c06132ba93a69875409277dbb3', class: "download-link", href: this.src, download: this.filename, onClick: e => e.stopPropagation() }, this.filename)), h("span", { key: '25c6d686db7df4b80e3bfbdcd62ef75bd8c66be5', class: "progress-icon" }), h("a", { key: 'e397f1139d7e565a8aacb35955fe79a2a2bd746d', class: "remove-media", onClick: this.removeClicked, href: "#" }, h("span", { key: '91617315ad71b68fa6e98e1cae979ed1450f96ba' }, "Remove media"))), this.preview ? h("file-preview", { src: this.src, filetype: this.filetype }) : '')));
     }
     componentDidRender() {
         morphdom(this.inputTarget, `
@@ -2290,44 +2426,276 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
     static get watchers() { return {
         "filename": ["setMissingFiletype"]
     }; }
-    static get style() { return uploadedFileCss; }
-}, [257, "uploaded-file", {
-        "name": [1537],
-        "accepts": [1537],
-        "max": [1538],
-        "url": [1537],
-        "value": [1537],
-        "filename": [1537],
-        "src": [1537],
-        "filetype": [1537],
-        "size": [1538],
-        "state": [1537],
-        "percent": [1538],
-        "preview": [1540],
-        "validationMessage": [1, "validation-message"]
-    }, [[0, "direct-upload:initialize", "start"], [0, "direct-upload:start", "start"], [0, "direct-upload:progress", "progress"], [0, "direct-upload:error", "error"], [0, "direct-upload:end", "end"]], {
-        "filename": ["setMissingFiletype"]
-    }]);
-function defineCustomElement() {
-    if (typeof customElements === "undefined") {
-        return;
+};
+UploadedFile.style = uploadedFileCss;
+
+/**
+ * File Drop Component
+ *
+ * A vanilla JS custom element for drag-and-drop file handling.
+ * Provides drag-and-drop interface that assigns files to a target input element.
+ *
+ * Usage:
+ *   <file-drop for="file-input">Drop files here</file-drop>
+ *   <input type="file" id="file-input" multiple>
+ *
+ * Features:
+ * - Drag and drop file handling
+ * - Click to open file picker
+ * - Visual feedback during drag operations
+ * - Framework-agnostic vanilla JS
+ */
+
+class FileDrop extends HTMLElement {
+  constructor() {
+    super();
+    this.handleDragOver = this.handleDragOver.bind(this);
+    this.handleDragLeave = this.handleDragLeave.bind(this);
+    this.handleDrop = this.handleDrop.bind(this);
+  }
+
+  static get observedAttributes() {
+    return ['for']
+  }
+
+  connectedCallback() {
+    this.addEventListener('dragover', this.handleDragOver);
+    this.addEventListener('dragleave', this.handleDragLeave);
+    this.addEventListener('drop', this.handleDrop);
+    this.applyDefaultStyles();
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('dragover', this.handleDragOver);
+    this.removeEventListener('dragleave', this.handleDragLeave);
+    this.removeEventListener('drop', this.handleDrop);
+  }
+
+  get fileTarget() {
+    const forValue = this.getAttribute('for');
+    if (!forValue) return null
+    return document.querySelector(`#${forValue}`)
+  }
+
+
+  handleDragOver(event) {
+    event.preventDefault();
+    this.classList.add('-dragover');
+  }
+
+  handleDragLeave() {
+    this.classList.remove('-dragover');
+  }
+
+  handleDrop(event) {
+    event.preventDefault();
+    this.classList.remove('-dragover');
+
+    const target = this.fileTarget;
+    if (target && event.dataTransfer.files.length > 0) {
+      target.files = event.dataTransfer.files;
+      const changeEvent = new Event('change', { bubbles: true });
+      target.dispatchEvent(changeEvent);
     }
-    const components = ["uploaded-file", "file-preview"];
-    components.forEach(tagName => { switch (tagName) {
-        case "uploaded-file":
-            if (!customElements.get(tagName)) {
-                customElements.define(tagName, UploadedFile);
-            }
-            break;
-        case "file-preview":
-            if (!customElements.get(tagName)) {
-                defineCustomElement$1();
-            }
-            break;
-    } });
+  }
+
+  applyDefaultStyles() {
+    if (!this.hasAttribute('data-no-default-styles')) {
+      const styles = `
+        file-drop {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          box-sizing: border-box;
+          min-height: 60px;
+          outline-offset: -10px;
+          padding: 20px;
+          background: rgba(255, 255, 255, 0.25);
+          text-align: center;
+          transition: all 0.15s ease 0s;
+          outline: rgba(0, 0, 0, 0.25) dashed 2px;
+          font-size: 13px;
+        }
+
+        file-drop.-dragover {
+          background: rgba(0, 0, 0, 0.1);
+          outline-color: rgba(0, 0, 0, 0.5);
+        }
+      `;
+
+      if (!document.querySelector('#file-drop-default-styles')) {
+        const styleElement = document.createElement('style');
+        styleElement.id = 'file-drop-default-styles';
+        styleElement.textContent = styles;
+        document.head.appendChild(styleElement);
+      }
+    }
+  }
 }
 
-export { UploadedFile as U, arrayRemove as a, defineCustomElement as d, html as h, morphdom as m };
-//# sourceMappingURL=uploaded-file2.js.map
+// Auto-register the custom element
+if (!customElements.get('file-drop')) {
+  customElements.define('file-drop', FileDrop);
+}
 
-//# sourceMappingURL=uploaded-file2.js.map
+const bardFileCss = ":host{display:block;padding:25px;color:var(--bard-file-text-color, #000);font-size:13px}file-drop{cursor:pointer}:host *{box-sizing:border-box;position:relative}drag-and-drop{display:block;outline-offset:-10px;background:rgba(255,255,255, 0.25);margin:0;text-align:center;transition:all 0.15s;outline:2px dashed rgba(0,0,0,0.25);color:#444;font-size:14px}p{padding:10px 20px;margin:0}drag-and-drop.-full{width:100%}.-dragover{background:rgba(255,255,255,0.5);outline:2px dashed rgba(0,0,0,0.25)}.media-preview{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center}// UPLOADER .direct-upload-wrapper{position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:rgba(#333, 0.9)}.direct-upload-content{display:block;background:#fcfcfc;padding:40px 60px 60px;border-radius:3px;width:60vw}.direct-upload-content h3{border-bottom:2px solid #1f1f1f;margin-bottom:20px}.separate-upload{padding:0 10px;margin-top:10px;font-size:0.9em}.direct-upload--pending{opacity:0.6}.direct-upload--complete{opacity:0.4}.direct-upload--error{border-color:red}input[type=file][data-direct-upload-url][disabled]{display:none}:host.separate-upload{padding:0 10px;margin-top:10px;font-size:0.9em}";
+
+const BardFile = class {
+    get el() { return getElement(this); }
+    name;
+    directupload;
+    multiple = false;
+    required = false;
+    accepts;
+    max;
+    preview = true;
+    _forceUpdate = false;
+    forceUpdate() { this._forceUpdate = !this._forceUpdate; }
+    form;
+    fileTargetId;
+    fileTarget;
+    hiddenTargetId;
+    hiddenTarget;
+    _files = [];
+    constructor(hostRef) {
+        registerInstance(this, hostRef);
+        this.fileTargetId = this.el.id;
+        this.fileTarget = html(`<input id="${this.fileTargetId}">`);
+        this.hiddenTargetId = `hidden-target-${this.el.getAttribute("name")}`;
+        this.hiddenTarget = html(`<input id="${this.hiddenTargetId}">`);
+    }
+    componentWillLoad() {
+        this.el.removeAttribute("id");
+        this.form = this.el.closest("form");
+        this.form.addEventListener("reset", () => this.reset());
+        FormController.instance(this.form);
+        const existingFiles = Array.from(this.el.children).filter(e => e.tagName == "UPLOADED-FILE");
+        if (existingFiles.length > 0)
+            this.files = existingFiles;
+    }
+    // Methods
+    get files() {
+        return this._files;
+    }
+    set files(val) {
+        this._files = val;
+        if (!this.multiple)
+            this._files = this._files.slice(-1);
+        this.forceUpdate();
+        this.fireChangeEvent();
+    }
+    get value() {
+        return this.files.map(e => e.value);
+    }
+    set value(val) {
+        const newValue = val || [];
+        if (JSON.stringify(this.value) !== JSON.stringify(newValue)) { // this is insane. javascript is fucking garbage.
+            this.files = newValue.map(signedId => Object.assign(new UploadedFile(), {
+                name: this.name,
+                preview: this.preview,
+                signedId,
+            }));
+        }
+    }
+    reset() {
+        this.value = [];
+    }
+    fileTargetChanged(event) {
+        if (event.target !== this.fileTarget)
+            return;
+        this.files.push(...Array.from(this.fileTarget.files).map(file => Object.assign(new UploadedFile(), {
+            name: this.name,
+            preview: this.preview,
+            url: this.directupload,
+            accepts: this.accepts,
+            max: this.max,
+            file,
+        })));
+        this.files = this.files;
+        this.fileTarget.value = null;
+    }
+    removeUploadedFile(event) {
+        arrayRemove(this.files, event.detail);
+        this.files = this.files;
+    }
+    fireChangeEvent() {
+        requestAnimationFrame(() => this.el.dispatchEvent(new Event("change", { bubbles: true })));
+    }
+    // Rendering
+    render() {
+        return (h(Host, { key: 'ab3a5bae8e654113956ee0eb467443dcdb0adb1a' }, h("file-drop", { key: 'ae3c0de783a09f595ab64ac447908e11b4e2a712', for: this.fileTargetId, onClick: () => this.fileTarget.click() }, h("p", { key: '2d68ab77057e2cf0520d2da17f6b5185568baf33', part: "title" }, h("strong", { key: '31718028c7aee521f3f79ad5d2b975ed9e9732ce' }, "Choose ", this.multiple ? "files" : "file", " "), h("span", { key: 'ef5d6e2aff3e4d460ce4319a14f33dceac9a836b' }, "or drag ", this.multiple ? "them" : "it", " here.")), h("div", { key: 'a03c162469b324f159934de66dbc813f16b4bbf6', class: `media-preview ${this.multiple ? '-stacked' : ''}` }, h("slot", { key: '7b03028a371dafa4513594134fc55a222ea6e6cc' })))));
+    }
+    componentDidRender() {
+        morphdom(this.fileTarget, `
+      <input id="${this.fileTargetId}"
+        type="file"
+        ${this.multiple ? "multiple" : ""}
+        ${this.required && this.files.length === 0 ? "required" : ""}
+        style="opacity: 0.01; width: 1px; height: 1px; z-index: -999"
+      >`);
+        morphdom(this.hiddenTarget, `
+      <input id="${this.hiddenTargetId}"
+        type="hidden"
+        name="${this.name}"
+        ${this.files.length > 0 ? "disabled" : ""}
+      >`);
+        const wrapper = document.createElement("div");
+        // Clear wrapper and append children (replaceChildren polyfill)
+        while (wrapper.firstChild) {
+            wrapper.removeChild(wrapper.firstChild);
+        }
+        wrapper.appendChild(this.fileTarget);
+        wrapper.appendChild(this.hiddenTarget);
+        this.files.forEach(file => wrapper.appendChild(file));
+        morphdom(this.el, wrapper, { childrenOnly: true });
+    }
+    // Validations
+    checkValidity() {
+        return this.fileTarget.checkValidity();
+    }
+    setCustomValidity(msg) {
+        this.fileTarget.setCustomValidity(msg);
+    }
+    reportValidity() {
+        this.fileTarget.reportValidity();
+    }
+    get validationMessage() {
+        return this.fileTarget.validationMessage;
+    }
+};
+BardFile.style = bardFileCss;
+
+const filePreviewCss = ":host{display:block;font-size:13px}img,video{max-width:100%;margin-top:10px}";
+
+const FilePreview = class {
+    constructor(hostRef) {
+        registerInstance(this, hostRef);
+    }
+    src;
+    filetype;
+    render() {
+        return (h(Host, { key: '4ac011f2a5a1d7d9130f86014351513b9a42f843', class: this.computeClass() }, this.isImage() && h("img", { key: '7a169a7185eb1494a61a7b3c0f628f9a214bcb39', src: this.src }), this.isVideo() && h("video", { key: 'cd8b3414f65e19a24f8c2ccb55606c7b01fd31ff', src: this.src, onClick: toggle }), this.isOther() && "This file does not offer a preview", h("slot", { key: 'de543ee7457c0685666ed8acac67ba7d2e3631ed' })));
+    }
+    computeClass() {
+        if (this.isImage())
+            return "image";
+        if (this.isVideo())
+            return "video";
+        return "other";
+    }
+    isImage() {
+        return this.filetype == "image";
+    }
+    isVideo() {
+        return this.filetype == "video";
+    }
+    isOther() {
+        return !this.isImage() && !this.isVideo();
+    }
+};
+const toggle = function () { this.paused ? this.play() : this.pause(); return false; };
+FilePreview.style = filePreviewCss;
+
+export { BardFile as bard_file, FilePreview as file_preview, UploadedFile as uploaded_file };
+//# sourceMappingURL=bard-file.file-preview.uploaded-file.entry.js.map

@@ -2,13 +2,12 @@
   "entries": [
     "components/uploaded-file/uploaded-file.js",
     "components/bard-file/bard-file.js",
-    "components/file-preview/file-preview.js",
-    "components/progress-bar/progress-bar.js"
+    "components/file-preview/file-preview.js"
   ],
   "compiler": {
     "name": "@stencil/core",
-    "version": "4.8.0",
-    "typescriptVersion": "5.2.2"
+    "version": "4.38.2",
+    "typescriptVersion": "5.9.3"
   },
   "collections": [],
   "bundles": []

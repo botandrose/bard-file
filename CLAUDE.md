@@ -31,8 +31,8 @@ This is a Stencil-based Web Components library for advanced file upload function
   - Supports both existing files (via signed IDs) and new uploads
   
 - **`<file-drop>`** - Drag and drop interface component (provided by `@botandrose/file-drop` package)
-- **`<file-preview>`** - File preview display component  
-- **`<progress-bar>`** - Upload progress indicator
+- **`<file-preview>`** - File preview display component
+- **`<progress-bar>`** - Upload progress indicator (provided by `@botandrose/progress-bar` package)
 
 ### Key Integration Points
 

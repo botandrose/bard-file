@@ -1,15 +1,17 @@
 import { BardFile } from './bard-file.js';
 import { FilePreview } from './file-preview.js';
-import { ProgressBar } from './progress-bar.js';
 import { UploadedFile } from './uploaded-file.js';
 export { getAssetPath, render, setAssetPath, setNonce, setPlatformOptions } from '@stencil/core/internal/client';
 
+const globalScripts = () => {};
+const globalStyles = "";
+
+globalScripts();
 const defineCustomElements = (opts) => {
     if (typeof customElements !== 'undefined') {
         [
             BardFile,
             FilePreview,
-            ProgressBar,
             UploadedFile,
         ].forEach(cmp => {
             if (!customElements.get(cmp.is)) {

@@ -5,9 +5,23 @@ import Accepts from "./accepts";
 import Extensions from "./extensions";
 import { get } from "rails-request-json";
 import { morph, html } from "../../utils/utils";
+import "@botandrose/progress-bar";
 let uid = 0;
 export class UploadedFile {
     el;
+    name;
+    accepts;
+    max;
+    url;
+    value = "";
+    filename;
+    src;
+    filetype;
+    size;
+    state = "complete";
+    percent = 100;
+    preview = true;
+    validationMessage;
     removeEvent;
     removeClicked = event => {
         event.stopPropagation();
@@ -20,19 +34,6 @@ export class UploadedFile {
     _file;
     uid;
     constructor() {
-        this.name = undefined;
-        this.accepts = undefined;
-        this.max = undefined;
-        this.url = undefined;
-        this.value = "";
-        this.filename = undefined;
-        this.src = undefined;
-        this.filetype = undefined;
-        this.size = undefined;
-        this.state = "complete";
-        this.percent = 100;
-        this.preview = true;
-        this.validationMessage = undefined;
         this.uid = uid++;
         this.inputTarget = html(`<input id="input-target-${this.uid}">`);
     }
@@ -89,7 +90,7 @@ export class UploadedFile {
         }
     }
     render() {
-        return (h(Host, null, h("slot", null), h("figure", null, h("div", { class: "progress-details" }, h("progress-bar", { percent: this.percent, class: this.state }, h("a", { class: "download-link", href: this.src, download: this.filename, onClick: e => e.stopPropagation() }, this.filename)), h("span", { class: "progress-icon" }), h("a", { class: "remove-media", onClick: this.removeClicked, href: "#" }, h("span", null, "Remove media"))), this.preview ? h("file-preview", { src: this.src, filetype: this.filetype }) : '')));
+        return (h(Host, { key: 'fcfc0f35f9ea1709fa64840c6e72ad078a67a630' }, h("slot", { key: 'd71052b9e2aa323eeecbf86296e20e9c4df3acf4' }), h("figure", { key: 'aa373e5ded54689c29d07505b19f629a1d687029' }, h("div", { key: '7e84b497f44ad9362c866d30b7a044a44307cbd4', class: "progress-details" }, h("progress-bar", { key: '6775ae55eed138754d8d66e9e2b2d6e0bb477c59', percent: this.percent, class: this.state }, h("a", { key: 'd3f489b8930818c06132ba93a69875409277dbb3', class: "download-link", href: this.src, download: this.filename, onClick: e => e.stopPropagation() }, this.filename)), h("span", { key: '25c6d686db7df4b80e3bfbdcd62ef75bd8c66be5', class: "progress-icon" }), h("a", { key: 'e397f1139d7e565a8aacb35955fe79a2a2bd746d', class: "remove-media", onClick: this.removeClicked, href: "#" }, h("span", { key: '91617315ad71b68fa6e98e1cae979ed1450f96ba' }, "Remove media"))), this.preview ? h("file-preview", { src: this.src, filetype: this.filetype }) : '')));
     }
     componentDidRender() {
         morph(this.inputTarget, `
@@ -142,8 +143,10 @@ export class UploadedFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "name",
-                "reflect": true
+                "getter": false,
+                "setter": false,
+                "reflect": true,
+                "attribute": "name"
             },
             "accepts": {
                 "type": "string",
@@ -159,8 +162,10 @@ export class UploadedFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "accepts",
-                "reflect": true
+                "getter": false,
+                "setter": false,
+                "reflect": true,
+                "attribute": "accepts"
             },
             "max": {
                 "type": "number",
@@ -176,8 +181,10 @@ export class UploadedFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "max",
-                "reflect": true
+                "getter": false,
+                "setter": false,
+                "reflect": true,
+                "attribute": "max"
             },
             "url": {
                 "type": "string",
@@ -193,8 +200,10 @@ export class UploadedFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "url",
-                "reflect": true
+                "getter": false,
+                "setter": false,
+                "reflect": true,
+                "attribute": "url"
             },
             "value": {
                 "type": "string",
@@ -210,8 +219,10 @@ export class UploadedFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "value",
+                "getter": false,
+                "setter": false,
                 "reflect": true,
+                "attribute": "value",
                 "defaultValue": "\"\""
             },
             "filename": {
@@ -228,8 +239,10 @@ export class UploadedFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "filename",
-                "reflect": true
+                "getter": false,
+                "setter": false,
+                "reflect": true,
+                "attribute": "filename"
             },
             "src": {
                 "type": "string",
@@ -245,8 +258,10 @@ export class UploadedFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "src",
-                "reflect": true
+                "getter": false,
+                "setter": false,
+                "reflect": true,
+                "attribute": "src"
             },
             "filetype": {
                 "type": "string",
@@ -262,8 +277,10 @@ export class UploadedFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "filetype",
-                "reflect": true
+                "getter": false,
+                "setter": false,
+                "reflect": true,
+                "attribute": "filetype"
             },
             "size": {
                 "type": "number",
@@ -279,8 +296,10 @@ export class UploadedFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "size",
-                "reflect": true
+                "getter": false,
+                "setter": false,
+                "reflect": true,
+                "attribute": "size"
             },
             "state": {
                 "type": "string",
@@ -296,8 +315,10 @@ export class UploadedFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "state",
+                "getter": false,
+                "setter": false,
                 "reflect": true,
+                "attribute": "state",
                 "defaultValue": "\"complete\""
             },
             "percent": {
@@ -314,8 +335,10 @@ export class UploadedFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "percent",
+                "getter": false,
+                "setter": false,
                 "reflect": true,
+                "attribute": "percent",
                 "defaultValue": "100"
             },
             "preview": {
@@ -332,8 +355,10 @@ export class UploadedFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "preview",
+                "getter": false,
+                "setter": false,
                 "reflect": true,
+                "attribute": "preview",
                 "defaultValue": "true"
             },
             "validationMessage": {
@@ -350,8 +375,10 @@ export class UploadedFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "validation-message",
-                "reflect": false
+                "getter": false,
+                "setter": false,
+                "reflect": false,
+                "attribute": "validation-message"
             }
         };
     }

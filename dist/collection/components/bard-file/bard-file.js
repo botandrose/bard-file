@@ -5,6 +5,14 @@ import { morph, html, arrayRemove } from "../../utils/utils";
 import "@botandrose/file-drop";
 export class BardFile {
     el;
+    name;
+    directupload;
+    multiple = false;
+    required = false;
+    accepts;
+    max;
+    preview = true;
+    _forceUpdate = false;
     forceUpdate() { this._forceUpdate = !this._forceUpdate; }
     form;
     fileTargetId;
@@ -13,14 +21,6 @@ export class BardFile {
     hiddenTarget;
     _files = [];
     constructor() {
-        this.name = undefined;
-        this.directupload = undefined;
-        this.multiple = false;
-        this.required = false;
-        this.accepts = undefined;
-        this.max = undefined;
-        this.preview = true;
-        this._forceUpdate = false;
         this.fileTargetId = this.el.id;
         this.fileTarget = html(`<input id="${this.fileTargetId}">`);
         this.hiddenTargetId = `hidden-target-${this.el.getAttribute("name")}`;
@@ -85,7 +85,7 @@ export class BardFile {
     }
     // Rendering
     render() {
-        return (h(Host, null, h("file-drop", { for: this.fileTargetId, onClick: () => this.fileTarget.click() }, h("p", { part: "title" }, h("strong", null, "Choose ", this.multiple ? "files" : "file", " "), h("span", null, "or drag ", this.multiple ? "them" : "it", " here.")), h("div", { class: `media-preview ${this.multiple ? '-stacked' : ''}` }, h("slot", null)))));
+        return (h(Host, { key: 'ab3a5bae8e654113956ee0eb467443dcdb0adb1a' }, h("file-drop", { key: 'ae3c0de783a09f595ab64ac447908e11b4e2a712', for: this.fileTargetId, onClick: () => this.fileTarget.click() }, h("p", { key: '2d68ab77057e2cf0520d2da17f6b5185568baf33', part: "title" }, h("strong", { key: '31718028c7aee521f3f79ad5d2b975ed9e9732ce' }, "Choose ", this.multiple ? "files" : "file", " "), h("span", { key: 'ef5d6e2aff3e4d460ce4319a14f33dceac9a836b' }, "or drag ", this.multiple ? "them" : "it", " here.")), h("div", { key: 'a03c162469b324f159934de66dbc813f16b4bbf6', class: `media-preview ${this.multiple ? '-stacked' : ''}` }, h("slot", { key: '7b03028a371dafa4513594134fc55a222ea6e6cc' })))));
     }
     componentDidRender() {
         morph(this.fileTarget, `
@@ -152,8 +152,10 @@ export class BardFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "name",
-                "reflect": false
+                "getter": false,
+                "setter": false,
+                "reflect": false,
+                "attribute": "name"
             },
             "directupload": {
                 "type": "string",
@@ -169,8 +171,10 @@ export class BardFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "directupload",
-                "reflect": false
+                "getter": false,
+                "setter": false,
+                "reflect": false,
+                "attribute": "directupload"
             },
             "multiple": {
                 "type": "boolean",
@@ -186,8 +190,10 @@ export class BardFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "multiple",
+                "getter": false,
+                "setter": false,
                 "reflect": false,
+                "attribute": "multiple",
                 "defaultValue": "false"
             },
             "required": {
@@ -204,8 +210,10 @@ export class BardFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "required",
+                "getter": false,
+                "setter": false,
                 "reflect": false,
+                "attribute": "required",
                 "defaultValue": "false"
             },
             "accepts": {
@@ -222,8 +230,10 @@ export class BardFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "accepts",
-                "reflect": false
+                "getter": false,
+                "setter": false,
+                "reflect": false,
+                "attribute": "accepts"
             },
             "max": {
                 "type": "number",
@@ -239,8 +249,10 @@ export class BardFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "max",
-                "reflect": false
+                "getter": false,
+                "setter": false,
+                "reflect": false,
+                "attribute": "max"
             },
             "preview": {
                 "type": "boolean",
@@ -256,8 +268,10 @@ export class BardFile {
                     "tags": [],
                     "text": ""
                 },
-                "attribute": "preview",
+                "getter": false,
+                "setter": false,
                 "reflect": false,
+                "attribute": "preview",
                 "defaultValue": "true"
             }
         };

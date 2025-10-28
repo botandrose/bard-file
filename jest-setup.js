@@ -20,3 +20,14 @@ if (typeof HTMLInputElement !== 'undefined') {
     writable: true
   });
 }
+
+// Load progress-bar component for tests
+(async () => {
+  try {
+    if (typeof customElements !== 'undefined') {
+      await import('@botandrose/progress-bar');
+    }
+  } catch (e) {
+    console.warn('Could not load progress-bar component:', e.message);
+  }
+})();

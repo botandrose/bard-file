@@ -29,6 +29,9 @@ export const config: Config = {
   testing: {
     browserHeadless: "new",
     useESModules: true,
+    moduleNameMapper: {
+      "^@botandrose/progress-bar$": "<rootDir>/node_modules/@botandrose/progress-bar/index.js"
+    },
     transformIgnorePatterns: [
       "node_modules/(?!(rails-request-json|@botandrose|@rails/request\.js))"
     ],

@@ -1,0 +1,13 @@
+dir: input-tag
+http: input-tag.localhost
+html: <input-tag><input-tag-option>
+npm: @botandrose/input-tag
+gem: rails-tag_field
+form: form.tag_field
+
+dir: input-attachment
+http: input-attachment.localhost
+html: <input-attachment><attachment-drop><attachment-file><attachment-preview>
+npm: @botandrose/input-attachment
+gem: rails-attachment_field
+form: form.attachment_field

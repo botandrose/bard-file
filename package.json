@@ -18,6 +18,7 @@
     "generate": "bunx stencil generate"
   },
   "jest": {
+    "testEnvironment": "jsdom",
     "extensionsToTreatAsEsm": [".ts", ".tsx"],
     "globals": {
       "ts-jest": {
@@ -27,6 +28,7 @@
   },
   "dependencies": {
     "@botandrose/file-drop": "^0.1.0",
+    "@botandrose/progress-bar": "^0.1.0",
     "@rails/activestorage": "^8.1.0",
     "@stencil/core": "^4.38.2",
     "morphdom": "^2.7.7",
