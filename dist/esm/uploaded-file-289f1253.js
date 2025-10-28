@@ -1,6 +1,4 @@
-import { proxyCustomElement, HTMLElement, createEvent, h, Host } from '@stencil/core/internal/client';
-import { d as defineCustomElement$2 } from './file-preview2.js';
-import { d as defineCustomElement$1 } from './progress-bar2.js';
+import { g as getElement, r as registerInstance, e as createEvent, h, a as Host } from './index-12206424.js';
 
 var sparkMd5 = {
   exports: {}
@@ -2124,8 +2122,8 @@ function arrayRemove(arr, e) {
 const uploadedFileCss = ":host{display:block;width:100%;max-width:100%;font-size:13px}figure{margin:0}.progress-details{position:relative;display:flex;align-items:center}progress-bar{flex:1 0;padding:0 10px}progress-bar.pending{opacity:0.5}progress-bar.complete{opacity:0.8}progress-bar:not(.complete)+.progress-icon{display:none}progress-bar.complete+.progress-icon{content:url('data:image/svg+xml;utf8,<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" viewBox=\"0 0 20 20\" style=\"enable-background:new 0 0 20 20;\" xml:space=\"preserve\"><g><path d=\"M6.3,9.1c0.2,0,0.5,0.1,0.7,0.4c0.5,0.5,1,1,1.4,1.4c0.3,0.3,0.3,0.3,0.6,0c1.4-1.3,2.7-2.6,4-3.9c0.3-0.3,0.6-0.4,1-0.4 c0.5,0.1,0.9,0.6,0.7,1.1c-0.1,0.2-0.2,0.4-0.3,0.6c-1.6,1.6-3.2,3.2-4.8,4.8c-0.5,0.5-1,0.5-1.6,0c-0.8-0.7-1.5-1.5-2.3-2.3 c-0.3-0.3-0.5-0.6-0.3-1.1C5.5,9.3,5.8,9.1,6.3,9.1z\"/></g></svg>');filter:invert(100%)}.progress-icon{display:inline-block;flex:0 0 20px;width:28px;height:28px;background-size:contain;position:absolute;right:30px;z-index:1}progress-bar.error{background:#f8b3b1;background:rgba(74, 70, 70, 0.25);opacity:1}.progress-bar a{color:#fff}.download-link{padding-right:20px;color:#fff}.remove-media{display:inline-block;content:url('data:image/svg+xml;utf8,<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" viewBox=\"0 0 40 40\" style=\"enable-background:new 0 0 40 40;\" xml:space=\"preserve\"><g><path d=\"M0,19.9C0.2,8.5,9.2-0.1,20.1,0C31.8,0.1,40.2,9.5,40,20.4c-0.2,11-8.9,19.7-20.1,19.6C8,39.9,0,30.5,0,19.9z M20,3.7 c-9,0-16.3,7-16.3,16.2C3.7,29,10.9,36.3,20,36.3c9,0,16.3-7.1,16.4-16.3C36.3,11,29.2,3.8,20,3.7z\"/><path d=\"M17.3,20c-0.2-0.2-0.3-0.4-0.5-0.6c-1-1-2-1.9-2.9-2.9c-0.5-0.5-0.8-1.1-0.7-1.9c0.1-0.7,0.5-1.2,1.2-1.4 c0.8-0.2,1.5,0,2.1,0.6c1,1,2,2,3,3.1c0.3,0.4,0.6,0.3,0.9,0c1-1,2-2,3-3c0.3-0.3,0.7-0.5,1.1-0.6c0.8-0.2,1.6,0.1,2,0.8 c0.4,0.8,0.3,1.7-0.4,2.4c-1,1-2,2-3,3c-0.2,0.2-0.3,0.4-0.5,0.6c1.2,1.2,2.3,2.3,3.4,3.4c0.6,0.6,0.9,1.3,0.6,2.2 c-0.4,1.1-1.7,1.6-2.6,1c-0.3-0.2-0.5-0.4-0.8-0.6c-1-1-1.9-1.9-2.9-2.9c-0.3-0.3-0.5-0.3-0.9,0c-1,1-2,2.1-3,3 c-0.4,0.4-1,0.6-1.5,0.8c-0.6,0.1-1.2-0.2-1.5-0.8c-0.4-0.6-0.5-1.3-0.1-1.9c0.2-0.3,0.4-0.5,0.6-0.7C15.1,22.3,16.2,21.2,17.3,20z \"/></g></svg>');flex:0 0 25px;width:25px;height:20px;align-items:center;opacity:0.25}.remove-media:hover{opacity:1;filter:invert(50%)sepia(100%)saturate(10000%)}.remove-media span{display:inline-block;text-indent:-9999px;color:transparent}";
 
 let uid = 0;
-const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends HTMLElement {
-    get el() { return this; }
+const UploadedFile = class {
+    get el() { return getElement(this); }
     removeEvent;
     removeClicked = event => {
         event.stopPropagation();
@@ -2137,10 +2135,8 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
     controller;
     _file;
     uid;
-    constructor() {
-        super();
-        this.__registerHost();
-        this.__attachShadow();
+    constructor(hostRef) {
+        registerInstance(this, hostRef);
         this.removeEvent = createEvent(this, "uploaded-file:remove", 7);
         this.name = undefined;
         this.accepts = undefined;
@@ -2239,48 +2235,9 @@ const UploadedFile = /*@__PURE__*/ proxyCustomElement(class UploadedFile extends
     static get watchers() { return {
         "filename": ["setMissingFiletype"]
     }; }
-    static get style() { return uploadedFileCss; }
-}, [1, "uploaded-file", {
-        "name": [1537],
-        "accepts": [1537],
-        "max": [1538],
-        "url": [1537],
-        "value": [1537],
-        "filename": [1537],
-        "src": [1537],
-        "filetype": [1537],
-        "size": [1538],
-        "state": [1537],
-        "percent": [1538],
-        "preview": [1540],
-        "validationMessage": [1, "validation-message"]
-    }, [[0, "direct-upload:initialize", "start"], [0, "direct-upload:start", "start"], [0, "direct-upload:progress", "progress"], [0, "direct-upload:error", "error"], [0, "direct-upload:end", "end"]], {
-        "filename": ["setMissingFiletype"]
-    }]);
-function defineCustomElement() {
-    if (typeof customElements === "undefined") {
-        return;
-    }
-    const components = ["uploaded-file", "file-preview", "progress-bar"];
-    components.forEach(tagName => { switch (tagName) {
-        case "uploaded-file":
-            if (!customElements.get(tagName)) {
-                customElements.define(tagName, UploadedFile);
-            }
-            break;
-        case "file-preview":
-            if (!customElements.get(tagName)) {
-                defineCustomElement$2();
-            }
-            break;
-        case "progress-bar":
-            if (!customElements.get(tagName)) {
-                defineCustomElement$1();
-            }
-            break;
-    } });
-}
+};
+UploadedFile.style = uploadedFileCss;
 
-export { UploadedFile as U, arrayRemove as a, defineCustomElement as d, html as h, morphdom as m };
+export { UploadedFile as U, arrayRemove as a, html as h, morphdom as m };
 
-//# sourceMappingURL=uploaded-file2.js.map
+//# sourceMappingURL=uploaded-file-289f1253.js.map

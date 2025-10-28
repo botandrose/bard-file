@@ -4,6 +4,9 @@ import { ProgressBar } from './progress-bar.js';
 import { UploadedFile } from './uploaded-file.js';
 export { getAssetPath, setAssetPath, setNonce, setPlatformOptions } from '@stencil/core/internal/client';
 
+const globalScripts = () => {};
+
+globalScripts();
 const defineCustomElements = (opts) => {
     if (typeof customElements !== 'undefined') {
         [
