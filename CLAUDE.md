@@ -38,7 +38,6 @@ This is a Stencil-based Web Components library for advanced file upload function
 
 - **Rails Active Storage**: Uses `@rails/activestorage` for direct uploads
 - **Form Integration**: Components integrate with standard HTML forms via `FormController`
-- **DOM Morphing**: Uses `morphdom` for efficient DOM updates while preserving form state
 - **Validation**: Implements HTML5 form validation APIs (`checkValidity`, `setCustomValidity`, etc.)
 
 ### Component Communication

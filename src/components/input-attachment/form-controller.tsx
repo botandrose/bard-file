@@ -72,10 +72,10 @@ export default class FormController {
     const controller = this.controllers.shift()
     if(controller) {
       this.processing = true
+      this.setInputAttachmentsDisabled(true)
       controller.start(error => {
         if(error) {
-          Array.from(this.element.querySelectorAll("input[type=file]"))
-            .forEach((e: HTMLInputElement) => e.disabled = false)
+          this.setInputAttachmentsDisabled(false)
         }
         this.processing = false
         this.startNextController()
@@ -87,12 +87,18 @@ export default class FormController {
 
   submitForm() {
     if(this.submitted) {
-      Array.from(this.element.querySelectorAll("input[type=file]"))
-        .forEach((e: HTMLInputElement) => e.disabled = true)
+      this.setInputAttachmentsDisabled(true)
       window.setTimeout(() => { // allow other async tasks to complete
         this.element.submit()
       }, 10)
     }
+  }
+
+  setInputAttachmentsDisabled(disabled: boolean) {
+    Array.from(this.element.querySelectorAll("input-attachment"))
+      .forEach((el: any) => {
+        el.disabled = disabled
+      })
   }
 
   init(event) {

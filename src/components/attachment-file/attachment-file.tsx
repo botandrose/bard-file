@@ -5,9 +5,6 @@ import Max from './max'
 import Accepts from './accepts'
 import Extensions from './extensions'
 import { get } from 'rails-request-json'
-import { morph, html } from "../../utils/utils"
-
-let uid = 0
 
 @Component({
   tag: 'attachment-file',
@@ -42,18 +39,11 @@ export class AttachmentFile {
     this.removeEvent.emit(this)
   }
 
-  inputTarget: HTMLInputElement
   controller: DirectUploadController
   _file: File
-  uid: number
-
-  constructor() {
-    this.uid = uid++
-    this.inputTarget = html(`<input id="input-target-${this.uid}">`) as HTMLInputElement
-  }
+  validationError: string = ""
 
   componentWillLoad() {
-    this.el.appendChild(this.inputTarget)
     this.setMissingFiletype()
   }
 
@@ -108,7 +98,7 @@ export class AttachmentFile {
     event.preventDefault()
     const { error } = event.detail
     this.state = "error"
-    this.inputTarget.setCustomValidity(error)
+    this.validationError = error
   }
 
   @Listen("direct-upload:end")
@@ -142,16 +132,6 @@ export class AttachmentFile {
     )
   }
 
-  componentDidRender() {
-    morph(this.inputTarget, `
-      <input
-        id="input-target-${this.uid}"
-        style="opacity: 0.01; width: 1px; height: 1px; z-index: -999; position: absolute;"
-        name="${this.name}"
-        value="${this.value}"
-      >`)
-  }
-
   componentDidLoad() {
     if(this.checkValidity() && this.state == "pending") {
       this.controller = new DirectUploadController(this.el)
@@ -163,8 +143,7 @@ export class AttachmentFile {
     let errors = []
     errors.push(...new Accepts(this).errors)
     errors.push(...new Max(this).errors)
-    this.inputTarget.setCustomValidity(errors.join(" "))
-    this.inputTarget.reportValidity()
+    this.validationError = errors.join(" ")
     return errors.length === 0
   }
 }

@@ -1,5 +1,5 @@
 import { proxyCustomElement, HTMLElement as HTMLElement$1, h, Host } from '@stencil/core/internal/client';
-import { h as html, A as AttachmentFile, a as arrayRemove, m as morphdom } from './attachment-file2.js';
+import { A as AttachmentFile } from './attachment-file2.js';
 
 class FormController {
     static instance(form) {
@@ -61,10 +61,10 @@ class FormController {
         const controller = this.controllers.shift();
         if (controller) {
             this.processing = true;
+            this.setInputAttachmentsDisabled(true);
             controller.start(error => {
                 if (error) {
-                    Array.from(this.element.querySelectorAll("input[type=file]"))
-                        .forEach((e) => e.disabled = false);
+                    this.setInputAttachmentsDisabled(false);
                 }
                 this.processing = false;
                 this.startNextController();
@@ -76,12 +76,17 @@ class FormController {
     }
     submitForm() {
         if (this.submitted) {
-            Array.from(this.element.querySelectorAll("input[type=file]"))
-                .forEach((e) => e.disabled = true);
+            this.setInputAttachmentsDisabled(true);
             window.setTimeout(() => {
                 this.element.submit();
             }, 10);
         }
+    }
+    setInputAttachmentsDisabled(disabled) {
+        Array.from(this.element.querySelectorAll("input-attachment"))
+            .forEach((el) => {
+            el.disabled = disabled;
+        });
     }
     init(event) {
         const { id, file, controller } = event.detail;
@@ -117,6 +122,18 @@ class FormController {
             document.getElementById(`direct-upload-${id}`).remove();
             delete this.progressTargetMap[id];
         }
+    }
+}
+
+function html(html) {
+    const el = document.createElement("div");
+    el.innerHTML = html;
+    return el.children[0];
+}
+function arrayRemove(arr, e) {
+    const index = arr.findIndex(x => x === e);
+    if (index !== -1) {
+        arr.splice(index, 1);
     }
 }
 
@@ -241,13 +258,12 @@ const InputAttachment$1 = /*@__PURE__*/ proxyCustomElement(class InputAttachment
     accepts;
     max;
     preview = true;
+    disabled = false;
     _forceUpdate = false;
     forceUpdate() { this._forceUpdate = !this._forceUpdate; }
     form;
-    fileTargetId;
-    fileTarget;
-    hiddenTargetId;
-    hiddenTarget;
+    internals;
+    fileInput;
     _files = [];
     constructor(registerHost) {
         super();
@@ -255,16 +271,14 @@ const InputAttachment$1 = /*@__PURE__*/ proxyCustomElement(class InputAttachment
             this.__registerHost();
         }
         this.__attachShadow();
-        this.fileTargetId = this.el.id;
-        this.fileTarget = html(`<input id="${this.fileTargetId}">`);
-        this.hiddenTargetId = `hidden-target-${this.el.getAttribute("name")}`;
-        this.hiddenTarget = html(`<input id="${this.hiddenTargetId}">`);
+        this.internals = this.el.attachInternals();
     }
     componentWillLoad() {
-        this.el.removeAttribute("id");
-        this.form = this.el.closest("form");
-        this.form.addEventListener("reset", () => this.reset());
-        FormController.instance(this.form);
+        this.form = this.internals.form;
+        if (this.form) {
+            this.form.addEventListener("reset", () => this.reset());
+            FormController.instance(this.form);
+        }
         const existingFiles = Array.from(this.el.children).filter(e => e.tagName == "ATTACHMENT-FILE");
         if (existingFiles.length > 0)
             this.files = existingFiles;
@@ -293,13 +307,20 @@ const InputAttachment$1 = /*@__PURE__*/ proxyCustomElement(class InputAttachment
             }));
         }
     }
+    updateFormValue() {
+        if (!this.name || !this.internals?.setFormValue)
+            return;
+        const formData = new FormData();
+        formData.set(this.name, JSON.stringify(this.value));
+        this.internals.setFormValue(formData);
+    }
     reset() {
         this.value = [];
     }
     fileTargetChanged(event) {
-        if (event.target !== this.fileTarget)
+        if (event.target !== this.fileInput)
             return;
-        this.files.push(...Array.from(this.fileTarget.files).map(file => Object.assign(new AttachmentFile(), {
+        this.files.push(...Array.from(this.fileInput.files).map(file => Object.assign(new AttachmentFile(), {
             name: this.name,
             preview: this.preview,
             url: this.directupload,
@@ -308,55 +329,68 @@ const InputAttachment$1 = /*@__PURE__*/ proxyCustomElement(class InputAttachment
             file,
         })));
         this.files = this.files;
-        this.fileTarget.value = null;
+        this.fileInput.value = null;
     }
     removeUploadedFile(event) {
         arrayRemove(this.files, event.detail);
         this.files = this.files;
     }
     fireChangeEvent() {
-        requestAnimationFrame(() => this.el.dispatchEvent(new Event("change", { bubbles: true })));
+        requestAnimationFrame(() => {
+            this.updateFormValue();
+            this.el.dispatchEvent(new Event("change", { bubbles: true }));
+        });
     }
     // Rendering
     render() {
-        return (h(Host, { key: '777f0c9a82a195dfcb534747248a804e9d333218' }, h("file-drop", { key: 'aee96cc60b1665c472290a8a6efbc667040d61cf', for: this.fileTargetId, onClick: () => this.fileTarget.click() }, h("p", { key: '864af767f5e9ce6e435f2271912cb8cabafa4df7', part: "title" }, h("strong", { key: '62f72a2bbe9ac96caf18f832bb3ad7bbc12c3fb0' }, "Choose ", this.multiple ? "files" : "file", " "), h("span", { key: '33f697e3cd8e869682e67d8c938138ce9e8573cd' }, "or drag ", this.multiple ? "them" : "it", " here.")), h("div", { key: 'e93c3f76f9b30ed4e13ec41421c366ec19d3c803', class: `media-preview ${this.multiple ? '-stacked' : ''}` }, h("slot", { key: 'd9af5f5f3095628cd2a079168a0d68e1b10ecb7d' })))));
+        return (h(Host, { key: '777f0c9a82a195dfcb534747248a804e9d333218' }, h("input", { key: '5b9c555445b0a899a894e1b6006c9ea77e673c73', ref: el => this.fileInput = el, type: "file", multiple: this.multiple, accept: this.accepts, required: this.required && this.files.length === 0, disabled: this.disabled, style: {
+                opacity: '0.01',
+                width: '1px',
+                height: '1px',
+                zIndex: '-999'
+            } }), h("file-drop", { key: 'b878ed760f8d694cca53b4d46fba2f546ed1f491', onClick: () => this.fileInput?.click() }, h("p", { key: 'd6d8e74e5cdaa5babf723b49c5193256e033fa88', part: "title" }, h("strong", { key: '2ebaf3c1d13b539e9d6a621740c7f6a0fc8009c7' }, "Choose ", this.multiple ? "files" : "file", " "), h("span", { key: '8e4cd499797f9b75d94faf3621fe8b3a686b14b2' }, "or drag ", this.multiple ? "them" : "it", " here.")), h("div", { key: '1a71ffbf66bc58133053059eafe9a1bf23309230', class: `media-preview ${this.multiple ? '-stacked' : ''}` }, h("slot", { key: '7b18d4f3a579d6579b0f68d3850b3346036aef2f' })))));
     }
     componentDidRender() {
-        morphdom(this.fileTarget, `
-      <input id="${this.fileTargetId}"
-        type="file"
-        ${this.multiple ? "multiple" : ""}
-        ${this.required && this.files.length === 0 ? "required" : ""}
-        style="opacity: 0.01; width: 1px; height: 1px; z-index: -999"
-      >`);
-        morphdom(this.hiddenTarget, `
-      <input id="${this.hiddenTargetId}"
-        type="hidden"
-        name="${this.name}"
-        ${this.files.length > 0 ? "disabled" : ""}
-      >`);
         const wrapper = document.createElement("div");
-        // Clear wrapper and append children (replaceChildren polyfill)
         while (wrapper.firstChild) {
             wrapper.removeChild(wrapper.firstChild);
         }
-        wrapper.appendChild(this.fileTarget);
-        wrapper.appendChild(this.hiddenTarget);
         this.files.forEach(file => wrapper.appendChild(file));
-        morphdom(this.el, wrapper, { childrenOnly: true });
+        let needsUpdate = false;
+        if (wrapper.children.length !== this.el.children.length) {
+            needsUpdate = true;
+        }
+        else {
+            for (let i = 0; i < wrapper.children.length; i++) {
+                if (wrapper.children[i] !== this.el.children[i]) {
+                    needsUpdate = true;
+                    break;
+                }
+            }
+        }
+        if (needsUpdate) {
+            while (this.el.firstChild) {
+                this.el.removeChild(this.el.firstChild);
+            }
+            this.el.appendChild(wrapper);
+        }
+        this.updateFormValue();
     }
     // Validations
     checkValidity() {
-        return this.fileTarget.checkValidity();
+        if (this.required && this.files.length === 0) {
+            return false;
+        }
+        return true;
     }
     setCustomValidity(msg) {
-        this.fileTarget.setCustomValidity(msg);
+        this.internals.setValidity(msg ? { customError: true } : {}, msg, this.fileInput);
     }
     reportValidity() {
-        this.fileTarget.reportValidity();
+        return this.internals.reportValidity();
     }
     get validationMessage() {
-        return this.fileTarget.validationMessage;
+        return this.internals.validationMessage;
     }
     static get style() { return inputAttachmentCss; }
 }, [257, "input-attachment", {
@@ -367,6 +401,7 @@ const InputAttachment$1 = /*@__PURE__*/ proxyCustomElement(class InputAttachment
         "accepts": [1],
         "max": [2],
         "preview": [4],
+        "disabled": [4],
         "_forceUpdate": [32]
     }, [[0, "change", "fileTargetChanged"], [0, "attachment-file:remove", "removeUploadedFile"], [0, "direct-upload:end", "fireChangeEvent"]]]);
 function defineCustomElement$1() {

@@ -1,7 +1,7 @@
 import { Component, Element, Prop, State, Listen, Host, h } from '@stencil/core';
 import FormController from "./form-controller"
 import { AttachmentFile } from "../attachment-file/attachment-file"
-import { morph, html, arrayRemove } from "../../utils/utils"
+import { arrayRemove } from "../../utils/utils"
 import '@botandrose/file-drop'
 
 @Component({
@@ -20,29 +20,26 @@ export class InputAttachment {
   @Prop() accepts: string
   @Prop() max: number
   @Prop() preview: boolean = true
+  @Prop() disabled: boolean = false
 
   @State() _forceUpdate: boolean = false
   forceUpdate() { this._forceUpdate = !this._forceUpdate }
 
   form: HTMLFormElement
-  fileTargetId: string
-  fileTarget: HTMLInputElement
-  hiddenTargetId: string
-  hiddenTarget: HTMLInputElement
+  internals: ElementInternals
+  fileInput: HTMLInputElement
   _files: Array<any> = []
 
   constructor() {
-    this.fileTargetId = this.el.id
-    this.fileTarget = html(`<input id="${this.fileTargetId}">`) as HTMLInputElement
-    this.hiddenTargetId = `hidden-target-${this.el.getAttribute("name")}`
-    this.hiddenTarget = html(`<input id="${this.hiddenTargetId}">`) as HTMLInputElement
+    this.internals = (this.el as any).attachInternals()
   }
 
   componentWillLoad() {
-    this.el.removeAttribute("id")
-    this.form = this.el.closest("form")
-    this.form.addEventListener("reset", () => this.reset())
-    FormController.instance(this.form)
+    this.form = this.internals.form
+    if (this.form) {
+      this.form.addEventListener("reset", () => this.reset())
+      FormController.instance(this.form)
+    }
     const existingFiles = Array.from(this.el.children).filter(e => e.tagName == "ATTACHMENT-FILE");
     if(existingFiles.length > 0) this.files = existingFiles
   }
@@ -75,14 +72,21 @@ export class InputAttachment {
     }
   }
 
+  updateFormValue() {
+    if (!this.name || !this.internals?.setFormValue) return
+    const formData = new FormData()
+    formData.set(this.name, JSON.stringify(this.value))
+    this.internals.setFormValue(formData)
+  }
+
   reset() {
     this.value = []
   }
 
   @Listen("change")
   fileTargetChanged(event) {
-    if(event.target !== this.fileTarget) return
-    this.files.push(...Array.from(this.fileTarget.files).map(file => Object.assign(new AttachmentFile(), {
+    if(event.target !== this.fileInput) return
+    this.files.push(...Array.from(this.fileInput.files).map(file => Object.assign(new AttachmentFile(), {
       name: this.name,
       preview: this.preview,
       url: this.directupload,
@@ -91,7 +95,7 @@ export class InputAttachment {
       file,
     })))
     this.files = this.files
-    this.fileTarget.value = null
+    this.fileInput.value = null
   }
 
   @Listen("attachment-file:remove")
@@ -102,7 +106,10 @@ export class InputAttachment {
 
   @Listen("direct-upload:end")
   fireChangeEvent() {
-    requestAnimationFrame(() => this.el.dispatchEvent(new Event("change", { bubbles: true })))
+    requestAnimationFrame(() => {
+      this.updateFormValue()
+      this.el.dispatchEvent(new Event("change", { bubbles: true }))
+    })
   }
 
   // Rendering
@@ -110,7 +117,21 @@ export class InputAttachment {
   render() {
     return (
       <Host>
-        <file-drop for={this.fileTargetId} onClick={() => this.fileTarget.click()}>
+        <input
+          ref={el => this.fileInput = el}
+          type="file"
+          multiple={this.multiple}
+          accept={this.accepts}
+          required={this.required && this.files.length === 0}
+          disabled={this.disabled}
+          style={{
+            opacity: '0.01',
+            width: '1px',
+            height: '1px',
+            zIndex: '-999'
+          }}
+        />
+        <file-drop onClick={() => this.fileInput?.click()}>
           <p part="title">
             <strong>Choose {this.multiple ? "files" : "file"} </strong>
             <span>or drag {this.multiple ? "them" : "it"} here.</span>
@@ -125,46 +146,52 @@ export class InputAttachment {
   }
 
   componentDidRender() {
-    morph(this.fileTarget, `
-      <input id="${this.fileTargetId}"
-        type="file"
-        ${this.multiple ? "multiple" : ""}
-        ${this.required && this.files.length === 0 ? "required" : ""}
-        style="opacity: 0.01; width: 1px; height: 1px; z-index: -999"
-      >`)
-    morph(this.hiddenTarget, `
-      <input id="${this.hiddenTargetId}"
-        type="hidden"
-        name="${this.name}"
-        ${this.files.length > 0 ? "disabled" : ""}
-      >`)
-
     const wrapper = document.createElement("div")
-    // Clear wrapper and append children (replaceChildren polyfill)
     while (wrapper.firstChild) {
       wrapper.removeChild(wrapper.firstChild)
     }
-    wrapper.appendChild(this.fileTarget)
-    wrapper.appendChild(this.hiddenTarget)
     this.files.forEach(file => wrapper.appendChild(file))
-    morph(this.el, wrapper, { childrenOnly: true })
+
+    let needsUpdate = false
+    if (wrapper.children.length !== this.el.children.length) {
+      needsUpdate = true
+    } else {
+      for (let i = 0; i < wrapper.children.length; i++) {
+        if (wrapper.children[i] !== this.el.children[i]) {
+          needsUpdate = true
+          break
+        }
+      }
+    }
+
+    if (needsUpdate) {
+      while (this.el.firstChild) {
+        this.el.removeChild(this.el.firstChild)
+      }
+      this.el.appendChild(wrapper)
+    }
+
+    this.updateFormValue()
   }
 
   // Validations
 
   checkValidity() {
-    return this.fileTarget.checkValidity()
+    if (this.required && this.files.length === 0) {
+      return false
+    }
+    return true
   }
 
-  setCustomValidity(msg) {
-    this.fileTarget.setCustomValidity(msg)
+  setCustomValidity(msg: string) {
+    this.internals.setValidity(msg ? { customError: true } : {}, msg, this.fileInput)
   }
 
   reportValidity() {
-    this.fileTarget.reportValidity()
+    return this.internals.reportValidity()
   }
 
   get validationMessage() {
-    return this.fileTarget.validationMessage
+    return this.internals.validationMessage
   }
 }

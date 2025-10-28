@@ -31,7 +31,6 @@
     "@botandrose/progress-bar": "^0.1.0",
     "@rails/activestorage": "^8.1.0",
     "@stencil/core": "^4.38.2",
-    "morphdom": "^2.7.7",
     "rails-request-json": "^0.2.0",
     "ts-jest": "^29.4.5"
   },

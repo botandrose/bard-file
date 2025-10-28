@@ -14,6 +14,7 @@ export default class FormController {
     submit(event: any): void;
     startNextController(): void;
     submitForm(): void;
+    setInputAttachmentsDisabled(disabled: boolean): void;
     init(event: any): void;
     start(event: any): void;
     progress(event: any): void;

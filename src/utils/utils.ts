@@ -1,8 +1,6 @@
-import morph from "morphdom"
-
 function html(html) {
   const el = document.createElement("div")
-  morph(el, `<div>${html}</div>`)
+  el.innerHTML = html
   return el.children[0]
 }
 
@@ -13,4 +11,4 @@ function arrayRemove(arr, e) {
   }
 }
 
-export { morph, html, arrayRemove }
+export { html, arrayRemove }

@@ -8,13 +8,12 @@ export declare class InputAttachment {
     accepts: string;
     max: number;
     preview: boolean;
+    disabled: boolean;
     _forceUpdate: boolean;
     forceUpdate(): void;
     form: HTMLFormElement;
-    fileTargetId: string;
-    fileTarget: HTMLInputElement;
-    hiddenTargetId: string;
-    hiddenTarget: HTMLInputElement;
+    internals: ElementInternals;
+    fileInput: HTMLInputElement;
     _files: Array<any>;
     constructor();
     componentWillLoad(): void;
@@ -22,6 +21,7 @@ export declare class InputAttachment {
     set files(val: any[]);
     get value(): any[];
     set value(val: any[]);
+    updateFormValue(): void;
     reset(): void;
     fileTargetChanged(event: any): void;
     removeUploadedFile(event: any): void;
@@ -29,7 +29,7 @@ export declare class InputAttachment {
     render(): any;
     componentDidRender(): void;
     checkValidity(): boolean;
-    setCustomValidity(msg: any): void;
-    reportValidity(): void;
+    setCustomValidity(msg: string): void;
+    reportValidity(): boolean;
     get validationMessage(): string;
 }

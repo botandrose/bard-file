@@ -17,11 +17,9 @@ export declare class AttachmentFile {
     validationMessage: string;
     removeEvent: EventEmitter;
     private removeClicked;
-    inputTarget: HTMLInputElement;
     controller: DirectUploadController;
     _file: File;
-    uid: number;
-    constructor();
+    validationError: string;
     componentWillLoad(): void;
     get file(): any;
     set file(file: any);
@@ -32,7 +30,6 @@ export declare class AttachmentFile {
     error(event: any): void;
     end(_event: any): void;
     render(): any;
-    componentDidRender(): void;
     componentDidLoad(): void;
     checkValidity(): boolean;
 }

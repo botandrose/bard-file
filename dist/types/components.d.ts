@@ -40,6 +40,10 @@ export namespace Components {
     interface InputAttachment {
         "accepts": string;
         "directupload": string;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
         "max": number;
         /**
           * @default false
@@ -132,6 +136,10 @@ declare namespace LocalJSX {
     interface InputAttachment {
         "accepts"?: string;
         "directupload"?: string;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
         "max"?: number;
         /**
           * @default false

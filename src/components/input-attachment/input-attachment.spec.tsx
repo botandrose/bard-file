@@ -20,7 +20,8 @@ describe('input-attachment', () => {
     expect(page.root).toEqualHtml(`
       <input-attachment>
         <mock:shadow-root>
-          <file-drop for="">
+          <input type="file" style="opacity: 0.01; width: 1px; height: 1px; z-index: -999;">
+          <file-drop>
             <p part="title">
               <strong>Choose file </strong>
               <span>or drag it here.</span>
@@ -30,8 +31,6 @@ describe('input-attachment', () => {
             </div>
           </file-drop>
         </mock:shadow-root>
-        <input type="file">
-        <input id="hidden-target-null" name="undefined" type="hidden">
       </input-attachment>
     `);
   });
